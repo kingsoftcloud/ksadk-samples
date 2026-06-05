@@ -30,6 +30,7 @@ def test_root_readme_lists_public_project_resources():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert "Ask_Zread" in readme
     for expected in (
         "https://kingsoftcloud.github.io/ksadk-python/",
         "https://github.com/kingsoftcloud/ksadk-python",
@@ -72,8 +73,39 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
         "部署",
         "示例问题",
         "可选配置",
+        "配置速查表",
+        "Skill Space",
+        "Skill Runtime",
+        "Workspace",
+        "Sandbox",
+        "知识库",
+        "长期记忆",
         "脱敏说明",
         "常见问题",
+    ):
+        assert required in readme
+
+    for required in (
+        "KSADK_SKILL_SPACE_IDS",
+        "SKILL_SPACE_ID",
+        "KSADK_PUBLIC_SKILL_SPACE_IDS",
+        "KSADK_SKILL_SERVICE_URL",
+        "KSADK_SKILL_SERVICE_ACCESS_KEY",
+        "KSADK_SKILL_RUNTIME_BACKEND",
+        "KSADK_SKILL_RUNTIME_AGENT_PATH",
+        "KSADK_SKILL_RUNTIME_TEMPLATE_ID",
+        "KSADK_SANDBOX_BACKEND",
+        "KSADK_SANDBOX_TEMPLATE_ID",
+        "KSADK_SANDBOX_TIMEOUT",
+        "E2B_API_KEY",
+        "KSADK_KB_DATASET_ID",
+        "KSADK_KB_ENDPOINT",
+        "KSADK_KB_TOP_K",
+        "KSADK_LTM_BACKEND",
+        "KSADK_LTM_NAMESPACE",
+        "KSADK_LTM_HTTP_URL",
+        "workspace_status",
+        "agentengine_tool_dispatcher",
     ):
         assert required in readme
 

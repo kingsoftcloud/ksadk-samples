@@ -176,29 +176,300 @@ uv run agentengine deploy .
 
 ## 可选配置
 
-本示例默认不要求配置以下能力。你可以后续按需打开。
+本示例不强制配置 Skill Runtime、Workspace、Sandbox、知识库或长期记忆。只配置模型时，示例可以正常回答普通问题，也可以用 `component_status` 解释哪些平台能力尚未启用。
+
+需要接入平台能力时，建议先按下面顺序配置：先配置模型和云账号，再配置 Skill Space / 知识库 / 长期记忆这类数据来源，最后再打开会执行代码或写文件的 Skill Runtime、Workspace、Sandbox。
+
+### 配置速查表
+
+| 能力 | 最小配置 | 主要工具 | 没配置时的表现 |
+| --- | --- | --- | --- |
+| Skill Space | `KSADK_SKILL_SPACE_IDS` 或 `SKILL_SPACE_ID` | `list_skills`、`search_skills`、`load_skill` | 无法发现用户 Skill |
+| Skill Runtime | `KSADK_SKILL_RUNTIME_BACKEND`，需要执行隔离任务时再配 template | `execute_skills` | 只解释缺少运行后端，不执行 Skill workflow |
+| Workspace | 本地运行不需要额外变量；部署后由 AgentEngine 会话提供 workspace | `workspace_status`、`list_workspace_files`、`read_workspace_file` | 只能访问当前会话 workspace，不能访问任意宿主机路径 |
+| Sandbox | `KSADK_SANDBOX_BACKEND=e2b` + `KSADK_SANDBOX_TEMPLATE_ID` | `sandbox_status`、`run_command`、`run_code` | 命令执行类工具返回未配置或不可用 |
+| 知识库 | `KSADK_KB_DATASET_ID` + 云账号 AK/SK | `search_knowledge_base` | 不暴露或无法完成云知识库检索 |
+| 长期记忆 | `KSADK_LTM_BACKEND`，云端模式还需要 namespace 或 HTTP URL | `load_memory`、`save_memory` | 不加载历史长期记忆 |
+
+### 通用云账号
+
+部署 Agent 或调用金山云平台服务时通常需要云账号凭证：
+
+```bash
+KSYUN_ACCESS_KEY=your-access-key
+KSYUN_SECRET_KEY=your-secret-key
+KSYUN_ACCOUNT_ID=your-account-id
+KSYUN_REGION=cn-beijing-6
+```
+
+变量含义：
+
+| 变量 | 含义 | 是否必填 |
+| --- | --- | --- |
+| `KSYUN_ACCESS_KEY` | 金山云访问密钥 ID。知识库、Skill Service、长期记忆 SDK 后端都可以复用它。 | 部署或调用云服务时必填 |
+| `KSYUN_SECRET_KEY` | 金山云访问密钥 Secret。不要提交到 Git。 | 部署或调用云服务时必填 |
+| `KSYUN_ACCOUNT_ID` | 金山云账号 ID。部分 Skill Service 请求会透传到 `X-Ksc-Account-Id`。 | 按平台要求填写 |
+| `KSYUN_REGION` | 默认区域。未单独配置能力区域时会作为 fallback。 | 可选，默认 `cn-beijing-6` |
 
 ### Skill Space
 
-配置后，`list_skills`、`search_skills`、`load_skill` 可以发现并加载 Skill 指令：
+Skill Space 用于发现和下载 Skill 指令。配置后，`list_skills`、`search_skills`、`load_skill` 才能看到你的 Skill。
+
+最小配置：
 
 ```bash
 KSADK_SKILL_SPACE_IDS=your-skill-space-id
+KSADK_PUBLIC_SKILL_SPACE_IDS=
+KSYUN_ACCESS_KEY=your-access-key
+KSYUN_SECRET_KEY=your-secret-key
 ```
 
-`execute_skills` 需要额外配置 Skill Runtime 或 Sandbox 后端。本示例不会默认执行隔离任务。
+也可以用兼容变量：
+
+```bash
+SKILL_SPACE_ID=your-skill-space-id
+```
+
+Skill Service 连接变量：
+
+| 变量 | 含义 |
+| --- | --- |
+| `KSADK_SKILL_SPACE_IDS` | 用户 Skill Space ID，多个 ID 用英文逗号分隔。优先级高于 `SKILL_SPACE_ID`。 |
+| `SKILL_SPACE_ID` | 单个 Skill Space ID 的兼容写法。 |
+| `KSADK_PUBLIC_SKILL_SPACE_IDS` | 公共 Skill Space ID，多个 ID 用英文逗号分隔。 |
+| `KSADK_SKILL_SERVICE_URL` | 完整 Skill Service 地址。设置后优先使用它。 |
+| `KSADK_SKILL_SERVICE_ENDPOINT` | Skill Service endpoint。未设置 `KSADK_SKILL_SERVICE_URL` 时使用。 |
+| `KSADK_SKILL_SERVICE_SCHEME` | endpoint scheme，常用值为 `https`。 |
+| `KSADK_SKILL_SERVICE_ACCESS_KEY` | Skill Service 专用 AK；未设置时 fallback 到 `KSYUN_ACCESS_KEY` 或 `KS3_ACCESS_KEY`。 |
+| `KSADK_SKILL_SERVICE_SECRET_KEY` | Skill Service 专用 SK；未设置时 fallback 到 `KSYUN_SECRET_KEY` 或 `KS3_SECRET_KEY`。 |
+| `KSADK_SKILL_SERVICE_ACCOUNT_ID` | Skill Service 专用账号 ID；未设置时 fallback 到 `KSYUN_ACCOUNT_ID`。 |
+| `KSADK_SKILL_SERVICE_REGION` | Skill Service 区域；未设置时 fallback 到 `KSYUN_REGION`，再 fallback 到 `cn-beijing-6`。 |
+| `KSADK_SKILL_SERVICE_API_VERSION` | Skill Service API 版本，默认 `2024-06-12`。 |
+| `KSADK_SKILL_SERVICE_SIGN_SERVICE` | 请求签名服务名，默认 `aicp`。 |
+
+验证方式：
+
+```text
+请用 agentengine_tool_dispatcher 列出 skill 相关工具，再搜索我当前 Skill Space 里有哪些 Skill。
+```
+
+如果配置正确，模型会通过 dispatcher 找到 `list_skills`、`search_skills` 或 `load_skill`。如果缺少凭证或 Space ID，返回里会出现明确的错误原因。
+
+### Skill Runtime
+
+Skill Runtime 负责运行 `execute_skills` 发起的 Skill workflow。只发现和读取 Skill 不一定需要 Runtime；真正执行 workflow 时才需要。
+
+本地进程模式适合开发调试：
+
+```bash
+KSADK_SKILL_RUNTIME_BACKEND=local_process
+KSADK_SKILL_RUNTIME_AGENT_PATH=/absolute/path/to/skill-runtime-agent.py
+KSADK_SKILL_RUNTIME_TIMEOUT=900
+```
+
+隔离沙箱模式适合执行更高风险的 Skill workflow：
+
+```bash
+KSADK_SKILL_RUNTIME_BACKEND=e2b
+KSADK_SKILL_RUNTIME_TEMPLATE_ID=your-runtime-template-id
+KSADK_SKILL_RUNTIME_TIMEOUT=900
+KSADK_SKILL_RUNTIME_ALLOW_INTERNET_ACCESS=true
+E2B_API_KEY=your-e2b-api-key
+```
+
+变量含义：
+
+| 变量 | 含义 |
+| --- | --- |
+| `KSADK_SKILL_RUNTIME_BACKEND` | Runtime 后端。`disabled` / `none` / `off` 表示关闭；`local_process` 表示本地子进程；`e2b` 表示 E2B 沙箱。 |
+| `KSADK_SKILL_RUNTIME_AGENT_PATH` | `local_process` 模式下要执行的 runtime agent 文件路径。 |
+| `KSADK_SKILL_RUNTIME_TEMPLATE_ID` | E2B runtime template ID；也可用 `KSADK_SANDBOX_TEMPLATE_ID` 复用同一个 template。 |
+| `KSADK_SKILL_RUNTIME_TIMEOUT` | Skill workflow 超时时间，单位秒，默认 `900`。 |
+| `KSADK_SKILL_RUNTIME_ALLOW_INTERNET_ACCESS` | E2B runtime 是否允许访问互联网，默认 `true`。 |
+| `E2B_API_KEY` | E2B SDK 使用的认证密钥。KSADK 透传给 `e2b` 包，不会在日志里明文展示。 |
+
+验证方式：
+
+```text
+请先说明 execute_skills 当前是否可用；如果可用，运行一个只读取 Skill 指令、不访问外部网络的最小 workflow。
+```
+
+生产环境建议先让模型解释将要执行的 Skill、输入文件和预期输出，再让审批策略决定是否继续。
 
 ### Workspace
 
-在 AgentEngine Web UI 或 Hosted UI 中运行时，Workspace 工具只会操作 UI 提供的 workspace 目录。不要把它当作宿主机 shell 或任意文件系统访问入口。
+Workspace 是 AgentEngine 会话的文件工作区。它不是宿主机任意路径访问入口，也不是 shell。Workspace 工具只能操作当前 session workspace root 下面的文件。
+
+常用工具：
+
+| 工具 | 用途 | 风险级别 |
+| --- | --- | --- |
+| `workspace_status` | 查看 workspace root 和最近文件。 | 低 |
+| `list_workspace_files` | 列出 workspace 目录。 | 低 |
+| `read_workspace_file` | 读取 UTF-8 文本文件。 | 低 |
+| `write_workspace_file`、`write_workspace_files` | 写入一个或多个文件。 | 中 |
+| `edit_workspace_file` | 用精确片段替换编辑文件。 | 中 |
+| `lint_workspace_file` | 对文本文件做轻量检查。 | 低 |
+| `search_workspace_files` | 在 workspace 内搜索文本。 | 低 |
+| `delete_workspace_file` | 删除 workspace 文件或空目录。 | 高 |
+
+本地运行时一般不需要额外配置。部署或 Hosted UI 场景下，workspace 由 AgentEngine runtime 和会话注入。调试 CLI 远端 workspace 文件时，通常还会用到 `agentengine files` 命令，但这个示例本身不依赖它。
+
+验证方式：
+
+```text
+请调用 workspace_status，然后列出 workspace 根目录文件。不要写文件。
+```
+
+如果你要测试写入能力，可以让模型先写一个小文件，再读回验证：
+
+```text
+请在 workspace 写入 demo/hello.txt，内容是 hello ksadk，然后读回文件确认。
+```
 
 ### Sandbox
 
-`run_command` 和 `run_code` 只通过已配置的隔离 sandbox backend 执行。未配置时，示例应解释缺少配置，而不是模拟命令结果。
+Sandbox 用于隔离执行命令或代码。`run_command` 和 `run_code` 不会直接在你的宿主机上执行；它们依赖已配置的 sandbox backend。
 
-### 知识库和长期记忆
+E2B 最小配置：
 
-如果你的环境安装并配置了 KSADK 知识库或长期记忆能力，`get_agentengine_tools()` 的 platform toolset 会按当前环境自动暴露相关工具。未配置时，本示例仍可运行，并通过 `component_status` 说明当前状态。
+```bash
+KSADK_SANDBOX_BACKEND=e2b
+KSADK_SANDBOX_TEMPLATE_ID=your-sandbox-template-id
+KSADK_SANDBOX_TIMEOUT=900
+KSADK_SANDBOX_ALLOW_INTERNET_ACCESS=true
+KSADK_SANDBOX_TYPE=aio
+E2B_API_KEY=your-e2b-api-key
+```
+
+变量含义：
+
+| 变量 | 含义 |
+| --- | --- |
+| `KSADK_SANDBOX_BACKEND` | Sandbox 后端。KSADK 0.6.2 支持 `e2b`；`none` / `disabled` / `off` 表示关闭。 |
+| `KSADK_SANDBOX_TEMPLATE_ID` | E2B sandbox template ID。也会被 Skill Runtime 作为兼容 template 使用。 |
+| `KSADK_SANDBOX_TIMEOUT` | 命令执行超时时间，单位秒，默认 `900`。 |
+| `KSADK_SANDBOX_ALLOW_INTERNET_ACCESS` | 是否允许 sandbox 访问互联网，默认 `true`。 |
+| `KSADK_SANDBOX_TYPE` | Sandbox 类型，默认 `aio`。 |
+| `E2B_API_KEY` | E2B SDK 使用的认证密钥。 |
+
+验证方式：
+
+```text
+请先调用 sandbox_status，说明 sandbox 后端是否启用。启用后再运行 python -V。
+```
+
+不要把 sandbox 当成长期存储。每次会话创建的 sandbox 可能是临时环境，输出文件需要通过 workspace 或平台 artifact 明确保存。
+
+### 知识库
+
+知识库工具用于检索金山云知识库。配置 `KSADK_KB_DATASET_ID` 后，`get_agentengine_tools()` 的 platform toolset 会尝试暴露 `search_knowledge_base`。
+
+最小配置：
+
+```bash
+KSADK_KB_DATASET_ID=your-dataset-id
+KSADK_KB_ENDPOINT=aicp.api.ksyun.com
+KSADK_KB_REGION=cn-beijing-6
+KSADK_KB_SCHEME=https
+KSYUN_ACCESS_KEY=your-access-key
+KSYUN_SECRET_KEY=your-secret-key
+```
+
+可选检索参数：
+
+```bash
+KSADK_KB_TOP_K=5
+KSADK_KB_SEARCH_METHOD=intelligence_search
+KSADK_KB_SCORE_THRESHOLD=
+KSADK_KB_RERANKING_ENABLE=false
+```
+
+变量含义：
+
+| 变量 | 含义 |
+| --- | --- |
+| `KSADK_KB_DATASET_ID` | 知识库 Dataset ID。存在即表示启用云知识库。 |
+| `KSADK_KB_ACCESS_KEY` | 知识库专用 AK；未设置时 fallback 到 `KSYUN_ACCESS_KEY`。 |
+| `KSADK_KB_SECRET_KEY` | 知识库专用 SK；未设置时 fallback 到 `KSYUN_SECRET_KEY`。 |
+| `KSADK_KB_ENDPOINT` | 知识库 API endpoint，公开环境可用 `aicp.api.ksyun.com`。 |
+| `KSADK_KB_REGION` | 知识库区域，默认 `cn-beijing-6`。 |
+| `KSADK_KB_SCHEME` | 请求协议，默认 `https`。 |
+| `KSADK_KB_TOP_K` | 返回片段数量，默认 `5`。 |
+| `KSADK_KB_SEARCH_METHOD` | 检索方式，默认 `intelligence_search`。 |
+| `KSADK_KB_SCORE_THRESHOLD` | 分数阈值；留空表示不启用阈值过滤。 |
+| `KSADK_KB_RERANKING_ENABLE` | 是否启用重排序，`true` / `false`。 |
+
+验证方式：
+
+```text
+请用 agentengine_tool_dispatcher 查找知识库工具，然后检索“你的测试问题”。
+```
+
+如果 `KSADK_KB_DATASET_ID` 为空，本示例仍可运行，但不会伪造知识库答案。
+
+### 长期记忆
+
+长期记忆工具用于跨会话保存和检索用户相关信息。配置后，platform toolset 会根据当前运行上下文暴露 `load_memory`、`save_memory`。
+
+本地后端适合开发验证：
+
+```bash
+KSADK_LTM_BACKEND=local
+KSADK_LTM_INDEX=ksadk_samples
+KSADK_LTM_TOP_K=5
+KSADK_LTM_APP_NAME=agentengine-toolsets-langgraph
+```
+
+HTTP 后端适合对接自有服务：
+
+```bash
+KSADK_LTM_BACKEND=http
+KSADK_LTM_HTTP_URL=https://your-memory-service.example.com
+KSADK_LTM_HTTP_TOKEN=<token>
+KSADK_LTM_INDEX=ksadk_samples
+```
+
+SDK 后端适合接入金山云长期记忆服务：
+
+```bash
+KSADK_LTM_BACKEND=sdk
+KSADK_LTM_NAMESPACE=your-namespace
+KSADK_LTM_AGENT_ID=your-agent-id
+KSADK_LTM_SCENE_ID=_sys_general
+KSADK_LTM_ENDPOINT=aicp.api.ksyun.com
+KSADK_LTM_REGION=cn-beijing-6
+KSADK_LTM_SCHEME=https
+KSYUN_ACCESS_KEY=your-access-key
+KSYUN_SECRET_KEY=your-secret-key
+```
+
+变量含义：
+
+| 变量 | 含义 |
+| --- | --- |
+| `KSADK_LTM_BACKEND` | 长期记忆后端。常用值：`local`、`http`、`sdk`。留空表示不启用平台长期记忆工具。 |
+| `KSADK_LTM_INDEX` | 记忆索引名。未设置时使用 app name 或默认索引。 |
+| `KSADK_LTM_TOP_K` | 检索返回条数，默认 `5`。 |
+| `KSADK_LTM_APP_NAME` | 应用名，用于区分不同 Agent 的记忆空间。 |
+| `KSADK_LTM_HTTP_URL` | HTTP 后端服务地址。 |
+| `KSADK_LTM_HTTP_TOKEN` | HTTP 后端鉴权 token。 |
+| `KSADK_LTM_ACCESS_KEY` | SDK 后端专用 AK；未设置时 fallback 到 `KSYUN_ACCESS_KEY`。 |
+| `KSADK_LTM_SECRET_KEY` | SDK 后端专用 SK；未设置时 fallback 到 `KSYUN_SECRET_KEY`。 |
+| `KSADK_LTM_ENDPOINT` | SDK 后端 endpoint，公开环境可用 `aicp.api.ksyun.com`。 |
+| `KSADK_LTM_REGION` | SDK 后端区域，默认 `cn-beijing-6`。 |
+| `KSADK_LTM_SCHEME` | SDK 后端请求协议，默认 `https`。 |
+| `KSADK_LTM_NAMESPACE` | 云端长期记忆 namespace。 |
+| `KSADK_LTM_AGENT_ID` | 云端长期记忆所属 Agent ID。 |
+| `KSADK_LTM_SCENE_ID` | 云端长期记忆场景 ID，默认 `_sys_general`。 |
+
+验证方式：
+
+```text
+请保存一条长期记忆：我喜欢中文 README。然后检索“README 偏好”。
+```
+
+长期记忆工具依赖运行上下文里的用户 ID。没有用户上下文时，工具可能会提示缺少 invocation context，这是正常的配置边界，不代表示例代码坏了。
 
 ## 脱敏说明
 
