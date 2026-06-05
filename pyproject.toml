@@ -3,6 +3,7 @@ name = "ksadk-samples"
 version = "0.1.0"
 description = "Runnable KSADK sample agents"
 requires-python = ">=3.10"
+license = "Apache-2.0"
 dependencies = [
   "pyyaml>=6.0.0",
 ]

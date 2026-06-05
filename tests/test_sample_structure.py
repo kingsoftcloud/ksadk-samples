@@ -26,6 +26,23 @@ def test_ksadk_runtime_is_at_least_0_6_2():
     assert _version_tuple(ksadk.__version__) >= (0, 6, 2)
 
 
+def test_root_readme_lists_public_project_resources():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    license_text = (ROOT / "LICENSE").read_text(encoding="utf-8")
+    pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    for expected in (
+        "https://kingsoftcloud.github.io/ksadk-python/",
+        "https://github.com/kingsoftcloud/ksadk-python",
+        "https://zread.ai/kingsoftcloud/ksadk-python",
+        "https://github.com/kingsoftcloud/ksadk-web",
+        "https://pypi.org/project/ksadk/",
+        "Apache-2.0",
+    ):
+        assert expected in readme
+    assert "Apache License" in license_text
+    assert 'license = "Apache-2.0"' in pyproject
+
+
 def test_expected_sample_matrix_exists():
     use_cases = [
         "01-tutorials/hello-world",

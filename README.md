@@ -2,6 +2,15 @@
 
 KSADK Samples 是面向 AgentEngine / KSADK 的官方代码工坊。仓库提供可直接运行、可部署、可对比不同框架写法的 Agent 示例。
 
+## 相关资源
+
+- 文档：https://kingsoftcloud.github.io/ksadk-python/
+- KSADK 仓库：https://github.com/kingsoftcloud/ksadk-python
+- Wiki：https://zread.ai/kingsoftcloud/ksadk-python
+- Web UI 仓库：https://github.com/kingsoftcloud/ksadk-web
+- PyPI：https://pypi.org/project/ksadk/
+- 开源协议：Apache-2.0
+
 首版覆盖四类能力：
 
 | 示例 | 难度 | 覆盖框架 | 说明 |
