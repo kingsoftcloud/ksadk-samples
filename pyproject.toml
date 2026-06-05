@@ -1,0 +1,21 @@
+[project]
+name = "ksadk-samples"
+version = "0.1.0"
+description = "Runnable KSADK sample agents"
+requires-python = ">=3.10"
+dependencies = [
+  "pyyaml>=6.0.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["common*"]
+exclude = ["template*", "tests*"]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=7.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
