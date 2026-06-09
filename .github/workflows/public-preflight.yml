@@ -21,7 +21,14 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: uv sync --extra test
+        run: |
+          uv sync --extra test
+          find . -path './.venv' -prune -o -name requirements.txt -print \
+            | sort \
+            | xargs cat \
+            | sed '/^$/d' \
+            | sort -u > /tmp/ksadk-sample-requirements.txt
+          uv pip install -r /tmp/ksadk-sample-requirements.txt
 
       - name: Run public preflight
         run: make public-preflight
