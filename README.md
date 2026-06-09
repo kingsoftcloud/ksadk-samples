@@ -8,17 +8,17 @@ KSADK Samples 是面向 AgentEngine / KSADK 的官方场景化代码工坊。仓
 
 ### 按场景选择
 
-| 你想做什么 | 推荐样例 | 覆盖框架 | 说明 |
+| 场景 | 推荐样例 | 覆盖框架 | 说明 |
 | --- | --- | --- | --- |
-| 先确认 SDK、模型和部署链路能跑通 | `01-tutorials/hello-world` | ADK / LangGraph / LangChain / DeepAgents | 最小对话 Agent |
-| 学自定义工具调用 | `01-tutorials/tool-calling` | ADK / LangGraph / LangChain / DeepAgents | 绑定本地业务 tool，并通过 AgentEngine 运行 |
-| 学短期记忆和长期记忆接入思路 | `01-tutorials/memory` | ADK / LangGraph / LangChain / DeepAgents | 默认本地记忆，可扩展到平台长期记忆 |
-| 做知识库问答 | `02-use-cases/knowledge-base-rag` | ADK / LangGraph / LangChain / DeepAgents | 默认本地 corpus，可选接入金山云知识库 |
-| 做平台能力综合验证 | `02-use-cases/agentengine-toolsets/langgraph` | LangGraph | KSADK 内置 toolsets、dispatcher、Skill Space、Workspace、Sandbox、知识库、长期记忆配置边界 |
+| Basic Agent | `01-tutorials/hello-world` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 先确认 KSADK、模型和本地运行链路能跑通。 |
+| Tool-Using Agent | `01-tutorials/tool-calling` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 绑定本地业务 tool，并通过 AgentEngine Runtime 调用。 |
+| Memory-aware Agent | `01-tutorials/memory` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 学短期记忆和长期记忆接入思路，默认本地记忆，可扩展到平台长期记忆。 |
+| Knowledge Assistant | `02-use-cases/knowledge-base-rag` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 做知识库问答，默认本地 corpus，可选接入金山云知识库。 |
+| Workflow Agent | `02-use-cases/agentengine-toolsets/langgraph` | Built With LangGraph | 使用 StateGraph 编排 KSADK 内置 toolsets、dispatcher、Skill Space、Workspace、Sandbox、知识库和长期记忆配置边界。 |
 
 ### 推荐主推 Demo
 
-KsADK 0.6.3 开源发布建议优先展示：
+当前开源样例建议优先体验：
 
 ```bash
 cd 02-use-cases/agentengine-toolsets/langgraph
@@ -126,8 +126,20 @@ make public-preflight
 
 ## 后续计划
 
-- 补充更多真实业务场景的 use case，但只在可以本地运行、可部署、可脱敏验证后加入代码目录。
-- 为 Skill Runtime 和 Sandbox 增加更细粒度的 E2E 说明，前提是不提交真实 template ID、内部 endpoint 或测试 artifact。
+下面这些是计划补充的场景，当前仓库还没有对应可运行 demo。只有在可以本地运行、可部署、可脱敏验证，并且 README 足够完整时，才会加入代码目录。
+
+- Deep Research Agent
+- Coding Agent
+- Browser Agent
+- Data Analyst
+- Customer Support
+- Multi-Agent Team
+
+持续补充时仍保持三个边界：
+
+- 不能提交真实 Skill Space ID、Skill Runtime template ID、token、内部 endpoint 或测试 artifact。
+- 每个 demo 都必须包含中文优先 README、环境变量说明、验证问题和未配置能力时的降级行为。
+- Skill Runtime 和 Sandbox 的 E2E 说明必须能被公开门禁扫描通过。
 
 ## 目录结构
 

@@ -35,6 +35,11 @@ def _forbidden_literal_fragments() -> tuple[str, ...]:
         "AKLT" + "W9dW7YHYQ",
         "OHLW" + "iYdvCl1C",
         "-".join(("ab10091f", "ec89", "")),
+        "pre" + "-online",
+        "agent" + "-api-pre",
+        "kspmas" + "-internal",
+        "X-Ksc" + "-Region",
+        "X-KSC" + "-CUSTOM-SOURCE",
     )
 
 FORBIDDEN_PATTERNS = (

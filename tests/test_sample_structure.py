@@ -59,6 +59,34 @@ def test_root_readme_is_scenario_navigation_and_mentions_examples_alias():
         assert required in readme
 
 
+def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for available in (
+        "Knowledge Assistant",
+        "Workflow Agent",
+        "Tool-Using Agent",
+        "Memory-aware Agent",
+        "Built With LangGraph",
+        "Built With ADK",
+        "Built With DeepAgents",
+    ):
+        assert available in readme
+
+    roadmap_start = readme.index("## 后续计划")
+    before_roadmap = readme[:roadmap_start]
+    roadmap = readme[roadmap_start:]
+    for planned in (
+        "Deep Research Agent",
+        "Coding Agent",
+        "Browser Agent",
+        "Data Analyst",
+        "Customer Support",
+        "Multi-Agent Team",
+    ):
+        assert planned in roadmap
+        assert planned not in before_roadmap
+
+
 def test_expected_sample_matrix_exists():
     use_cases = [
         "01-tutorials/hello-world",

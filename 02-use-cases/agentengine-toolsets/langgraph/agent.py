@@ -199,7 +199,7 @@ def component_status() -> dict[str, Any]:
         "sample": {
             "name": "agentengine-toolsets-langgraph",
             "framework": "langgraph",
-            "ksadk_version_target": "0.6.2+ / 0.6.3 release",
+            "ksadk_version_target": "0.6.2+ public API",
             "binding_pattern": "get_agentengine_tools(include=['focused', 'agentengine_tool_dispatcher'])",
         },
         "bound_ksadk_tools": grouped,

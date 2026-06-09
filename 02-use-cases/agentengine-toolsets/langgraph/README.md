@@ -1,6 +1,6 @@
 # AgentEngine Toolsets - LangGraph
 
-这个示例从一个内部综合验证 demo 中抽取了可开源的通用模式：在 LangGraph 中绑定 KSADK 0.6.2+ 的 AgentEngine 内置 toolsets，同时追加业务自定义 tool 和外层 graph node。它是 KsADK 0.6.3 开源发布的主推 demo。
+这个示例从一个内部综合验证 demo 中抽取了可开源的通用模式：在 LangGraph 中绑定 KSADK 0.6.2+ 的 AgentEngine 内置 toolsets，同时追加业务自定义 tool 和外层 graph node。它是当前开源样例的主推 demo。
 
 它适合已经跑通过 `hello-world/langgraph`、想继续了解 AgentEngine 平台能力边界的用户。
 
@@ -58,7 +58,7 @@ uv pip install -r requirements.txt
 ksadk[langgraph]
 ```
 
-本示例按 KSADK 0.6.2+ 的公开接口编写并验证，用于服务 KsADK 0.6.3 开源发布。你也可以直接在仓库根目录安装完整能力集：
+本示例按 KSADK 0.6.2+ 的公开接口编写并验证，建议配合最新 `ksadk[all]` 使用。你也可以直接在仓库根目录安装完整能力集：
 
 ```bash
 uv pip install -U "ksadk[all]"
@@ -209,7 +209,7 @@ KSYUN_REGION=cn-beijing-6
 | `KSYUN_ACCESS_KEY` | 金山云访问密钥 ID。知识库、Skill Service、长期记忆 SDK 后端都可以复用它。 | 部署或调用云服务时必填 |
 | `KSYUN_SECRET_KEY` | 金山云访问密钥 Secret。不要提交到 Git。 | 部署或调用云服务时必填 |
 | `KSYUN_ACCOUNT_ID` | 金山云账号 ID。部分 Skill Service 请求会透传到 `X-Ksc-Account-Id`。 | 按平台要求填写 |
-| `KSYUN_REGION` | 默认区域。未单独配置能力区域时会作为 fallback。 | 可选，默认 `cn-beijing-6` |
+| `KSYUN_REGION` | 默认线上区域。未单独配置能力区域时会作为 fallback。 | 可选，默认 `cn-beijing-6` |
 
 ### Skill Space
 
@@ -243,7 +243,7 @@ Skill Service 连接变量：
 | `KSADK_SKILL_SERVICE_ACCESS_KEY` | Skill Service 专用 AK；未设置时 fallback 到 `KSYUN_ACCESS_KEY` 或 `KS3_ACCESS_KEY`。 |
 | `KSADK_SKILL_SERVICE_SECRET_KEY` | Skill Service 专用 SK；未设置时 fallback 到 `KSYUN_SECRET_KEY` 或 `KS3_SECRET_KEY`。 |
 | `KSADK_SKILL_SERVICE_ACCOUNT_ID` | Skill Service 专用账号 ID；未设置时 fallback 到 `KSYUN_ACCOUNT_ID`。 |
-| `KSADK_SKILL_SERVICE_REGION` | Skill Service 区域；未设置时 fallback 到 `KSYUN_REGION`，再 fallback 到 `cn-beijing-6`。 |
+| `KSADK_SKILL_SERVICE_REGION` | Skill Service 区域；未设置时 fallback 到 `KSYUN_REGION`，再 fallback 到 SDK 默认线上区域。 |
 | `KSADK_SKILL_SERVICE_API_VERSION` | Skill Service API 版本，默认 `2024-06-12`。 |
 | `KSADK_SKILL_SERVICE_SIGN_SERVICE` | 请求签名服务名，默认 `aicp`。 |
 
