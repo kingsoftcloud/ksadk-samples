@@ -26,6 +26,7 @@ ROOT_README_REQUIRED_CONTENT = (
     "Sandbox",
     "知识库",
     "长期记忆",
+    "KSYUN_REGION=cn-beijing-6",
     "Knowledge Assistant",
     "Workflow Agent",
     "Tool-Using Agent",

@@ -65,7 +65,7 @@ OPENAI_MODEL_NAME=gpt-4o-mini
 
 | 能力 | 关键环境变量 | 含义 | 未配置时降级 |
 | --- | --- | --- | --- |
-| 云账号 | `KSYUN_ACCESS_KEY`、`KSYUN_SECRET_KEY`、`KSYUN_REGION` | 部署 Agent、调用金山云知识库、Skill Service、长期记忆 SDK 后端时使用 | 不能部署或调用云服务，本地基础样例不受影响 |
+| 云账号 | `KSYUN_ACCESS_KEY`、`KSYUN_SECRET_KEY`、`KSYUN_REGION` | 部署 Agent、调用金山云知识库、Skill Service、长期记忆 SDK 后端时使用；线上默认地域建议显式写为 `KSYUN_REGION=cn-beijing-6` | 不能部署或调用云服务，本地基础样例不受影响 |
 | Skill Space | `KSADK_SKILL_SPACE_IDS` 或 `SKILL_SPACE_ID`、`KSADK_PUBLIC_SKILL_SPACE_IDS`、`KSADK_SKILL_SERVICE_URL` 或 `KSADK_SKILL_SERVICE_ENDPOINT`、`KSADK_SKILL_SERVICE_ACCESS_KEY`、`KSADK_SKILL_SERVICE_SECRET_KEY` | 发现、搜索、加载 Skill 指令 | `list_skills` / `search_skills` / `load_skill` 返回缺少 Space ID、endpoint 或凭证 |
 | Skill Runtime | `KSADK_SKILL_RUNTIME_BACKEND`、`KSADK_SKILL_RUNTIME_AGENT_PATH`、`KSADK_SKILL_RUNTIME_TEMPLATE_ID`、`KSADK_SKILL_RUNTIME_TIMEOUT`、`E2B_API_KEY` | 执行 Skill workflow；`local_process` 用于本地调试，`e2b` 用于隔离运行 | 仍可发现和加载 Skill，但 `execute_skills` 不执行 workflow |
 | Workspace | 本地 `agentengine run/web` 通常由会话自动注入；远端由 AgentEngine runtime 注入 | 读写当前会话 workspace 文件 | 只能说明 workspace 不可用或为空，不能访问宿主机任意路径 |
