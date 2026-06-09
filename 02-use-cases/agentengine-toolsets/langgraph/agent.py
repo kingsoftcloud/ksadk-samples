@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import sys
 from typing import Annotated, Any, TypedDict
 
@@ -13,21 +14,27 @@ from langgraph.graph.message import add_messages
 from langgraph.prebuilt import create_react_agent
 
 from common.model_config import make_langchain_chat_model
+from ksadk.skills.service_env import resolve_skill_service_url
 from ksadk.toolsets import describe_agentengine_tools, get_agentengine_tools
 
 
 SYSTEM_PROMPT = """你是 AgentEngine Toolsets 示例助手，用中文回答。
 
 目标：
-- 演示 LangGraph 如何绑定 KSADK 0.6.2 内置 toolsets。
+- 演示 LangGraph 如何绑定 KSADK 0.6.2+ 内置 toolsets。
+- 演示如何发现、搜索、加载 Skill Space 下的 Skill。
 - 演示业务项目如何追加自己的 tool 和 graph node。
-- 在工具不可用或未配置时，清楚解释缺少的配置，不要伪造工具执行结果。
+- 在工具不可用或未配置时，返回真实错误和缺少的环境变量，不要伪造 Skill 列表或工具执行结果。
 
 工具使用策略：
+- 用户问 Space 下有哪些 skill、技能列表、Skill Space、可用工具时，必须优先使用 list_skills。
+- 用户带有搜索意图时，优先使用 search_skills。
+- 用户指定加载某个 Skill 时，使用 load_skill。
 - 用户问当前绑定了哪些能力、运行环境或配置边界时，调用 component_status。
 - 用户问 LangGraph 图结构、节点、边或自定义扩展方式时，调用 graph_status。
 - 用户要生成发布风险清单或评审发布改动时，调用 release_risk_matrix。
 - 用户问 Skill、Workspace、Sandbox 等低频能力时，先用 agentengine_tool_dispatcher list 或 describe 查看，再按需 call。
+- 使用 agentengine_tool_dispatcher 时，include 只能填合法工具组或工具名，例如 skill、workspace、platform、sandbox、focused，不能填 file；读取或写入文件请使用 workspace 组里的工具。
 - 用户只做普通咨询时可以直接回答。
 """
 
@@ -53,6 +60,23 @@ def _group_tool_names(descriptions: list[dict[str, Any]]) -> dict[str, list[str]
         group = str(item.get("group") or "unknown")
         grouped.setdefault(group, []).append(str(item.get("name") or ""))
     return grouped
+
+
+def _env(key: str, default: str = "") -> str:
+    return str(os.getenv(key) or default).strip()
+
+
+def _env_enabled(key: str) -> bool:
+    return bool(_env(key))
+
+
+def _skill_space_ids() -> list[str]:
+    raw = _env("KSADK_SKILL_SPACE_IDS") or _env("SKILL_SPACE_ID")
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+def _public_skill_space_ids() -> list[str]:
+    return [item.strip() for item in _env("KSADK_PUBLIC_SKILL_SPACE_IDS").split(",") if item.strip()]
 
 
 @tool
@@ -96,6 +120,7 @@ def graph_status() -> dict[str, Any]:
         "custom_extensions": {
             "tools": ["graph_status", "component_status", "release_risk_matrix"],
             "graph_nodes": ["route_turn", "prepare_custom_context"],
+            "tool_calling": "Skill Space 查询由 ReAct 子图中的大模型根据 suggested_tools 自主调用 list_skills/search_skills/load_skill。",
         },
     }
 
@@ -149,16 +174,66 @@ def component_status() -> dict[str, Any]:
     """汇总本示例绑定的 KSADK toolsets、业务自定义工具和运行边界。"""
 
     grouped = _group_tool_names(AGENTENGINE_TOOL_DESCRIPTIONS)
+    skill_spaces = _skill_space_ids()
+    public_spaces = _public_skill_space_ids()
+    try:
+        skill_service_url = resolve_skill_service_url(require_spaces=True)
+    except Exception as exc:
+        skill_service_url = ""
+        skill_service_error = f"{type(exc).__name__}: {exc}"
+    else:
+        skill_service_error = ""
+
+    missing_for_skill_space = []
+    if not skill_spaces and not public_spaces:
+        missing_for_skill_space.append("KSADK_SKILL_SPACE_IDS 或 SKILL_SPACE_ID")
+    if (skill_spaces or public_spaces) and not skill_service_url:
+        missing_for_skill_space.append("KSADK_SKILL_SERVICE_URL 或 KSADK_SKILL_SERVICE_ENDPOINT")
+    if not (_env_enabled("KSADK_SKILL_SERVICE_ACCESS_KEY") or _env_enabled("KSYUN_ACCESS_KEY")):
+        missing_for_skill_space.append("KSADK_SKILL_SERVICE_ACCESS_KEY 或 KSYUN_ACCESS_KEY")
+    if not (_env_enabled("KSADK_SKILL_SERVICE_SECRET_KEY") or _env_enabled("KSYUN_SECRET_KEY")):
+        missing_for_skill_space.append("KSADK_SKILL_SERVICE_SECRET_KEY 或 KSYUN_SECRET_KEY")
+
     return {
         "ok": True,
         "sample": {
             "name": "agentengine-toolsets-langgraph",
             "framework": "langgraph",
-            "ksadk_version_target": "0.6.2",
+            "ksadk_version_target": "0.6.2+ / 0.6.3 release",
             "binding_pattern": "get_agentengine_tools(include=['focused', 'agentengine_tool_dispatcher'])",
         },
         "bound_ksadk_tools": grouped,
         "custom_tools": ["graph_status", "component_status", "release_risk_matrix"],
+        "skill_space": {
+            "configured": not missing_for_skill_space,
+            "space_ids_configured": len(skill_spaces),
+            "public_space_ids_configured": len(public_spaces),
+            "service_url_configured": bool(skill_service_url),
+            "service_error": skill_service_error,
+            "missing_config": missing_for_skill_space,
+            "tools": ["list_skills", "search_skills", "load_skill"],
+            "note": "只发现和加载 Skill 不需要 Skill Runtime；执行 Skill workflow 才需要配置 Runtime。",
+        },
+        "skill_runtime": {
+            "backend": _env("KSADK_SKILL_RUNTIME_BACKEND") or "disabled",
+            "template_configured": bool(_env("KSADK_SKILL_RUNTIME_TEMPLATE_ID") or _env("KSADK_SANDBOX_TEMPLATE_ID")),
+            "agent_path_configured": bool(_env("KSADK_SKILL_RUNTIME_AGENT_PATH")),
+            "meaning": "execute_skills 使用的隔离执行后端；未配置时仍可 list/search/load Skill。",
+        },
+        "workspace": {
+            "root_configured": bool(_env("AGENTENGINE_WORKSPACE_ROOT") or _env("WORKSPACE_ROOT")),
+            "meaning": "Workspace 工具只操作 AgentEngine 会话 workspace，不等同于任意宿主机目录。",
+            "tools": ["workspace_status", "list_workspace_files", "read_workspace_file", "search_workspace_files"],
+        },
+        "sandbox": {
+            "backend": _env("KSADK_SANDBOX_BACKEND") or "disabled",
+            "template_configured": bool(_env("KSADK_SANDBOX_TEMPLATE_ID")),
+            "meaning": "run_command/run_code 等隔离执行能力需要单独配置 sandbox backend。",
+        },
+        "platform": {
+            "knowledge_base_configured": bool(_env("KSADK_KB_DATASET_ID")),
+            "long_term_memory_configured": bool(_env("KSADK_LTM_BACKEND") or _env("KSADK_LTM_NAMESPACE")),
+        },
         "boundaries": {
             "skill": "list/search/load 可直接用于 Skill 指令发现；execute_skills 需要额外配置 Skill Runtime。",
             "workspace": "Workspace 工具只操作 AgentEngine UI workspace 目录。",
@@ -195,6 +270,20 @@ def _last_user_text(messages: list[BaseMessage]) -> str:
 
 def _route_for_text(user_text: str) -> dict[str, Any]:
     lowered = user_text.lower()
+    if any(word in lowered for word in ("skill space", "space", "skill")) or any(
+        word in user_text for word in ("技能", "空间")
+    ):
+        if any(word in user_text for word in ("搜索", "查找", "找一下")) or "search" in lowered:
+            return {
+                "scenario": "skill_space_search",
+                "suggested_tools": ["search_skills", "list_skills", "load_skill", "agentengine_tool_dispatcher"],
+                "response_guidance": "让 ReAct 子图优先调用 search_skills；不要由外层 LangGraph 代替工具调用。",
+            }
+        return {
+            "scenario": "skill_space_list",
+            "suggested_tools": ["list_skills", "search_skills", "load_skill", "agentengine_tool_dispatcher"],
+            "response_guidance": "让 ReAct 子图优先调用 list_skills，并基于真实工具结果总结。",
+        }
     if any(word in user_text for word in ("组件", "绑定", "配置", "状态", "能力", "边界")):
         return {"scenario": "runtime_status", "suggested_tools": ["component_status"]}
     if any(word in lowered for word in ("langgraph", "graph", "节点", "边", "子图")):
@@ -227,6 +316,10 @@ def prepare_custom_context(state: AgentState) -> dict[str, Any]:
         "custom_context": {
             "sample": "agentengine-toolsets-langgraph",
             "route": route.get("scenario", "general"),
+            "suggested_tools": route.get("suggested_tools", []),
+            "response_guidance": route.get("response_guidance", ""),
+            "skill_space_ids_configured": len(_skill_space_ids()),
+            "public_skill_space_ids_configured": len(_public_skill_space_ids()),
             "custom_extension_note": "业务项目可以在 get_agentengine_tools() 之外追加 tool，也可以在 StateGraph 中增加节点。",
         }
     }
@@ -248,7 +341,7 @@ def run_specialist(state: AgentState) -> dict[str, Any]:
             content=(
                 f"外层 LangGraph 路由: {route}. "
                 f"自定义上下文: {custom_context}. "
-                "优先使用 suggested_tools 中的工具；工具不可用时解释边界和下一步配置。"
+                "优先使用 suggested_tools 中的工具；工具不可用时说明缺少哪些环境变量。"
             )
         ),
         *state["messages"],

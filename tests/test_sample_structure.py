@@ -5,6 +5,8 @@ import sys
 
 import yaml
 
+from scripts import validate_samples
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,6 +44,19 @@ def test_root_readme_lists_public_project_resources():
         assert expected in readme
     assert "Apache License" in license_text
     assert 'license = "Apache-2.0"' in pyproject
+
+
+def test_root_readme_is_scenario_navigation_and_mentions_examples_alias():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for required in (
+        "场景导航",
+        "Examples",
+        "Samples",
+        "按场景选择",
+        "推荐主推 Demo",
+        "02-use-cases/agentengine-toolsets/langgraph",
+    ):
+        assert required in readme
 
 
 def test_expected_sample_matrix_exists():
@@ -112,10 +127,17 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
     for required in (
         "get_agentengine_tools",
         "describe_agentengine_tools",
+        "resolve_skill_service_url",
+        "_skill_space_ids",
         "agentengine_tool_dispatcher",
         "release_risk_matrix",
         "graph_status",
         "component_status",
+        "missing_for_skill_space",
+        "space_ids_configured",
+        "list_skills",
+        "search_skills",
+        "load_skill",
     ):
         assert required in source
 
@@ -149,6 +171,43 @@ def test_all_sample_readmes_are_actionable_for_new_users():
         assert len(text.splitlines()) >= 35, f"{readme_path.relative_to(ROOT)} README is too short"
         for section in required_sections:
             assert section in text, f"{readme_path.relative_to(ROOT)} missing README section: {section}"
+
+
+def test_validate_samples_enforces_root_readme_gate(tmp_path):
+    original_root = validate_samples.ROOT
+    try:
+        validate_samples.ROOT = tmp_path
+        (tmp_path / "README.md").write_text("# Broken\n", encoding="utf-8")
+        errors = validate_samples.validate_root_readme()
+    finally:
+        validate_samples.ROOT = original_root
+
+    assert any("README.md missing required content" in error for error in errors)
+
+
+def test_validate_samples_enforces_sample_readme_sections(tmp_path):
+    sample_dir = tmp_path / "01-tutorials" / "broken" / "adk"
+    sample_dir.mkdir(parents=True)
+    (sample_dir / "README.md").write_text("# Broken\n", encoding="utf-8")
+
+    errors = validate_samples.validate_sample_readme(sample_dir)
+
+    assert "missing README section: 适用场景" in "\n".join(errors)
+
+
+def test_validate_samples_scans_sensitive_fragments(tmp_path):
+    original_root = validate_samples.ROOT
+    try:
+        validate_samples.ROOT = tmp_path
+        (tmp_path / "README.md").write_text(
+            "endpoint=" + ".".join(("aicp", "inner", "api", "ksyun", "com")),
+            encoding="utf-8",
+        )
+        errors = validate_samples.validate_public_safety()
+    finally:
+        validate_samples.ROOT = original_root
+
+    assert any("contains forbidden internal fragment" in error for error in errors)
 
 
 def test_agentengine_yaml_contracts_are_valid():

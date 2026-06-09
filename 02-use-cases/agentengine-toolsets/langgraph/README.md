@@ -1,12 +1,12 @@
 # AgentEngine Toolsets - LangGraph
 
-这个示例从一个内部综合验证 demo 中抽取了可开源的通用模式：在 LangGraph 中绑定 KSADK 0.6.2 的 AgentEngine 内置 toolsets，同时追加业务自定义 tool 和外层 graph node。
+这个示例从一个内部综合验证 demo 中抽取了可开源的通用模式：在 LangGraph 中绑定 KSADK 0.6.2+ 的 AgentEngine 内置 toolsets，同时追加业务自定义 tool 和外层 graph node。它是 KsADK 0.6.3 开源发布的主推 demo。
 
 它适合已经跑通过 `hello-world/langgraph`、想继续了解 AgentEngine 平台能力边界的用户。
 
 ## 适用场景
 
-- 想在 LangGraph 项目中使用 KSADK 0.6.2 的 AgentEngine 内置 toolsets。
+- 想在 LangGraph 项目中使用 KSADK 0.6.2+ 的 AgentEngine 内置 toolsets。
 - 想学习如何通过 dispatcher 渐进式暴露低频或高风险工具。
 - 想把业务自定义工具、状态说明工具和外层 LangGraph 编排组合在一个可部署示例里。
 - 想从内部综合 demo 迁移出一个不包含真实凭证、内网地址和测试 artifact 的开源版本。
@@ -58,7 +58,7 @@ uv pip install -r requirements.txt
 ksadk[langgraph]
 ```
 
-本示例按 KSADK 0.6.2 的公开接口编写并验证。你也可以直接在仓库根目录安装完整能力集：
+本示例按 KSADK 0.6.2+ 的公开接口编写并验证，用于服务 KsADK 0.6.3 开源发布。你也可以直接在仓库根目录安装完整能力集：
 
 ```bash
 uv pip install -U "ksadk[all]"
@@ -346,7 +346,7 @@ E2B_API_KEY=your-e2b-api-key
 
 | 变量 | 含义 |
 | --- | --- |
-| `KSADK_SANDBOX_BACKEND` | Sandbox 后端。KSADK 0.6.2 支持 `e2b`；`none` / `disabled` / `off` 表示关闭。 |
+| `KSADK_SANDBOX_BACKEND` | Sandbox 后端。KSADK 0.6.2+ 支持 `e2b`；`none` / `disabled` / `off` 表示关闭。 |
 | `KSADK_SANDBOX_TEMPLATE_ID` | E2B sandbox template ID。也会被 Skill Runtime 作为兼容 template 使用。 |
 | `KSADK_SANDBOX_TIMEOUT` | 命令执行超时时间，单位秒，默认 `900`。 |
 | `KSADK_SANDBOX_ALLOW_INTERNET_ACCESS` | 是否允许 sandbox 访问互联网，默认 `true`。 |
@@ -496,7 +496,7 @@ rg -n "AK|SK|SECRET|TOKEN|KEY|PASSWORD|http://|https://|[0-9]{1,3}(\\.[0-9]{1,3}
 
 ### 为什么示例里重写了 `component_status`？
 
-KSADK 0.6.2 自带 `component_status`。本示例为了展示“业务项目可以替换或增强平台状态说明”，过滤掉内置同名工具，再绑定一个更贴合本示例的自定义 `component_status`。真实项目也可以选择直接使用内置版本。
+KSADK 0.6.2+ 自带 `component_status`。本示例为了展示“业务项目可以替换或增强平台状态说明”，过滤掉内置同名工具，再绑定一个更贴合本示例的自定义 `component_status`。真实项目也可以选择直接使用内置版本。
 
 ### 没有配置 Skill Space 或 Sandbox 时能运行吗？
 

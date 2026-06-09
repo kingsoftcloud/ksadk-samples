@@ -7,8 +7,35 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts import check_public_readiness
+
 FRAMEWORKS = {"adk", "langgraph", "langchain", "deepagents"}
 REQUIRED_FILES = {"README.md", "agent.py", "agentengine.yaml", "requirements.txt"}
+ROOT_README_REQUIRED_CONTENT = (
+    "场景导航",
+    "Samples",
+    "Examples",
+    "按场景选择",
+    "推荐主推 Demo",
+    "02-use-cases/agentengine-toolsets/langgraph",
+    "Skill Runtime",
+    "Workspace",
+    "Sandbox",
+    "知识库",
+    "长期记忆",
+)
+SAMPLE_README_REQUIRED_SECTIONS = (
+    "适用场景",
+    "环境准备",
+    "本地运行",
+    "Web UI 调试",
+    "部署",
+    "示例问题",
+    "常见问题",
+)
 
 
 def iter_sample_dirs() -> list[Path]:
@@ -18,23 +45,30 @@ def iter_sample_dirs() -> list[Path]:
     return sorted(sample_dirs)
 
 
+def _relative(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
 def validate_sample(sample_dir: Path) -> list[str]:
     errors: list[str] = []
     missing = sorted(name for name in REQUIRED_FILES if not (sample_dir / name).is_file())
     if missing:
-        errors.append(f"{sample_dir.relative_to(ROOT)} missing files: {', '.join(missing)}")
+        errors.append(f"{_relative(sample_dir)} missing files: {', '.join(missing)}")
         return errors
 
     config = yaml.safe_load((sample_dir / "agentengine.yaml").read_text(encoding="utf-8")) or {}
     framework = str(config.get("framework") or "")
     if framework not in FRAMEWORKS:
-        errors.append(f"{sample_dir.relative_to(ROOT)} invalid framework: {framework}")
+        errors.append(f"{_relative(sample_dir)} invalid framework: {framework}")
 
     entry_point = str(config.get("entry_point") or "")
     if not entry_point:
-        errors.append(f"{sample_dir.relative_to(ROOT)} missing entry_point")
+        errors.append(f"{_relative(sample_dir)} missing entry_point")
     elif not (sample_dir / entry_point).is_file():
-        errors.append(f"{sample_dir.relative_to(ROOT)} entry_point not found: {entry_point}")
+        errors.append(f"{_relative(sample_dir)} entry_point not found: {entry_point}")
 
     agent_variable = str(config.get("agent_variable") or "")
     if not agent_variable:
@@ -42,8 +76,45 @@ def validate_sample(sample_dir: Path) -> list[str]:
     else:
         agent_text = (sample_dir / entry_point).read_text(encoding="utf-8")
         if agent_variable not in agent_text:
-            errors.append(f"{sample_dir.relative_to(ROOT)} agent_variable not present in agent.py: {agent_variable}")
+            errors.append(f"{_relative(sample_dir)} agent_variable not present in agent.py: {agent_variable}")
 
+    return errors
+
+
+def validate_root_readme() -> list[str]:
+    readme_path = ROOT / "README.md"
+    if not readme_path.is_file():
+        return ["README.md missing"]
+
+    text = readme_path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    for required in ROOT_README_REQUIRED_CONTENT:
+        if required not in text:
+            errors.append(f"README.md missing required content: {required}")
+    return errors
+
+
+def validate_sample_readme(sample_dir: Path) -> list[str]:
+    readme_path = sample_dir / "README.md"
+    if not readme_path.is_file():
+        return [f"{_relative(sample_dir)} missing README.md"]
+
+    text = readme_path.read_text(encoding="utf-8")
+    errors: list[str] = []
+    if len(text.splitlines()) < 35:
+        errors.append(f"{_relative(sample_dir)} README is too short")
+    for section in SAMPLE_README_REQUIRED_SECTIONS:
+        if section not in text:
+            errors.append(f"{_relative(sample_dir)} missing README section: {section}")
+    return errors
+
+
+def validate_public_safety() -> list[str]:
+    check_public_readiness.ROOT = ROOT
+    errors: list[str] = []
+    for path in check_public_readiness.iter_public_text_files():
+        for error in check_public_readiness.scan_file(path):
+            errors.append(f"{_relative(path)}: {error}")
     return errors
 
 
@@ -62,7 +133,7 @@ def validate_sample_imports(sample_dirs: list[Path]) -> list[str]:
             if agent_variable not in source:
                 errors.append(f"{sample_dir.relative_to(ROOT)} source does not mention {agent_variable}")
         except Exception as exc:
-            errors.append(f"{sample_dir.relative_to(ROOT)} import smoke failed: {exc}")
+            errors.append(f"{_relative(sample_dir)} import smoke failed: {exc}")
         finally:
             try:
                 sys.path.remove(str(sample_dir))
@@ -75,8 +146,11 @@ def validate_sample_imports(sample_dirs: list[Path]) -> list[str]:
 def main() -> int:
     sample_dirs = iter_sample_dirs()
     errors: list[str] = []
+    errors.extend(validate_root_readme())
+    errors.extend(validate_public_safety())
     for sample_dir in sample_dirs:
         errors.extend(validate_sample(sample_dir))
+        errors.extend(validate_sample_readme(sample_dir))
     errors.extend(validate_sample_imports(sample_dirs))
 
     if not sample_dirs:
