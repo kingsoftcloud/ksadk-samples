@@ -24,6 +24,13 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 客服 Agent（Customer Support） | `02-use-cases/customer-support/langgraph` | Built With LangGraph |
 | 多 Agent 团队（Multi-Agent Team） | `02-use-cases/multi-agent-team/langgraph` | Built With LangGraph |
 
+### 最佳实践案例
+
+| 目标 | LangGraph | ADK | DeepAgents |
+| --- | --- | --- | --- |
+| Deep Research 报告生成 | `02-use-cases/deep-research/report-writer-langgraph` | `02-use-cases/deep-research/report-writer-adk` | `02-use-cases/deep-research/report-writer-deepagents` |
+| Coding Workspace + Sandbox | `02-use-cases/coding-agent/workspace-sandbox-langgraph` | `02-use-cases/coding-agent/workspace-sandbox-adk` | `02-use-cases/coding-agent/workspace-sandbox-deepagents` |
+
 ### 推荐主推 Demo
 
 ```bash
@@ -113,6 +120,6 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为六个场景补充 ADK / LangChain / DeepAgents 版本。
-- 增加真实 Web UI GIF 和端到端部署录屏。
+- 为更多场景补充 ADK / LangChain / DeepAgents 版本；当前 Deep Research 报告生成和 Coding Workspace + Sandbox 已覆盖 LangGraph / ADK / DeepAgents。
+- 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
 - 增加更多行业场景，如 AIOps、财务分析、内容生产和企业知识运营。

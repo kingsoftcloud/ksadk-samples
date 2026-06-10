@@ -77,6 +77,13 @@ def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
         "Data Analyst",
         "Customer Support",
         "Multi-Agent Team",
+        "最佳实践案例",
+        "Deep Research 报告生成",
+        "Coding Workspace + Sandbox",
+        "report-writer-adk",
+        "report-writer-deepagents",
+        "workspace-sandbox-adk",
+        "workspace-sandbox-deepagents",
     ):
         assert available in readme
 
@@ -347,6 +354,80 @@ def test_deep_research_and_coding_agents_show_mature_agent_workflows():
             state = module.ksadk_prepare_state({"input": "演示一个完整流程。"}, {})
             result = module.root_agent.invoke(state)
             answer = result.get("answer", "")
+            for section in sections:
+                assert section in answer
+        finally:
+            for value in (str(sample_dir), str(ROOT)):
+                try:
+                    sys.path.remove(value)
+                except ValueError:
+                    pass
+            sys.modules.pop(module_name, None)
+            for transient in ("workflow", "tools", "data", "prompts"):
+                sys.modules.pop(transient, None)
+
+
+def test_best_practice_agents_cover_next_completion_order():
+    """补齐顺序里的最佳实践 demo 必须有可运行工程和清晰输出。"""
+
+    os.environ.setdefault("OPENAI_API_KEY", "test-key")
+    os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
+
+    samples = {
+        "02-use-cases/deep-research/report-writer-langgraph": (
+            "langgraph",
+            "生成一份 Agent Runtime Platform 选型报告。",
+            ("## 报告大纲", "## 引用材料", "## 质量检查", "## 最终报告"),
+        ),
+        "02-use-cases/deep-research/report-writer-adk": (
+            "adk",
+            "生成一份 Agent Runtime Platform 选型报告。",
+            ("## 报告大纲", "## 引用材料", "## 质量检查", "## 最终报告"),
+        ),
+        "02-use-cases/deep-research/report-writer-deepagents": (
+            "deepagents",
+            "生成一份 Agent Runtime Platform 选型报告。",
+            ("## 报告大纲", "## 引用材料", "## 质量检查", "## 最终报告"),
+        ),
+        "02-use-cases/coding-agent/workspace-sandbox-langgraph": (
+            "langgraph",
+            "修复 Markdown 表格渲染不稳定的问题，并给出测试计划。",
+            ("## 工作区文件", "## 沙箱命令", "## 补丁计划", "## 验证结果"),
+        ),
+        "02-use-cases/coding-agent/workspace-sandbox-adk": (
+            "adk",
+            "修复 Markdown 表格渲染不稳定的问题，并给出测试计划。",
+            ("## 工作区文件", "## 沙箱命令", "## 补丁计划", "## 验证结果"),
+        ),
+        "02-use-cases/coding-agent/workspace-sandbox-deepagents": (
+            "deepagents",
+            "修复 Markdown 表格渲染不稳定的问题，并给出测试计划。",
+            ("## 工作区文件", "## 沙箱命令", "## 补丁计划", "## 验证结果"),
+        ),
+    }
+
+    for relative_dir, (framework, question, sections) in samples.items():
+        sample_dir = ROOT / relative_dir
+        required_files = ["README.md", "agent.py", "prompts.py", "tools.py", "data.py", "demo.py", "agentengine.yaml", "requirements.txt"]
+        if framework == "langgraph":
+            required_files.append("workflow.py")
+        for filename in required_files:
+            assert (sample_dir / filename).is_file(), f"{relative_dir} missing {filename}"
+
+        module_name = "sample_best_practice_" + "_".join(sample_dir.relative_to(ROOT).parts)
+        sys.path.insert(0, str(ROOT))
+        sys.path.insert(0, str(sample_dir))
+        try:
+            spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
+            assert spec is not None
+            assert spec.loader is not None
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            assert hasattr(module, "root_agent")
+            tools = importlib.import_module("tools")
+            answer = tools.render_demo_answer(question)
             for section in sections:
                 assert section in answer
         finally:

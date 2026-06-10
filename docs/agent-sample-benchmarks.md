@@ -7,8 +7,8 @@
 | 项目 | 值得学习的点 | 在 KSADK Samples 中的落点 |
 | --- | --- | --- |
 | Google ADK Samples | 场景很多，README 会写清 Agent Details、架构图、运行、部署、测试和自定义方式。 | 每个样例必须有中文优先 README、运行命令、Web UI 调试、部署和常见问题。 |
-| ADK Deep Search | 研究类 Agent 强调计划、人类确认、迭代检索、反思和最终报告。 | `deep-research/langgraph` 输出研究计划、执行轨迹、反思补查和交付物。 |
-| ADK SWE Benchmark / Software Bug Assistant | Coding Agent 强调定位、工具、隔离执行、测试和评审风险。 | `coding-agent/langgraph` 输出变更定位、测试矩阵、发布风险和交付物。 |
+| ADK Deep Search | 研究类 Agent 强调计划、人类确认、迭代检索、反思和最终报告。 | `deep-research/langgraph` 输出研究计划、执行轨迹、反思补查和交付物；`deep-research/report-writer-*` 对比 LangGraph / ADK / DeepAgents 的报告生成写法。 |
+| ADK SWE Benchmark / Software Bug Assistant | Coding Agent 强调定位、工具、隔离执行、测试和评审风险。 | `coding-agent/langgraph` 输出变更定位、测试矩阵、发布风险和交付物；`coding-agent/workspace-sandbox-*` 对比多框架 Workspace / Sandbox 边界。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -26,8 +26,8 @@
 
 ## 推荐补齐顺序
 
-1. **Deep Research Agent**：补 Web Search / Knowledge Base / 报告生成版本。
-2. **Coding Agent**：补 Workspace + Sandbox 的真实文件读写和测试运行版本。
+1. **Deep Research Agent**：已补报告生成基础版本；下一步接真实 Web Search / Knowledge Base / Workspace 文档。
+2. **Coding Agent**：已补 Workspace + Sandbox 规划版本；下一步接真实文件读写和测试运行结果。
 3. **Browser Agent**：补真实 Web UI 截图、DOM 观察和失败诊断。
 4. **Data Analyst**：补 CSV / DuckDB / 图表产物。
 5. **Customer Support**：补知识库、工单状态和升级策略。
