@@ -4,6 +4,8 @@
 
 KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默认使用中文 README 和中文注释；`Samples` 和 `Examples` 都表示可运行、可部署、可对比框架写法的公开样例。
 
+样例设计会持续参考 ADK Samples、VEADK Examples、AgentKit Samples、DeerFlow、SWE-agent / OpenHands / Aider 等优秀开源 Agent 项目；维护侧对标原则见 [Agent 样例对标笔记](docs/agent-sample-benchmarks.md)。
+
 ## 场景导航
 
 ### 按场景选择

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from data import ACTION_TEMPLATES, SCENARIO_EVIDENCE
+from data import ACTION_TEMPLATES, RESEARCH_STAGES, SCENARIO_EVIDENCE
 from prompts import ROLE, SYSTEM_PROMPT, TITLE
 
 
@@ -30,6 +30,8 @@ def collect_evidence(query: str) -> list[dict]:
             'id': item['id'],
             'title': item['title'],
             'summary': item['content'],
+            'angle': item['angle'],
+            'gap': item['gap'],
             'source': 'local-demo-data',
         }
         for item in selected
@@ -56,10 +58,19 @@ def plan_actions(query: str, evidence: list[dict]) -> list[dict]:
 def render_answer(query: str, evidence: list[dict], actions: list[dict]) -> str:
     """渲染 Web UI 友好的 Markdown 回答。"""
 
+    plan_lines = '\n'.join(f"{index}. {stage}" for index, stage in enumerate(RESEARCH_STAGES, 1))
+    trace_lines = '\n'.join(
+        f"- `{item['id']}`：围绕 **{item['angle']}** 检索到《{item['title']}》。"
+        for item in evidence
+    ) or '- 暂无执行轨迹。'
     evidence_lines = '\n'.join(
-        f"- **{item['title']}**：{item['summary']}（来源：{item['source']}）"
+        f"- **{item['title']}**：{item['summary']}（角度：{item['angle']}；来源：{item['source']}）"
         for item in evidence
     ) or '- 暂无证据。'
+    reflection_lines = '\n'.join(
+        f"- **{item['angle']}**：{item['gap']}"
+        for item in evidence
+    ) or '- 需要补充更多证据后再反思。'
     action_lines = '\n'.join(
         f"{item['step']}. **{item['action']}** - {item['why']}"
         for item in actions
@@ -73,13 +84,31 @@ def render_answer(query: str, evidence: list[dict], actions: list[dict]) -> str:
 
 {goal_line or '这个 demo 已完成一次可复现推理。'} 这个 demo 已用本地数据完成一次可复现推理，适合直接在 `agentengine web` 中演示。
 
+## 研究计划
+
+{plan_lines}
+
+## 执行轨迹
+
+{trace_lines}
+
 ## 证据卡片
 
 {evidence_lines}
 
+## 反思与补查
+
+{reflection_lines}
+
 ## 行动计划
 
 {action_lines}
+
+## 交付物
+
+- 一份含结论、证据、风险和下一步行动的研究简报。
+- 一组可继续接入 Knowledge Base / Workspace / Web Search 的替换点。
+- 一条可在 Web UI 中复现的 LangGraph 执行链路。
 
 ## 工程说明
 

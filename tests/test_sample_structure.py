@@ -93,6 +93,17 @@ def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
             assert implemented not in roadmap
 
 
+def test_root_readme_links_agent_sample_benchmark_notes():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    benchmark = (ROOT / "docs/agent-sample-benchmarks.md").read_text(encoding="utf-8")
+
+    assert "docs/agent-sample-benchmarks.md" in readme
+    for project_name in ("ADK Samples", "VEADK", "AgentKit", "DeerFlow", "SWE-agent", "OpenHands", "Aider"):
+        assert project_name in benchmark
+    for principle in ("能运行", "像工程", "中文优先", "有执行轨迹", "可替换真实能力", "有门禁"):
+        assert principle in benchmark
+
+
 def test_readme_roadmap_scenarios_have_runnable_agents():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     required_scenarios = {
@@ -277,6 +288,52 @@ def test_new_scenario_agents_invoke_with_demo_questions():
             assert "## 行动计划" in answer
             assert "工程说明" in answer
             assert (sample_dir / "demo.py").read_text(encoding="utf-8").count("root_agent.invoke") == 1
+        finally:
+            for value in (str(sample_dir), str(ROOT)):
+                try:
+                    sys.path.remove(value)
+                except ValueError:
+                    pass
+            sys.modules.pop(module_name, None)
+            for transient in ("workflow", "tools", "data", "prompts"):
+                sys.modules.pop(transient, None)
+
+
+def test_deep_research_and_coding_agents_show_mature_agent_workflows():
+    """核心场景要体现成熟开源 Agent 的工程闭环，而不是只返回通用建议。"""
+
+    expected_sections = {
+        "02-use-cases/deep-research/langgraph": (
+            "## 研究计划",
+            "## 执行轨迹",
+            "## 反思与补查",
+            "## 交付物",
+        ),
+        "02-use-cases/coding-agent/langgraph": (
+            "## 变更定位",
+            "## 测试矩阵",
+            "## 发布风险",
+            "## 交付物",
+        ),
+    }
+
+    for relative_dir, sections in expected_sections.items():
+        sample_dir = ROOT / relative_dir
+        module_name = "sample_workflow_quality_" + "_".join(sample_dir.relative_to(ROOT).parts)
+        sys.path.insert(0, str(ROOT))
+        sys.path.insert(0, str(sample_dir))
+        try:
+            spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
+            assert spec is not None
+            assert spec.loader is not None
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            state = module.ksadk_prepare_state({"input": "演示一个完整流程。"}, {})
+            result = module.root_agent.invoke(state)
+            answer = result.get("answer", "")
+            for section in sections:
+                assert section in answer
         finally:
             for value in (str(sample_dir), str(ROOT)):
                 try:

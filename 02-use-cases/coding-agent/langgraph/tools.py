@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from data import ACTION_TEMPLATES, SCENARIO_EVIDENCE
+from data import ACTION_TEMPLATES, SCENARIO_EVIDENCE, TEST_MATRIX
 from prompts import ROLE, SYSTEM_PROMPT, TITLE
 
 
@@ -30,6 +30,8 @@ def collect_evidence(query: str) -> list[dict]:
             'id': item['id'],
             'title': item['title'],
             'summary': item['content'],
+            'file_hint': item['file_hint'],
+            'risk': item['risk'],
             'source': 'local-demo-data',
         }
         for item in selected
@@ -56,8 +58,20 @@ def plan_actions(query: str, evidence: list[dict]) -> list[dict]:
 def render_answer(query: str, evidence: list[dict], actions: list[dict]) -> str:
     """渲染 Web UI 友好的 Markdown 回答。"""
 
+    location_lines = '\n'.join(
+        f"- **{item['title']}**：建议先看 `{item['file_hint']}`，原因是 {item['summary']}"
+        for item in evidence
+    ) or '- 暂无定位建议。'
+    test_lines = '\n'.join(
+        f"| {name} | {purpose} |"
+        for name, purpose in TEST_MATRIX
+    )
+    risk_lines = '\n'.join(
+        f"- **{item['title']}**：{item['risk']}"
+        for item in evidence
+    ) or '- 暂无发布风险。'
     evidence_lines = '\n'.join(
-        f"- **{item['title']}**：{item['summary']}（来源：{item['source']}）"
+        f"- **{item['title']}**：{item['summary']}（建议文件：`{item['file_hint']}`；来源：{item['source']}）"
         for item in evidence
     ) or '- 暂无证据。'
     action_lines = '\n'.join(
@@ -73,13 +87,33 @@ def render_answer(query: str, evidence: list[dict], actions: list[dict]) -> str:
 
 {goal_line or '这个 demo 已完成一次可复现推理。'} 这个 demo 已用本地数据完成一次可复现推理，适合直接在 `agentengine web` 中演示。
 
+## 变更定位
+
+{location_lines}
+
 ## 证据卡片
 
 {evidence_lines}
 
+## 测试矩阵
+
+| 测试层级 | 目标 |
+| --- | --- |
+{test_lines}
+
 ## 行动计划
 
 {action_lines}
+
+## 发布风险
+
+{risk_lines}
+
+## 交付物
+
+- 一个最小补丁范围和对应文件入口。
+- 一组回归测试、smoke、公开门禁命令。
+- 一份适合 code review 的风险说明和发布检查清单。
 
 ## 工程说明
 
