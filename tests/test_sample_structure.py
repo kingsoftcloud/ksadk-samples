@@ -104,6 +104,21 @@ def test_root_readme_links_agent_sample_benchmark_notes():
         assert principle in benchmark
 
 
+def test_readme_links_real_webui_demo_assets():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    deep_research_readme = (ROOT / "02-use-cases/deep-research/langgraph/README.md").read_text(encoding="utf-8")
+    gif_path = ROOT / "assets/screenshots/deep-research-webui-demo.gif"
+    png_path = ROOT / "assets/screenshots/deep-research-webui-answer.png"
+
+    assert "真实 Web UI 演示" in readme
+    assert "assets/screenshots/deep-research-webui-demo.gif" in readme
+    assert "../../../assets/screenshots/deep-research-webui-answer.png" in deep_research_readme
+    assert gif_path.is_file()
+    assert png_path.is_file()
+    assert gif_path.stat().st_size < 1_000_000
+    assert png_path.stat().st_size < 1_000_000
+
+
 def test_readme_roadmap_scenarios_have_runnable_agents():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     required_scenarios = {

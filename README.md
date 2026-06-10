@@ -34,6 +34,12 @@ uv run agentengine run -i .
 
 这个 demo 展示 LangGraph 如何绑定 AgentEngine Toolsets，并覆盖 Skill Space、Skill Runtime、Workspace、Sandbox、知识库和长期记忆的配置边界。未配置平台能力时，demo 会解释缺失项和降级行为，不伪造平台结果。
 
+### 真实 Web UI 演示
+
+下面是 `02-use-cases/deep-research/langgraph` 在本地 `agentengine web` 中的真实问答录制，展示了一个 LangGraph Deep Research Agent 如何输出研究计划、执行轨迹、证据卡片、反思补查和交付物。
+
+![Deep Research Web UI 演示](assets/screenshots/deep-research-webui-demo.gif)
+
 ## 环境准备
 
 仓库根目录开发：

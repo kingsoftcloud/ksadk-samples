@@ -1,4 +1,5 @@
 .env
+.agentengine/
 .venv/
 __pycache__/
 *.py[cod]
@@ -8,4 +9,3 @@ dist/
 build/
 *.egg-info/
 .DS_Store
-

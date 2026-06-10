@@ -75,6 +75,10 @@ uv run agentengine web .
 
 Web UI 中可以观察每次输入如何进入 LangGraph，并看到最终 Markdown 回答。这个样例的输出包含结论、证据卡片、行动计划和工程说明，很适合录制 GIF 或截图。
 
+真实 Web UI 效果：
+
+![Deep Research Web UI 演示](../../../assets/screenshots/deep-research-webui-answer.png)
+
 ## 部署
 
 ```bash
