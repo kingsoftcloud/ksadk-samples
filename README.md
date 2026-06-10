@@ -33,13 +33,13 @@ uv run agentengine run -i .
 ```bash
 uv venv
 uv pip install -e ".[test]"
-cp .env.example .env
 ```
 
 单个样例运行：
 
 ```bash
 cd 01-tutorials/hello-world/adk
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 uv run agentengine web .
@@ -48,6 +48,8 @@ uv run agentengine web .
 ```bash
 uv pip install -U "ksadk[all]"
 ```
+
+每个样例默认读取“当前样例目录”的 `.env`。如果你习惯在仓库根目录维护一份 `.env`，请先 `source .env` 或把它复制到要运行的样例目录。
 
 最小 `.env`：
 

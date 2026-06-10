@@ -22,15 +22,15 @@ DeepAgents 记忆示例，展示如何把保存和读取记忆的工具交给 De
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写模型配置。DeepAgents 记忆示例需要模型支持工具调用。
+稍后在样例目录复制并编辑 `.env`。DeepAgents 记忆示例需要模型支持工具调用。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/memory/deepagents
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

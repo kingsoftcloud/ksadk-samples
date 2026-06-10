@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import re
 import sys
 from typing import Annotated, Any, TypedDict
 
@@ -270,9 +271,16 @@ def _last_user_text(messages: list[BaseMessage]) -> str:
 
 def _route_for_text(user_text: str) -> dict[str, Any]:
     lowered = user_text.lower()
-    if any(word in lowered for word in ("skill space", "space", "skill")) or any(
-        word in user_text for word in ("技能", "空间")
+    if any(word in lowered for word in ("workspace", "sandbox", "tool")) or any(
+        word in user_text for word in ("工具", "工作区", "沙箱")
     ):
+        return {"scenario": "ksadk_toolsets", "suggested_tools": ["agentengine_tool_dispatcher"]}
+    skill_space_intent = (
+        bool(re.search(r"\bskill(?:\s+space)?\b", lowered))
+        or bool(re.search(r"\bspace\b", lowered))
+        or any(word in user_text for word in ("技能", "技能空间"))
+    )
+    if skill_space_intent:
         if any(word in user_text for word in ("搜索", "查找", "找一下")) or "search" in lowered:
             return {
                 "scenario": "skill_space_search",
@@ -290,7 +298,7 @@ def _route_for_text(user_text: str) -> dict[str, Any]:
         return {"scenario": "graph_structure", "suggested_tools": ["graph_status"]}
     if any(word in user_text for word in ("发布", "风险", "检查清单", "评审")):
         return {"scenario": "release_review", "suggested_tools": ["release_risk_matrix"]}
-    if any(word in lowered for word in ("skill", "workspace", "sandbox", "tool", "工具")):
+    if any(word in lowered for word in ("skill", "workspace", "sandbox", "tool")):
         return {"scenario": "ksadk_toolsets", "suggested_tools": ["agentengine_tool_dispatcher"]}
     return {"scenario": "general", "suggested_tools": []}
 

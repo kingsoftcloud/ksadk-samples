@@ -22,15 +22,15 @@
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写 `.env` 中的模型配置。
+稍后在样例目录复制并编辑 `.env`。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/hello-world/langgraph
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

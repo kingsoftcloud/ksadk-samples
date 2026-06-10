@@ -28,8 +28,9 @@ EXCLUDED_PARTS = {
 FORBIDDEN_PATTERNS = (
     re.compile(r"(?i)\bpre[\W_]*online\b"),
     re.compile(r"(?i)\b[\w.-]*(?:inner|internal)[\w.-]*\.(?:api|example|com|cn|net|org)\b"),
+    re.compile(r"(?i)\b[\w.-]+\.(?:inner|internal)\b"),
     re.compile(r"(?i)\b[\w.-]*(?:api|gateway|service)[\W_]*pre\b"),
-    re.compile(r"(?i)\bX[\W_]*K(?:SC|sc)[\W_]*(?:Region|CUSTOM[\W_]*SOURCE)\b"),
+    re.compile(r"(?i)\bX[\W_]*K(?:SC|sc)[\W_]*(?:Region|CUSTOM[\W_]*SOURCE|Account[\W_]*Id|[^\\s`|:=]*)\b"),
     re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
     re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),

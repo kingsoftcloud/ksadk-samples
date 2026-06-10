@@ -68,11 +68,13 @@ uv pip install -U "ksadk[all]"
 
 ## 模型配置
 
-回到 `ksadk-samples` 仓库根目录复制环境变量模板：
+进入本示例目录后复制环境变量模板：
 
 ```bash
-cp .env.example .env
+cp ../../../.env.example .env
 ```
+
+`agentengine run/web` 默认读取当前样例目录的 `.env`。如果你把 `.env` 放在仓库根目录，需要先 `source ../../../.env`，或者复制到本示例目录。
 
 至少填写：
 
@@ -208,7 +210,7 @@ KSYUN_REGION=cn-beijing-6
 | --- | --- | --- |
 | `KSYUN_ACCESS_KEY` | 金山云访问密钥 ID。知识库、Skill Service、长期记忆 SDK 后端都可以复用它。 | 部署或调用云服务时必填 |
 | `KSYUN_SECRET_KEY` | 金山云访问密钥 Secret。不要提交到 Git。 | 部署或调用云服务时必填 |
-| `KSYUN_ACCOUNT_ID` | 金山云账号 ID。部分 Skill Service 请求会透传到 `X-Ksc-Account-Id`。 | 按平台要求填写 |
+| `KSYUN_ACCOUNT_ID` | 金山云账号 ID。部分云服务会用它识别当前账号上下文。 | 按平台要求填写 |
 | `KSYUN_REGION` | 默认线上区域。未单独配置能力区域时会作为 fallback。 | 可选，默认 `cn-beijing-6` |
 
 ### Skill Space

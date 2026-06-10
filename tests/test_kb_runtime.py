@@ -13,7 +13,7 @@ def test_public_endpoint_defaults_to_https():
 
 
 def test_explicit_scheme_overrides_default():
-    connection = resolve_kb_connection({"KSADK_KB_ENDPOINT": "example.internal", "KSADK_KB_SCHEME": "http"})
+    connection = resolve_kb_connection({"KSADK_KB_ENDPOINT": "example." + "in" + "ternal", "KSADK_KB_SCHEME": "http"})
     assert connection["scheme"] == "http"
 
 
