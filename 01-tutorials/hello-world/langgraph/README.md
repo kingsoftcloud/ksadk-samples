@@ -60,5 +60,5 @@ uv run agentengine deploy .
 ## 常见问题
 
 - 如果状态字段报错，检查 `AgentState` 和 `ksadk_prepare_state` 返回值是否一致。
-- 如果模型请求失败，检查 `OPENAI_API_BASE` 和 `OPENAI_MODEL_NAME`。
+- 如果模型请求失败，检查 `OPENAI_BASE_URL` 和 `OPENAI_MODEL_NAME`。
 - 如果要学习工具节点，请继续看 `01-tutorials/tool-calling/langgraph`。

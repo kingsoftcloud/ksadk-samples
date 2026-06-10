@@ -5,6 +5,7 @@ import sys
 
 import yaml
 
+from scripts import check_public_readiness
 from scripts import validate_samples
 
 
@@ -169,19 +170,8 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
     ):
         assert required in source
 
-    combined = f"{readme}\n{source}"
-    forbidden_fragments = (
-        ".".join(("aicp", "inner", "api", "ksyun", "com")),
-        ".".join(("mgr", "cn-beijing-6", "sandbox", "ksyun", "com")),
-        ".".join(("100", "91", "6", "15")),
-        "-".join(("7673e478", "277d", "4ebf", "")),
-        "-".join(("15fd0bc7", "908a", "")),
-        "AKLT" + "W9dW7YHYQ",
-        "OHLW" + "iYdvCl1C",
-        "-".join(("ab10091f", "ec89", "")),
-    )
-    for fragment in forbidden_fragments:
-        assert fragment not in combined
+    assert not check_public_readiness.scan_file(sample / "README.md")
+    assert not check_public_readiness.scan_file(sample / "agent.py")
 
 
 def test_all_sample_readmes_are_actionable_for_new_users():
@@ -223,19 +213,19 @@ def test_validate_samples_enforces_sample_readme_sections(tmp_path):
     assert "missing README section: 适用场景" in "\n".join(errors)
 
 
-def test_validate_samples_scans_sensitive_fragments(tmp_path):
+def test_validate_samples_scans_synthetic_private_endpoint(tmp_path):
     original_root = validate_samples.ROOT
     try:
         validate_samples.ROOT = tmp_path
         (tmp_path / "README.md").write_text(
-            "endpoint=" + ".".join(("aicp", "inner", "api", "ksyun", "com")),
+            "endpoint=" + "service" + ".internal" + ".example.com",
             encoding="utf-8",
         )
         errors = validate_samples.validate_public_safety()
     finally:
         validate_samples.ROOT = original_root
 
-    assert any("contains forbidden internal fragment" in error for error in errors)
+    assert any("matches forbidden pattern" in error for error in errors)
 
 
 def test_agentengine_yaml_contracts_are_valid():
@@ -249,7 +239,7 @@ def test_agentengine_yaml_contracts_are_valid():
 
 def test_all_samples_import_with_ksadk_0_6_2_runtime():
     os.environ.setdefault("OPENAI_API_KEY", "test-key")
-    os.environ.setdefault("OPENAI_API_BASE", "https://api.openai.com/v1")
+    os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
     os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
     for config_path in ROOT.glob("0*/**/agentengine.yaml"):

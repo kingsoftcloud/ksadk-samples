@@ -12,7 +12,7 @@ def get_model_name() -> str:
 
 
 def get_openai_api_base() -> str:
-    return os.getenv("OPENAI_API_BASE") or DEFAULT_API_BASE
+    return os.getenv("OPENAI_BASE_URL") or os.getenv("OPENAI_API_BASE") or DEFAULT_API_BASE
 
 
 def get_openai_api_key() -> str:
@@ -38,4 +38,3 @@ def make_langchain_chat_model():
         api_key=get_openai_api_key(),
         temperature=0,
     )
-

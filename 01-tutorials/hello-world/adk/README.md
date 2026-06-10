@@ -25,7 +25,7 @@ uv pip install -U "ksadk[all]"
 cp .env.example .env
 ```
 
-编辑 `.env`，至少填写 `OPENAI_API_KEY`、`OPENAI_API_BASE` 和 `OPENAI_MODEL_NAME`。
+编辑 `.env`，至少填写 `OPENAI_API_KEY`、`OPENAI_BASE_URL` 和 `OPENAI_MODEL_NAME`。
 
 ## 本地运行
 

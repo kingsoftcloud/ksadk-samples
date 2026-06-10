@@ -55,7 +55,7 @@ uv pip install -U "ksadk[all]"
 
 ```bash
 OPENAI_API_KEY=your-openai-compatible-api-key
-OPENAI_API_BASE=https://api.openai.com/v1
+OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_MODEL_NAME=gpt-4o-mini
 ```
 

@@ -78,11 +78,11 @@ cp .env.example .env
 
 ```bash
 OPENAI_API_KEY=your-openai-compatible-api-key
-OPENAI_API_BASE=https://api.openai.com/v1
+OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_MODEL_NAME=gpt-4o-mini
 ```
 
-只要你的模型服务兼容 OpenAI Chat Completions API，就可以替换 `OPENAI_API_BASE` 和 `OPENAI_MODEL_NAME`。
+只要你的模型服务兼容 OpenAI Chat Completions API，就可以替换 `OPENAI_BASE_URL` 和 `OPENAI_MODEL_NAME`。
 
 ## 本地运行
 
