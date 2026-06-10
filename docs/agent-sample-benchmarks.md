@@ -15,6 +15,7 @@
 | Multi-Agent / Super Agent Harness 经验 | 多 Agent 样例要展示角色分工、并行轨迹、冲突合并和验收清单，而不是只列几个角色名。 | `multi-agent-team/team-delivery-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的协作交付基础版本；下一步接真实子 Agent 和任务队列。 |
 | AIOps / Incident Copilot 经验 | 运维 Agent 要把指标、日志、Tracing 和变更事件放进同一条 incident timeline，并输出可执行 runbook。 | `aiops/incident-triage-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的告警分诊基础版本；下一步接真实 Prometheus、日志平台和 Tracing。 |
 | 财务分析 / 审计预审 Copilot 经验 | 财务 Agent 要先展示报表摘录和口径，再给风险指标、异常解释和审阅动作，不能伪造审计意见。 | `finance/report-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的报表审阅基础版本；下一步接 Workspace Excel、财务系统 API 和图表 artifact。 |
+| 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 已补 LangGraph 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -40,6 +41,7 @@
 6. **Multi-Agent Team**：已补 planner / researcher / builder / reviewer 的协作交付基础版本；下一步接真实子图、子 Agent 或任务队列。
 7. **AIOps**：已补告警分诊基础版本；下一步接真实监控、日志、Tracing 和变更系统。
 8. **Finance**：已补报表审阅基础版本；下一步接 Workspace Excel、财务系统 API 和图表产物。
+9. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
 
 ## README 写法建议
 

@@ -281,6 +281,62 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
     assert not check_public_readiness.scan_file(sample / "agent.py")
 
 
+def test_long_task_resume_sample_exists_and_is_public_ready():
+    sample = ROOT / "02-use-cases/long-task-resume"
+    required_files = (
+        "README.md",
+        ".env.example",
+        "agent.py",
+        "workflow.py",
+        "tools.py",
+        "demo.py",
+        "smoke.py",
+        "agentengine.yaml",
+        "requirements.txt",
+    )
+
+    for filename in required_files:
+        assert (sample / filename).is_file(), f"missing {filename}"
+
+    readme = (sample / "README.md").read_text(encoding="utf-8")
+    for required in (
+        "适用场景",
+        "环境准备",
+        "本地运行",
+        "Web UI 调试",
+        "部署",
+        "示例问题",
+        "checkpoint 列表",
+        "ResumeRun",
+        "tool receipt",
+        "CancelRun",
+        "降级说明",
+        "常见问题",
+    ):
+        assert required in readme
+
+    env_example = (sample / ".env.example").read_text(encoding="utf-8")
+    for required in (
+        "KSADK_SESSION_BACKEND=postgres",
+        "KSADK_SESSION_DSN=postgresql://<user>:<password>@<postgres-host>:5432/<database>",
+        "KSADK_SESSION_NAMESPACE=long_task_resume_demo",
+    ):
+        assert required in env_example
+
+    smoke_source = (sample / "smoke.py").read_text(encoding="utf-8")
+    for required in (
+        "run_id",
+        "checkpoint_id",
+        "resume_attempt_id",
+        "cancel_status",
+        "duplicate_tool_count",
+    ):
+        assert required in smoke_source
+
+    for filename in required_files:
+        assert not check_public_readiness.scan_file(sample / filename)
+
+
 def test_new_scenario_agents_invoke_with_demo_questions():
     scenario_questions = {
         "02-use-cases/deep-research/langgraph": "研究一下企业 Agent Runtime Platform 的选型维度。",
