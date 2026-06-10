@@ -5,6 +5,7 @@ import sys
 
 import yaml
 
+from scripts import check_public_readiness
 from scripts import validate_samples
 
 
@@ -49,6 +50,7 @@ def test_root_readme_lists_public_project_resources():
 def test_root_readme_is_scenario_navigation_and_mentions_examples_alias():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for required in (
+        "默认使用中文 README",
         "场景导航",
         "Examples",
         "Samples",
@@ -57,6 +59,34 @@ def test_root_readme_is_scenario_navigation_and_mentions_examples_alias():
         "02-use-cases/agentengine-toolsets/langgraph",
     ):
         assert required in readme
+
+
+def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    for available in (
+        "Knowledge Assistant",
+        "Workflow Agent",
+        "Tool-Using Agent",
+        "Memory-aware Agent",
+        "Built With LangGraph",
+        "Built With ADK",
+        "Built With DeepAgents",
+    ):
+        assert available in readme
+
+    roadmap_start = readme.index("## 后续计划")
+    before_roadmap = readme[:roadmap_start]
+    roadmap = readme[roadmap_start:]
+    for planned in (
+        "Deep Research Agent",
+        "Coding Agent",
+        "Browser Agent",
+        "Data Analyst",
+        "Customer Support",
+        "Multi-Agent Team",
+    ):
+        assert planned in roadmap
+        assert planned not in before_roadmap
 
 
 def test_expected_sample_matrix_exists():
@@ -141,19 +171,8 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
     ):
         assert required in source
 
-    combined = f"{readme}\n{source}"
-    forbidden_fragments = (
-        ".".join(("aicp", "inner", "api", "ksyun", "com")),
-        ".".join(("mgr", "cn-beijing-6", "sandbox", "ksyun", "com")),
-        ".".join(("100", "91", "6", "15")),
-        "-".join(("7673e478", "277d", "4ebf", "")),
-        "-".join(("15fd0bc7", "908a", "")),
-        "AKLT" + "W9dW7YHYQ",
-        "OHLW" + "iYdvCl1C",
-        "-".join(("ab10091f", "ec89", "")),
-    )
-    for fragment in forbidden_fragments:
-        assert fragment not in combined
+    assert not check_public_readiness.scan_file(sample / "README.md")
+    assert not check_public_readiness.scan_file(sample / "agent.py")
 
 
 def test_all_sample_readmes_are_actionable_for_new_users():
@@ -168,9 +187,21 @@ def test_all_sample_readmes_are_actionable_for_new_users():
     )
     for readme_path in ROOT.glob("0*/**/README.md"):
         text = readme_path.read_text(encoding="utf-8")
+        first_line = text.splitlines()[0]
+        assert any("\u4e00" <= character <= "\u9fff" for character in first_line), (
+            f"{readme_path.relative_to(ROOT)} README title must be Chinese-first"
+        )
         assert len(text.splitlines()) >= 35, f"{readme_path.relative_to(ROOT)} README is too short"
         for section in required_sections:
             assert section in text, f"{readme_path.relative_to(ROOT)} missing README section: {section}"
+
+
+def test_sample_readmes_copy_env_template_into_sample_directory():
+    for readme_path in ROOT.glob("0*/**/README.md"):
+        text = readme_path.read_text(encoding="utf-8")
+        assert "cp .env.example .env" not in text, (
+            f"{readme_path.relative_to(ROOT)} should copy the root .env.example into the sample directory"
+        )
 
 
 def test_validate_samples_enforces_root_readme_gate(tmp_path):
@@ -192,22 +223,42 @@ def test_validate_samples_enforces_sample_readme_sections(tmp_path):
 
     errors = validate_samples.validate_sample_readme(sample_dir)
 
+    assert "README title must be Chinese-first" in "\n".join(errors)
     assert "missing README section: 适用场景" in "\n".join(errors)
 
 
-def test_validate_samples_scans_sensitive_fragments(tmp_path):
+def test_validate_samples_scans_synthetic_private_endpoint(tmp_path):
     original_root = validate_samples.ROOT
     try:
         validate_samples.ROOT = tmp_path
         (tmp_path / "README.md").write_text(
-            "endpoint=" + ".".join(("aicp", "inner", "api", "ksyun", "com")),
+            "endpoint=" + "service" + ".in" + "ternal" + ".example.com",
             encoding="utf-8",
         )
         errors = validate_samples.validate_public_safety()
     finally:
         validate_samples.ROOT = original_root
 
-    assert any("contains forbidden internal fragment" in error for error in errors)
+    assert any("matches forbidden pattern" in error for error in errors)
+
+
+def test_public_readiness_scan_blocks_internal_domain_variants_and_low_level_headers(tmp_path):
+    sample = tmp_path / "README.md"
+    sample.write_text(
+        "\n".join(
+                [
+                "endpoint=example." + "in" + "ternal",
+                "header=" + chr(88) + "-Ksc-Account-Id",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    errors = check_public_readiness.scan_file(sample)
+
+    assert len(errors) >= 2
+    assert any("internal" in error.lower() for error in errors)
+    assert any("X" in error or "K" in error for error in errors)
 
 
 def test_agentengine_yaml_contracts_are_valid():
@@ -221,7 +272,7 @@ def test_agentengine_yaml_contracts_are_valid():
 
 def test_all_samples_import_with_ksadk_0_6_2_runtime():
     os.environ.setdefault("OPENAI_API_KEY", "test-key")
-    os.environ.setdefault("OPENAI_API_BASE", "https://api.openai.com/v1")
+    os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
     os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
     for config_path in ROOT.glob("0*/**/agentengine.yaml"):
@@ -246,3 +297,31 @@ def test_all_samples_import_with_ksadk_0_6_2_runtime():
                 except ValueError:
                     pass
             sys.modules.pop(module_name, None)
+
+
+def test_langgraph_toolsets_route_workspace_to_dispatcher_instead_of_skill_space():
+    os.environ.setdefault("OPENAI_API_KEY", "test-key")
+    os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
+
+    sample_dir = ROOT / "02-use-cases" / "agentengine-toolsets" / "langgraph"
+    agent_path = sample_dir / "agent.py"
+    module_name = "sample_langgraph_toolsets_route_test"
+    sys.path.insert(0, str(sample_dir))
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, agent_path)
+        assert spec is not None
+        assert spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+
+        route = module._route_for_text("请用 dispatcher 看看 Workspace 还有哪些可调用工具。")
+
+        assert route["scenario"] == "ksadk_toolsets"
+        assert route["suggested_tools"] == ["agentengine_tool_dispatcher"]
+    finally:
+        try:
+            sys.path.remove(str(sample_dir))
+        except ValueError:
+            pass
+        sys.modules.pop(module_name, None)

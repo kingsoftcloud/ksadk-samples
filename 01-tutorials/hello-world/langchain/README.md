@@ -1,4 +1,4 @@
-# Hello World - LangChain
+# 基础 Agent（Hello World）- LangChain
 
 最小 LangChain Runnable 示例，用来展示 KSADK 如何运行一个普通 LangChain 链。
 
@@ -22,15 +22,15 @@
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-编辑 `.env`，至少填写模型相关配置。
+稍后在样例目录复制并编辑 `.env`，至少填写模型相关配置。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/hello-world/langchain
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

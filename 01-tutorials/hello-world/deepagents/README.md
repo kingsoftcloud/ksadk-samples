@@ -1,4 +1,4 @@
-# Hello World - DeepAgents
+# 基础 Agent（Hello World）- DeepAgents
 
 最小 DeepAgents 示例。`create_deep_agent()` 返回 LangGraph 图，因此 KSADK 可以通过 `framework: deepagents` 运行它。
 
@@ -22,15 +22,15 @@
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写 `.env` 中的模型配置。DeepAgents 依赖支持工具调用的模型。
+稍后在样例目录复制并编辑 `.env`。DeepAgents 依赖支持工具调用的模型。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/hello-world/deepagents
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

@@ -1,4 +1,4 @@
-# Knowledge Base RAG - DeepAgents
+# 知识助手（Knowledge Base RAG）- DeepAgents
 
 DeepAgents 知识库问答示例，把知识库检索和运行状态查询作为工具交给 DeepAgents 使用。
 
@@ -22,7 +22,6 @@ DeepAgents 知识库问答示例，把知识库检索和运行状态查询作为
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
 填写模型配置。默认本地知识库不需要云资源，但 DeepAgents 需要模型支持工具调用。
@@ -31,6 +30,7 @@ cp .env.example .env
 
 ```bash
 cd 02-use-cases/knowledge-base-rag/deepagents
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

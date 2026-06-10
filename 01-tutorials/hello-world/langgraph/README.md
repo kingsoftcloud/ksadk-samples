@@ -1,4 +1,4 @@
-# Hello World - LangGraph
+# 基础 Agent（Hello World）- LangGraph
 
 最小 LangGraph Agent 示例，用一个单节点 `StateGraph` 展示 KSADK 的 LangGraph 入口约定。
 
@@ -22,15 +22,15 @@
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写 `.env` 中的模型配置。
+稍后在样例目录复制并编辑 `.env`。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/hello-world/langgraph
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```
@@ -60,5 +60,5 @@ uv run agentengine deploy .
 ## 常见问题
 
 - 如果状态字段报错，检查 `AgentState` 和 `ksadk_prepare_state` 返回值是否一致。
-- 如果模型请求失败，检查 `OPENAI_API_BASE` 和 `OPENAI_MODEL_NAME`。
+- 如果模型请求失败，检查 `OPENAI_BASE_URL` 和 `OPENAI_MODEL_NAME`。
 - 如果要学习工具节点，请继续看 `01-tutorials/tool-calling/langgraph`。

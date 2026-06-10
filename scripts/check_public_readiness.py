@@ -25,22 +25,20 @@ EXCLUDED_PARTS = {
     "build",
 }
 
-def _forbidden_literal_fragments() -> tuple[str, ...]:
-    return (
-        ".".join(("aicp", "inner", "api", "ksyun", "com")),
-        ".".join(("mgr", "cn-beijing-6", "sandbox", "ksyun", "com")),
-        ".".join(("100", "91", "6", "15")),
-        "-".join(("7673e478", "277d", "4ebf", "")),
-        "-".join(("15fd0bc7", "908a", "")),
-        "AKLT" + "W9dW7YHYQ",
-        "OHLW" + "iYdvCl1C",
-        "-".join(("ab10091f", "ec89", "")),
-    )
-
 FORBIDDEN_PATTERNS = (
+    re.compile(r"(?i)\bpre[\W_]*online\b"),
+    re.compile(r"(?i)\b[\w.-]*(?:inner|internal)[\w.-]*\.(?:api|example|com|cn|net|org)\b"),
+    re.compile(r"(?i)\b[\w.-]+\.(?:inner|internal)\b"),
+    re.compile(r"(?i)\b[\w.-]*(?:api|gateway|service)[\W_]*pre\b"),
+    re.compile(r"(?i)\bX[\W_]*K(?:SC|sc)[\W_]*(?:Region|CUSTOM[\W_]*SOURCE|Account[\W_]*Id|[^\\s`|:=]*)\b"),
+    re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
+    re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
-    re.compile(r"(?i)(?:password|secret|token)\s*=\s*['\"]?[A-Za-z0-9_./+=-]{16,}"),
 )
+SECRET_ASSIGNMENT_PATTERN = re.compile(
+    r"^\s*(?:export\s+)?[A-Z0-9_]*(?:ACCESS_KEY|SECRET_KEY|API_KEY|PASSWORD|TOKEN)\s*=\s*['\"]?([^'\"\s`#]+)"
+)
+PLACEHOLDER_PREFIXES = ("your-", "example-", "test-", "dummy-", "placeholder-")
 
 
 def iter_public_text_files() -> list[Path]:
@@ -61,12 +59,19 @@ def iter_public_text_files() -> list[Path]:
 def scan_file(path: Path) -> list[str]:
     text = path.read_text(encoding="utf-8", errors="replace")
     errors: list[str] = []
-    for fragment in _forbidden_literal_fragments():
-        if fragment in text:
-            errors.append(f"contains forbidden internal fragment: {fragment}")
     for pattern in FORBIDDEN_PATTERNS:
         if pattern.search(text):
             errors.append(f"matches forbidden pattern: {pattern.pattern}")
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        match = SECRET_ASSIGNMENT_PATTERN.search(line)
+        if not match:
+            continue
+        value = match.group(1).strip()
+        lowered = value.lower()
+        if not value or lowered.startswith(PLACEHOLDER_PREFIXES) or (value.startswith("<") and value.endswith(">")):
+            continue
+        if len(value) >= 16:
+            errors.append(f"line {line_number} contains non-placeholder secret assignment")
     return errors
 
 

@@ -1,4 +1,4 @@
-# Tool Calling - DeepAgents
+# 工具调用 Agent（Tool Calling）- DeepAgents
 
 DeepAgents 工具调用示例，展示 `create_deep_agent()` 如何绑定 LangChain tools。
 
@@ -22,15 +22,15 @@ DeepAgents 工具调用示例，展示 `create_deep_agent()` 如何绑定 LangCh
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写 `.env` 中的模型配置，模型需要支持工具调用。
+稍后在样例目录复制并编辑 `.env`，模型需要支持工具调用。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/tool-calling/deepagents
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```

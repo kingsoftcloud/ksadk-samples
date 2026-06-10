@@ -1,4 +1,4 @@
-# Tool Calling - LangChain
+# 工具调用 Agent（Tool Calling）- LangChain
 
 LangChain 工具调用示例，使用 LangChain 1.x 的 `create_agent` 绑定工具。
 
@@ -22,15 +22,15 @@ LangChain 工具调用示例，使用 LangChain 1.x 的 `create_agent` 绑定工
 uv venv
 uv pip install -e ".[test]"
 uv pip install -U "ksadk[all]"
-cp .env.example .env
 ```
 
-填写模型配置。工具调用示例需要模型支持 tool calling。
+稍后在样例目录复制并编辑 `.env`。工具调用示例需要模型支持 tool calling。
 
 ## 本地运行
 
 ```bash
 cd 01-tutorials/tool-calling/langchain
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 uv run agentengine run -i .
 ```
