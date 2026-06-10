@@ -631,6 +631,46 @@ def test_best_practice_agents_cover_next_completion_order():
             "整理一批用户反馈，把它转成可发布的知识库更新计划。",
             ("## 知识盘点", "## 缺口分析", "## 更新计划", "## 发布校验"),
         ),
+        "02-use-cases/sales-operations/pipeline-copilot-langgraph": (
+            "langgraph",
+            "分析一组销售线索，给出下周跟进计划。",
+            ("## 线索画像", "## 跟进策略", "## CRM 动作", "## 成交风险"),
+        ),
+        "02-use-cases/sales-operations/pipeline-copilot-adk": (
+            "adk",
+            "分析一组销售线索，给出下周跟进计划。",
+            ("## 线索画像", "## 跟进策略", "## CRM 动作", "## 成交风险"),
+        ),
+        "02-use-cases/sales-operations/pipeline-copilot-langchain": (
+            "langchain",
+            "分析一组销售线索，给出下周跟进计划。",
+            ("## 线索画像", "## 跟进策略", "## CRM 动作", "## 成交风险"),
+        ),
+        "02-use-cases/sales-operations/pipeline-copilot-deepagents": (
+            "deepagents",
+            "分析一组销售线索，给出下周跟进计划。",
+            ("## 线索画像", "## 跟进策略", "## CRM 动作", "## 成交风险"),
+        ),
+        "02-use-cases/compliance-review/policy-review-langgraph": (
+            "langgraph",
+            "审阅一份对外发布材料，找出合规风险并给整改建议。",
+            ("## 材料清单", "## 风险条款", "## 整改建议", "## 审阅记录"),
+        ),
+        "02-use-cases/compliance-review/policy-review-adk": (
+            "adk",
+            "审阅一份对外发布材料，找出合规风险并给整改建议。",
+            ("## 材料清单", "## 风险条款", "## 整改建议", "## 审阅记录"),
+        ),
+        "02-use-cases/compliance-review/policy-review-langchain": (
+            "langchain",
+            "审阅一份对外发布材料，找出合规风险并给整改建议。",
+            ("## 材料清单", "## 风险条款", "## 整改建议", "## 审阅记录"),
+        ),
+        "02-use-cases/compliance-review/policy-review-deepagents": (
+            "deepagents",
+            "审阅一份对外发布材料，找出合规风险并给整改建议。",
+            ("## 材料清单", "## 风险条款", "## 整改建议", "## 审阅记录"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

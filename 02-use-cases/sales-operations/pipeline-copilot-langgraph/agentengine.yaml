@@ -1,0 +1,4 @@
+name: pipeline-copilot-langgraph
+framework: langgraph
+entry_point: agent.py
+agent_variable: root_agent
