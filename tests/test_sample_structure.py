@@ -591,6 +591,46 @@ def test_best_practice_agents_cover_next_completion_order():
             "审阅本季度收入、毛利率和现金流风险。",
             ("## 报表摘录", "## 风险指标", "## 异常解释", "## 审阅结论"),
         ),
+        "02-use-cases/content-production/campaign-planner-langgraph": (
+            "langgraph",
+            "为 Agent Runtime Platform 设计一轮开源发布传播计划。",
+            ("## 创意简报", "## 渠道计划", "## 内容草稿", "## 审核清单"),
+        ),
+        "02-use-cases/content-production/campaign-planner-adk": (
+            "adk",
+            "为 Agent Runtime Platform 设计一轮开源发布传播计划。",
+            ("## 创意简报", "## 渠道计划", "## 内容草稿", "## 审核清单"),
+        ),
+        "02-use-cases/content-production/campaign-planner-langchain": (
+            "langchain",
+            "为 Agent Runtime Platform 设计一轮开源发布传播计划。",
+            ("## 创意简报", "## 渠道计划", "## 内容草稿", "## 审核清单"),
+        ),
+        "02-use-cases/content-production/campaign-planner-deepagents": (
+            "deepagents",
+            "为 Agent Runtime Platform 设计一轮开源发布传播计划。",
+            ("## 创意简报", "## 渠道计划", "## 内容草稿", "## 审核清单"),
+        ),
+        "02-use-cases/knowledge-operations/knowledge-curator-langgraph": (
+            "langgraph",
+            "整理一批用户反馈，把它转成可发布的知识库更新计划。",
+            ("## 知识盘点", "## 缺口分析", "## 更新计划", "## 发布校验"),
+        ),
+        "02-use-cases/knowledge-operations/knowledge-curator-adk": (
+            "adk",
+            "整理一批用户反馈，把它转成可发布的知识库更新计划。",
+            ("## 知识盘点", "## 缺口分析", "## 更新计划", "## 发布校验"),
+        ),
+        "02-use-cases/knowledge-operations/knowledge-curator-langchain": (
+            "langchain",
+            "整理一批用户反馈，把它转成可发布的知识库更新计划。",
+            ("## 知识盘点", "## 缺口分析", "## 更新计划", "## 发布校验"),
+        ),
+        "02-use-cases/knowledge-operations/knowledge-curator-deepagents": (
+            "deepagents",
+            "整理一批用户反馈，把它转成可发布的知识库更新计划。",
+            ("## 知识盘点", "## 缺口分析", "## 更新计划", "## 发布校验"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
