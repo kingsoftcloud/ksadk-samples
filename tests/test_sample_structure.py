@@ -495,6 +495,46 @@ def test_best_practice_agents_cover_next_completion_order():
             "组织一个团队把 samples 仓库补齐。",
             ("## 角色分工", "## 并行轨迹", "## 冲突合并", "## 验收清单"),
         ),
+        "02-use-cases/aiops/incident-triage-langgraph": (
+            "langgraph",
+            "分析支付服务 5xx 激增和延迟升高的告警。",
+            ("## 告警摘要", "## 根因线索", "## 处置动作", "## 复盘事项"),
+        ),
+        "02-use-cases/aiops/incident-triage-adk": (
+            "adk",
+            "分析支付服务 5xx 激增和延迟升高的告警。",
+            ("## 告警摘要", "## 根因线索", "## 处置动作", "## 复盘事项"),
+        ),
+        "02-use-cases/aiops/incident-triage-langchain": (
+            "langchain",
+            "分析支付服务 5xx 激增和延迟升高的告警。",
+            ("## 告警摘要", "## 根因线索", "## 处置动作", "## 复盘事项"),
+        ),
+        "02-use-cases/aiops/incident-triage-deepagents": (
+            "deepagents",
+            "分析支付服务 5xx 激增和延迟升高的告警。",
+            ("## 告警摘要", "## 根因线索", "## 处置动作", "## 复盘事项"),
+        ),
+        "02-use-cases/finance/report-review-langgraph": (
+            "langgraph",
+            "审阅本季度收入、毛利率和现金流风险。",
+            ("## 报表摘录", "## 风险指标", "## 异常解释", "## 审阅结论"),
+        ),
+        "02-use-cases/finance/report-review-adk": (
+            "adk",
+            "审阅本季度收入、毛利率和现金流风险。",
+            ("## 报表摘录", "## 风险指标", "## 异常解释", "## 审阅结论"),
+        ),
+        "02-use-cases/finance/report-review-langchain": (
+            "langchain",
+            "审阅本季度收入、毛利率和现金流风险。",
+            ("## 报表摘录", "## 风险指标", "## 异常解释", "## 审阅结论"),
+        ),
+        "02-use-cases/finance/report-review-deepagents": (
+            "deepagents",
+            "审阅本季度收入、毛利率和现金流风险。",
+            ("## 报表摘录", "## 风险指标", "## 异常解释", "## 审阅结论"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
