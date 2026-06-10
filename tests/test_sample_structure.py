@@ -671,6 +671,46 @@ def test_best_practice_agents_cover_next_completion_order():
             "审阅一份对外发布材料，找出合规风险并给整改建议。",
             ("## 材料清单", "## 风险条款", "## 整改建议", "## 审阅记录"),
         ),
+        "02-use-cases/procurement-collaboration/vendor-selection-langgraph": (
+            "langgraph",
+            "为一批采购需求做供应商筛选和谈判计划。",
+            ("## 采购需求", "## 供应商对比", "## 谈判计划", "## 审批风险"),
+        ),
+        "02-use-cases/procurement-collaboration/vendor-selection-adk": (
+            "adk",
+            "为一批采购需求做供应商筛选和谈判计划。",
+            ("## 采购需求", "## 供应商对比", "## 谈判计划", "## 审批风险"),
+        ),
+        "02-use-cases/procurement-collaboration/vendor-selection-langchain": (
+            "langchain",
+            "为一批采购需求做供应商筛选和谈判计划。",
+            ("## 采购需求", "## 供应商对比", "## 谈判计划", "## 审批风险"),
+        ),
+        "02-use-cases/procurement-collaboration/vendor-selection-deepagents": (
+            "deepagents",
+            "为一批采购需求做供应商筛选和谈判计划。",
+            ("## 采购需求", "## 供应商对比", "## 谈判计划", "## 审批风险"),
+        ),
+        "02-use-cases/hr-recruiting/interview-planner-langgraph": (
+            "langgraph",
+            "根据岗位要求和候选人简历，生成面试计划。",
+            ("## 岗位画像", "## 候选人匹配", "## 面试计划", "## 录用风险"),
+        ),
+        "02-use-cases/hr-recruiting/interview-planner-adk": (
+            "adk",
+            "根据岗位要求和候选人简历，生成面试计划。",
+            ("## 岗位画像", "## 候选人匹配", "## 面试计划", "## 录用风险"),
+        ),
+        "02-use-cases/hr-recruiting/interview-planner-langchain": (
+            "langchain",
+            "根据岗位要求和候选人简历，生成面试计划。",
+            ("## 岗位画像", "## 候选人匹配", "## 面试计划", "## 录用风险"),
+        ),
+        "02-use-cases/hr-recruiting/interview-planner-deepagents": (
+            "deepagents",
+            "根据岗位要求和候选人简历，生成面试计划。",
+            ("## 岗位画像", "## 候选人匹配", "## 面试计划", "## 录用风险"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

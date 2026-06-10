@@ -19,6 +19,8 @@
 | 企业知识运营 / Knowledge Ops 经验 | 知识运营 Agent 要把用户反馈、现有文档、缺口和发布校验串起来，避免只做摘要。 | `knowledge-operations/knowledge-curator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的知识库更新计划版本；下一步接真实知识库、工单和文档 CI。 |
 | 销售运营 / Pipeline Copilot 经验 | 销售 Agent 要把线索画像、阶段、跟进动作和风险拆开，避免只输出销售话术。 | `sales-operations/pipeline-copilot-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的 pipeline 跟进计划版本；下一步接真实 CRM、任务系统和销售周报。 |
 | 合规审阅 / Policy Review Copilot 经验 | 合规 Agent 要可追溯地列出材料、规则、整改建议和审阅记录，不能替代法务结论。 | `compliance-review/policy-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的对外材料审阅版本；下一步接 Workspace 文档、法务规则库和审批流。 |
+| 采购协同 / Vendor Selection Copilot 经验 | 采购 Agent 要把需求、供应商、谈判项和审批风险拆开，避免只做价格排序。 | `procurement-collaboration/vendor-selection-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的供应商筛选版本；下一步接真实采购系统、供应商库和审批流。 |
+| HR 招聘 / Interview Planner 经验 | 招聘 Agent 要把岗位画像、候选人匹配、面试轮次和录用风险拆开，不能泄露真实个人信息。 | `hr-recruiting/interview-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的面试计划版本；下一步接 ATS、日历和面试评价模板。 |
 | 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 已补 LangGraph 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
@@ -49,7 +51,9 @@
 10. **Knowledge Operations**：已补知识库更新计划基础版本；下一步接真实知识库、工单反馈和文档 CI。
 11. **Sales Operations**：已补 pipeline 跟进计划基础版本；下一步接真实 CRM、任务系统和销售周报。
 12. **Compliance Review**：已补对外材料审阅基础版本；下一步接 Workspace 文档、法务规则库和审批流。
-13. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
+13. **Procurement Collaboration**：已补供应商筛选基础版本；下一步接真实采购系统、供应商库和审批流。
+14. **HR Recruiting**：已补面试计划基础版本；下一步接 ATS、日历和面试评价模板。
+15. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
 
 ## README 写法建议
 

@@ -1,0 +1,26 @@
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from langchain.agents import create_agent
+
+from common.model_config import make_langchain_chat_model
+from prompts import SYSTEM_PROMPT
+from tools import load_procurement_requests, compare_vendors, plan_negotiation
+
+
+def ksadk_prepare_input(payload: dict, session_context: dict) -> dict:
+    """把 AgentEngine 请求转换成 LangChain agent 输入。"""
+
+    return {"input": str(payload.get("input") or "")}
+
+
+# LangChain 版本展示如何用 create_agent 绑定场景工具。
+root_agent = create_agent(
+    model=make_langchain_chat_model(),
+    tools=[load_procurement_requests, compare_vendors, plan_negotiation],
+    system_prompt=SYSTEM_PROMPT + "\n先调用工具读取采购需求、对比供应商，再按采购需求、供应商对比、谈判计划和审批风险输出。",
+)
