@@ -26,14 +26,14 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 
 ### 最佳实践案例
 
-| 目标 | LangGraph | ADK | DeepAgents |
-| --- | --- | --- | --- |
-| Deep Research 报告生成 | `02-use-cases/deep-research/report-writer-langgraph` | `02-use-cases/deep-research/report-writer-adk` | `02-use-cases/deep-research/report-writer-deepagents` |
-| Coding Workspace + Sandbox | `02-use-cases/coding-agent/workspace-sandbox-langgraph` | `02-use-cases/coding-agent/workspace-sandbox-adk` | `02-use-cases/coding-agent/workspace-sandbox-deepagents` |
-| Browser DOM 诊断 | `02-use-cases/browser-agent/dom-diagnostics-langgraph` | `02-use-cases/browser-agent/dom-diagnostics-adk` | `02-use-cases/browser-agent/dom-diagnostics-deepagents` |
-| Data Analyst CSV 洞察 | `02-use-cases/data-analyst/csv-insight-langgraph` | `02-use-cases/data-analyst/csv-insight-adk` | `02-use-cases/data-analyst/csv-insight-deepagents` |
-| Customer Support 工单分级 | `02-use-cases/customer-support/ticket-triage-langgraph` | `02-use-cases/customer-support/ticket-triage-adk` | `02-use-cases/customer-support/ticket-triage-deepagents` |
-| Multi-Agent Team 协作交付 | `02-use-cases/multi-agent-team/team-delivery-langgraph` | `02-use-cases/multi-agent-team/team-delivery-adk` | `02-use-cases/multi-agent-team/team-delivery-deepagents` |
+| 目标 | LangGraph | ADK | LangChain | DeepAgents |
+| --- | --- | --- | --- | --- |
+| Deep Research 报告生成 | `02-use-cases/deep-research/report-writer-langgraph` | `02-use-cases/deep-research/report-writer-adk` | `02-use-cases/deep-research/report-writer-langchain` | `02-use-cases/deep-research/report-writer-deepagents` |
+| Coding Workspace + Sandbox | `02-use-cases/coding-agent/workspace-sandbox-langgraph` | `02-use-cases/coding-agent/workspace-sandbox-adk` | `02-use-cases/coding-agent/workspace-sandbox-langchain` | `02-use-cases/coding-agent/workspace-sandbox-deepagents` |
+| Browser DOM 诊断 | `02-use-cases/browser-agent/dom-diagnostics-langgraph` | `02-use-cases/browser-agent/dom-diagnostics-adk` | `02-use-cases/browser-agent/dom-diagnostics-langchain` | `02-use-cases/browser-agent/dom-diagnostics-deepagents` |
+| Data Analyst CSV 洞察 | `02-use-cases/data-analyst/csv-insight-langgraph` | `02-use-cases/data-analyst/csv-insight-adk` | `02-use-cases/data-analyst/csv-insight-langchain` | `02-use-cases/data-analyst/csv-insight-deepagents` |
+| Customer Support 工单分级 | `02-use-cases/customer-support/ticket-triage-langgraph` | `02-use-cases/customer-support/ticket-triage-adk` | `02-use-cases/customer-support/ticket-triage-langchain` | `02-use-cases/customer-support/ticket-triage-deepagents` |
+| Multi-Agent Team 协作交付 | `02-use-cases/multi-agent-team/team-delivery-langgraph` | `02-use-cases/multi-agent-team/team-delivery-adk` | `02-use-cases/multi-agent-team/team-delivery-langchain` | `02-use-cases/multi-agent-team/team-delivery-deepagents` |
 
 ### 推荐主推 Demo
 
@@ -124,6 +124,6 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为更多场景补充 ADK / LangChain / DeepAgents 版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级和团队协作已覆盖 LangGraph / ADK / DeepAgents。
+- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级和团队协作已覆盖 LangGraph / ADK / LangChain / DeepAgents。
 - 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
 - 增加更多行业场景，如 AIOps、财务分析、内容生产和企业知识运营。

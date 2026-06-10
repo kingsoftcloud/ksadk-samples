@@ -7,12 +7,12 @@
 | 项目 | 值得学习的点 | 在 KSADK Samples 中的落点 |
 | --- | --- | --- |
 | Google ADK Samples | 场景很多，README 会写清 Agent Details、架构图、运行、部署、测试和自定义方式。 | 每个样例必须有中文优先 README、运行命令、Web UI 调试、部署和常见问题。 |
-| ADK Deep Search | 研究类 Agent 强调计划、人类确认、迭代检索、反思和最终报告。 | `deep-research/langgraph` 输出研究计划、执行轨迹、反思补查和交付物；`deep-research/report-writer-*` 对比 LangGraph / ADK / DeepAgents 的报告生成写法。 |
+| ADK Deep Search | 研究类 Agent 强调计划、人类确认、迭代检索、反思和最终报告。 | `deep-research/langgraph` 输出研究计划、执行轨迹、反思补查和交付物；`deep-research/report-writer-*` 对比 LangGraph / ADK / LangChain / DeepAgents 的报告生成写法。 |
 | ADK SWE Benchmark / Software Bug Assistant | Coding Agent 强调定位、工具、隔离执行、测试和评审风险。 | `coding-agent/langgraph` 输出变更定位、测试矩阵、发布风险和交付物；`coding-agent/workspace-sandbox-*` 对比多框架 Workspace / Sandbox 边界。 |
-| Browser-use / Playwright Agent 经验 | 浏览器 Agent 需要把页面观察、DOM 线索、失败诊断和可复现验证步骤拆开，避免只输出“请刷新”。 | `browser-agent/dom-diagnostics-*` 已补 LangGraph / ADK / DeepAgents 的 DOM 诊断基础版本；下一步接真实 Playwright snapshot、截图和 Web UI 日志。 |
-| 数据分析 Agent / BI Copilot 经验 | 数据 Agent 要先说明数据样本、指标口径和可视化建议，再谈洞察结论。 | `data-analyst/csv-insight-*` 已补 LangGraph / ADK / DeepAgents 的 CSV 洞察基础版本；下一步接 Workspace CSV、DuckDB 查询和图表 artifact。 |
-| 客服与工单 Copilot 经验 | 客服 Agent 要把客户现象、知识匹配、排障步骤和升级策略拆清楚，避免只给安慰性回复。 | `customer-support/ticket-triage-*` 已补 LangGraph / ADK / DeepAgents 的工单分级基础版本；下一步接真实知识库和工单系统。 |
-| Multi-Agent / Super Agent Harness 经验 | 多 Agent 样例要展示角色分工、并行轨迹、冲突合并和验收清单，而不是只列几个角色名。 | `multi-agent-team/team-delivery-*` 已补 LangGraph / ADK / DeepAgents 的协作交付基础版本；下一步接真实子 Agent 和任务队列。 |
+| Browser-use / Playwright Agent 经验 | 浏览器 Agent 需要把页面观察、DOM 线索、失败诊断和可复现验证步骤拆开，避免只输出“请刷新”。 | `browser-agent/dom-diagnostics-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的 DOM 诊断基础版本；下一步接真实 Playwright snapshot、截图和 Web UI 日志。 |
+| 数据分析 Agent / BI Copilot 经验 | 数据 Agent 要先说明数据样本、指标口径和可视化建议，再谈洞察结论。 | `data-analyst/csv-insight-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的 CSV 洞察基础版本；下一步接 Workspace CSV、DuckDB 查询和图表 artifact。 |
+| 客服与工单 Copilot 经验 | 客服 Agent 要把客户现象、知识匹配、排障步骤和升级策略拆清楚，避免只给安慰性回复。 | `customer-support/ticket-triage-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的工单分级基础版本；下一步接真实知识库和工单系统。 |
+| Multi-Agent / Super Agent Harness 经验 | 多 Agent 样例要展示角色分工、并行轨迹、冲突合并和验收清单，而不是只列几个角色名。 | `multi-agent-team/team-delivery-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的协作交付基础版本；下一步接真实子 Agent 和任务队列。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
