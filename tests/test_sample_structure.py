@@ -405,6 +405,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "修复 Markdown 表格渲染不稳定的问题，并给出测试计划。",
             ("## 工作区文件", "## 沙箱命令", "## 补丁计划", "## 验证结果"),
         ),
+        "02-use-cases/browser-agent/dom-diagnostics-langgraph": (
+            "langgraph",
+            "验证本地 Web UI 首页无法点击发送按钮的问题。",
+            ("## 页面观察", "## DOM 线索", "## 失败诊断", "## 验证步骤"),
+        ),
+        "02-use-cases/browser-agent/dom-diagnostics-adk": (
+            "adk",
+            "验证本地 Web UI 首页无法点击发送按钮的问题。",
+            ("## 页面观察", "## DOM 线索", "## 失败诊断", "## 验证步骤"),
+        ),
+        "02-use-cases/browser-agent/dom-diagnostics-deepagents": (
+            "deepagents",
+            "验证本地 Web UI 首页无法点击发送按钮的问题。",
+            ("## 页面观察", "## DOM 线索", "## 失败诊断", "## 验证步骤"),
+        ),
+        "02-use-cases/data-analyst/csv-insight-langgraph": (
+            "langgraph",
+            "分析 Agent 调试功能的激活率和留存变化。",
+            ("## 数据样本", "## 指标口径", "## 洞察排序", "## 图表建议"),
+        ),
+        "02-use-cases/data-analyst/csv-insight-adk": (
+            "adk",
+            "分析 Agent 调试功能的激活率和留存变化。",
+            ("## 数据样本", "## 指标口径", "## 洞察排序", "## 图表建议"),
+        ),
+        "02-use-cases/data-analyst/csv-insight-deepagents": (
+            "deepagents",
+            "分析 Agent 调试功能的激活率和留存变化。",
+            ("## 数据样本", "## 指标口径", "## 洞察排序", "## 图表建议"),
+        ),
+        "02-use-cases/customer-support/ticket-triage-langgraph": (
+            "langgraph",
+            "客户说 Web UI 启动后没有响应，帮我排查。",
+            ("## 工单摘要", "## 知识匹配", "## 处理步骤", "## 升级策略"),
+        ),
+        "02-use-cases/customer-support/ticket-triage-adk": (
+            "adk",
+            "客户说 Web UI 启动后没有响应，帮我排查。",
+            ("## 工单摘要", "## 知识匹配", "## 处理步骤", "## 升级策略"),
+        ),
+        "02-use-cases/customer-support/ticket-triage-deepagents": (
+            "deepagents",
+            "客户说 Web UI 启动后没有响应，帮我排查。",
+            ("## 工单摘要", "## 知识匹配", "## 处理步骤", "## 升级策略"),
+        ),
+        "02-use-cases/multi-agent-team/team-delivery-langgraph": (
+            "langgraph",
+            "组织一个团队把 samples 仓库补齐。",
+            ("## 角色分工", "## 并行轨迹", "## 冲突合并", "## 验收清单"),
+        ),
+        "02-use-cases/multi-agent-team/team-delivery-adk": (
+            "adk",
+            "组织一个团队把 samples 仓库补齐。",
+            ("## 角色分工", "## 并行轨迹", "## 冲突合并", "## 验收清单"),
+        ),
+        "02-use-cases/multi-agent-team/team-delivery-deepagents": (
+            "deepagents",
+            "组织一个团队把 samples 仓库补齐。",
+            ("## 角色分工", "## 并行轨迹", "## 冲突合并", "## 验收清单"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
