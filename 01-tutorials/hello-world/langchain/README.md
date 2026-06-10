@@ -1,4 +1,4 @@
-# Hello World - LangChain
+# 基础 Agent（Hello World）- LangChain
 
 最小 LangChain Runnable 示例，用来展示 KSADK 如何运行一个普通 LangChain 链。
 

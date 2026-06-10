@@ -50,6 +50,7 @@ def test_root_readme_lists_public_project_resources():
 def test_root_readme_is_scenario_navigation_and_mentions_examples_alias():
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     for required in (
+        "默认使用中文 README",
         "场景导航",
         "Examples",
         "Samples",
@@ -186,6 +187,10 @@ def test_all_sample_readmes_are_actionable_for_new_users():
     )
     for readme_path in ROOT.glob("0*/**/README.md"):
         text = readme_path.read_text(encoding="utf-8")
+        first_line = text.splitlines()[0]
+        assert any("\u4e00" <= character <= "\u9fff" for character in first_line), (
+            f"{readme_path.relative_to(ROOT)} README title must be Chinese-first"
+        )
         assert len(text.splitlines()) >= 35, f"{readme_path.relative_to(ROOT)} README is too short"
         for section in required_sections:
             assert section in text, f"{readme_path.relative_to(ROOT)} missing README section: {section}"
@@ -210,6 +215,7 @@ def test_validate_samples_enforces_sample_readme_sections(tmp_path):
 
     errors = validate_samples.validate_sample_readme(sample_dir)
 
+    assert "README title must be Chinese-first" in "\n".join(errors)
     assert "missing README section: 适用场景" in "\n".join(errors)
 
 

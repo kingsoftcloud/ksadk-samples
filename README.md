@@ -1,8 +1,8 @@
-# KSADK Samples
+# KSADK 样例（Samples）
 
 [![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/kingsoftcloud/ksadk-python)
 
-KSADK Samples 是面向 AgentEngine / KSADK 的官方场景化代码工坊。仓库里的 `Samples` 和 `Examples` 含义一致：都指可运行、可部署、可对比框架写法的公开样例。
+KSADK Samples 是面向 AgentEngine / KSADK 的官方场景化代码工坊。仓库默认使用中文 README 和中文注释；英文场景名仅作为搜索和对照补充。仓库里的 `Samples` 和 `Examples` 含义一致：都指可运行、可部署、可对比框架写法的公开样例。
 
 ## 场景导航
 
@@ -10,11 +10,11 @@ KSADK Samples 是面向 AgentEngine / KSADK 的官方场景化代码工坊。仓
 
 | 场景 | 推荐样例 | 覆盖框架 | 说明 |
 | --- | --- | --- | --- |
-| Basic Agent | `01-tutorials/hello-world` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 先确认 KSADK、模型和本地运行链路能跑通。 |
-| Tool-Using Agent | `01-tutorials/tool-calling` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 绑定本地业务 tool，并通过 AgentEngine Runtime 调用。 |
-| Memory-aware Agent | `01-tutorials/memory` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 学短期记忆和长期记忆接入思路，默认本地记忆，可扩展到平台长期记忆。 |
-| Knowledge Assistant | `02-use-cases/knowledge-base-rag` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents | 做知识库问答，默认本地 corpus，可选接入金山云知识库。 |
-| Workflow Agent | `02-use-cases/agentengine-toolsets/langgraph` | Built With LangGraph | 使用 StateGraph 编排 KSADK 内置 toolsets、dispatcher、Skill Space、Workspace、Sandbox、知识库和长期记忆配置边界。 |
+| 基础 Agent（Basic Agent） | `01-tutorials/hello-world` | 基于 ADK（Built With ADK）/ 基于 LangGraph（Built With LangGraph）/ 基于 LangChain（Built With LangChain）/ 基于 DeepAgents（Built With DeepAgents） | 先确认 KSADK、模型和本地运行链路能跑通。 |
+| 工具调用 Agent（Tool-Using Agent） | `01-tutorials/tool-calling` | 基于 ADK（Built With ADK）/ 基于 LangGraph（Built With LangGraph）/ 基于 LangChain（Built With LangChain）/ 基于 DeepAgents（Built With DeepAgents） | 绑定本地业务 tool，并通过 AgentEngine Runtime 调用。 |
+| 记忆增强 Agent（Memory-aware Agent） | `01-tutorials/memory` | 基于 ADK（Built With ADK）/ 基于 LangGraph（Built With LangGraph）/ 基于 LangChain（Built With LangChain）/ 基于 DeepAgents（Built With DeepAgents） | 学短期记忆和长期记忆接入思路，默认本地记忆，可扩展到平台长期记忆。 |
+| 知识助手（Knowledge Assistant） | `02-use-cases/knowledge-base-rag` | 基于 ADK（Built With ADK）/ 基于 LangGraph（Built With LangGraph）/ 基于 LangChain（Built With LangChain）/ 基于 DeepAgents（Built With DeepAgents） | 做知识库问答，默认本地 corpus，可选接入金山云知识库。 |
+| 工作流 Agent（Workflow Agent） | `02-use-cases/agentengine-toolsets/langgraph` | 基于 LangGraph（Built With LangGraph） | 使用 StateGraph 编排 KSADK 内置 toolsets、dispatcher、Skill Space、Workspace、Sandbox、知识库和长期记忆配置边界。 |
 
 ### 推荐主推 Demo
 
@@ -128,12 +128,12 @@ make public-preflight
 
 下面这些是计划补充的场景，当前仓库还没有对应可运行 demo。只有在可以本地运行、可部署、可脱敏验证，并且 README 足够完整时，才会加入代码目录。
 
-- Deep Research Agent
-- Coding Agent
-- Browser Agent
-- Data Analyst
-- Customer Support
-- Multi-Agent Team
+- 深度研究 Agent（Deep Research Agent）
+- 编码 Agent（Coding Agent）
+- 浏览器 Agent（Browser Agent）
+- 数据分析 Agent（Data Analyst）
+- 客服 Agent（Customer Support）
+- 多 Agent 团队（Multi-Agent Team）
 
 持续补充时仍保持三个边界：
 

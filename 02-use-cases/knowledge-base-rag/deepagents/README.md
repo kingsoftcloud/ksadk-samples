@@ -1,4 +1,4 @@
-# Knowledge Base RAG - DeepAgents
+# 知识助手（Knowledge Base RAG）- DeepAgents
 
 DeepAgents 知识库问答示例，把知识库检索和运行状态查询作为工具交给 DeepAgents 使用。
 

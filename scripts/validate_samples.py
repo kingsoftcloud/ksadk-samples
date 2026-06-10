@@ -15,6 +15,7 @@ from scripts import check_public_readiness
 FRAMEWORKS = {"adk", "langgraph", "langchain", "deepagents"}
 REQUIRED_FILES = {"README.md", "agent.py", "agentengine.yaml", "requirements.txt"}
 ROOT_README_REQUIRED_CONTENT = (
+    "默认使用中文 README",
     "场景导航",
     "Samples",
     "Examples",
@@ -115,6 +116,9 @@ def validate_sample_readme(sample_dir: Path) -> list[str]:
 
     text = readme_path.read_text(encoding="utf-8")
     errors: list[str] = []
+    first_line = text.splitlines()[0] if text.splitlines() else ""
+    if not any("\u4e00" <= character <= "\u9fff" for character in first_line):
+        errors.append(f"{_relative(sample_dir)} README title must be Chinese-first")
     if len(text.splitlines()) < 35:
         errors.append(f"{_relative(sample_dir)} README is too short")
     for section in SAMPLE_README_REQUIRED_SECTIONS:

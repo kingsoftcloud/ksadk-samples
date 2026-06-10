@@ -1,4 +1,4 @@
-# Hello World - LangGraph
+# 基础 Agent（Hello World）- LangGraph
 
 最小 LangGraph Agent 示例，用一个单节点 `StateGraph` 展示 KSADK 的 LangGraph 入口约定。
 

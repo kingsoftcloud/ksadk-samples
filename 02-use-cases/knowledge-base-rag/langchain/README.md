@@ -1,4 +1,4 @@
-# Knowledge Base RAG - LangChain
+# 知识助手（Knowledge Base RAG）- LangChain
 
 LangChain 知识库问答示例，在 `ksadk_prepare_input` 中检索知识库并把上下文注入 Prompt。
 

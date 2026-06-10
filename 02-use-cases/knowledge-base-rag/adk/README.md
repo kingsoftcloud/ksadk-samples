@@ -1,4 +1,4 @@
-# Knowledge Base RAG - ADK
+# 知识助手（Knowledge Base RAG）- ADK
 
 ADK 知识库问答示例，默认使用仓库内置本地知识库；配置云端知识库后，会优先调用真实金山云知识库。
 

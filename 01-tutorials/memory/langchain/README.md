@@ -1,4 +1,4 @@
-# Memory - LangChain
+# 记忆增强 Agent（Memory）- LangChain
 
 LangChain 记忆示例，展示如何在 `ksadk_prepare_input` 中合并平台记忆和本地记忆。
 

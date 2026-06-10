@@ -1,4 +1,4 @@
-# Memory - LangGraph
+# 记忆增强 Agent（Memory）- LangGraph
 
 LangGraph 记忆示例，展示如何把用户 ID、平台记忆和本地记忆放入图状态。
 

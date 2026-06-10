@@ -1,4 +1,4 @@
-# Knowledge Base RAG - LangGraph
+# 知识助手（Knowledge Base RAG）- LangGraph
 
 LangGraph 知识库问答示例，用单节点图演示如何在节点中检索知识库并生成回答。
 

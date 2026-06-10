@@ -1,4 +1,4 @@
-# AgentEngine Toolsets - LangGraph
+# 工作流 Agent（AgentEngine Toolsets）- LangGraph
 
 这个示例从一个内部综合验证 demo 中抽取了可开源的通用模式：在 LangGraph 中绑定 KSADK 0.6.2+ 的 AgentEngine 内置 toolsets，同时追加业务自定义 tool 和外层 graph node。它是当前开源样例的主推 demo。
 

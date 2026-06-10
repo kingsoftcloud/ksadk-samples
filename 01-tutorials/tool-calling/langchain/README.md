@@ -1,4 +1,4 @@
-# Tool Calling - LangChain
+# 工具调用 Agent（Tool Calling）- LangChain
 
 LangChain 工具调用示例，使用 LangChain 1.x 的 `create_agent` 绑定工具。
 
