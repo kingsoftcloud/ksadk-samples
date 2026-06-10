@@ -125,6 +125,43 @@ def test_readme_roadmap_scenarios_have_runnable_agents():
             assert scenario_name not in roadmap
 
 
+def test_scenario_agents_are_multi_file_projects_with_chinese_guidance():
+    """场景 demo 要像可复制的 Agent 工程，而不是单文件脚本。"""
+
+    scenario_dirs = (
+        ROOT / "02-use-cases/deep-research/langgraph",
+        ROOT / "02-use-cases/coding-agent/langgraph",
+        ROOT / "02-use-cases/browser-agent/langgraph",
+        ROOT / "02-use-cases/data-analyst/langgraph",
+        ROOT / "02-use-cases/customer-support/langgraph",
+        ROOT / "02-use-cases/multi-agent-team/langgraph",
+    )
+    required_files = ("agent.py", "workflow.py", "prompts.py", "data.py", "tools.py", "demo.py")
+
+    def has_chinese_comment(text: str) -> bool:
+        comment_lines = [
+            line
+            for line in text.splitlines()
+            if line.strip().startswith("#") or line.strip().startswith('"""')
+        ]
+        return any(any("\u4e00" <= character <= "\u9fff" for character in line) for line in comment_lines)
+
+    for sample_dir in scenario_dirs:
+        readme = (sample_dir / "README.md").read_text(encoding="utf-8")
+        assert "不是单文件脚本" in readme
+        assert "工程结构" in readme
+
+        for filename in required_files:
+            source = (sample_dir / filename).read_text(encoding="utf-8")
+            assert has_chinese_comment(source), (
+                f"{sample_dir.relative_to(ROOT)}/{filename} should include Chinese guidance comments"
+            )
+
+        demo_source = (sample_dir / "demo.py").read_text(encoding="utf-8")
+        assert "def " not in demo_source, f"{sample_dir.relative_to(ROOT)}/demo.py should stay as a thin runner"
+        assert demo_source.count("root_agent.invoke") == 1
+
+
 def test_expected_sample_matrix_exists():
     use_cases = [
         "01-tutorials/hello-world",

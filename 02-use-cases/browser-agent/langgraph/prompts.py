@@ -1,3 +1,5 @@
+# 这个文件只放角色设定和输出约束，便于业务同学在不理解 LangGraph 编排的情况下调整 Agent 风格。
+# 如果要接真实 LLM，可以继续保留这些提示词，再在 tools.py 的 render_answer 阶段调用模型做润色。
 TITLE = '浏览器 Agent（Browser Agent）- LangGraph'
 ROLE = '浏览器任务编排助手'
 ROUTE = 'browser'
