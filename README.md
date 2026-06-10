@@ -15,6 +15,12 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 记忆增强 Agent（Memory-aware Agent） | `01-tutorials/memory` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents |
 | 知识助手（Knowledge Assistant） | `02-use-cases/knowledge-base-rag` | Built With ADK / Built With LangGraph / Built With LangChain / Built With DeepAgents |
 | 工作流 Agent（Workflow Agent） | `02-use-cases/agentengine-toolsets/langgraph` | Built With LangGraph |
+| 深度研究 Agent（Deep Research Agent） | `02-use-cases/deep-research/langgraph` | Built With LangGraph |
+| 编码 Agent（Coding Agent） | `02-use-cases/coding-agent/langgraph` | Built With LangGraph |
+| 浏览器 Agent（Browser Agent） | `02-use-cases/browser-agent/langgraph` | Built With LangGraph |
+| 数据分析 Agent（Data Analyst） | `02-use-cases/data-analyst/langgraph` | Built With LangGraph |
+| 客服 Agent（Customer Support） | `02-use-cases/customer-support/langgraph` | Built With LangGraph |
+| 多 Agent 团队（Multi-Agent Team） | `02-use-cases/multi-agent-team/langgraph` | Built With LangGraph |
 
 ### 推荐主推 Demo
 
@@ -97,11 +103,8 @@ make public-preflight
 
 ## 后续计划
 
-下面这些场景还没有对应可运行 demo。只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
+后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 深度研究 Agent（Deep Research Agent）
-- 编码 Agent（Coding Agent）
-- 浏览器 Agent（Browser Agent）
-- 数据分析 Agent（Data Analyst）
-- 客服 Agent（Customer Support）
-- 多 Agent 团队（Multi-Agent Team）
+- 为六个场景补充 ADK / LangChain / DeepAgents 版本。
+- 增加真实 Web UI GIF 和端到端部署录屏。
+- 增加更多行业场景，如 AIOps、财务分析、内容生产和企业知识运营。

@@ -71,13 +71,6 @@ def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
         "Built With LangGraph",
         "Built With ADK",
         "Built With DeepAgents",
-    ):
-        assert available in readme
-
-    roadmap_start = readme.index("## 后续计划")
-    before_roadmap = readme[:roadmap_start]
-    roadmap = readme[roadmap_start:]
-    for planned in (
         "Deep Research Agent",
         "Coding Agent",
         "Browser Agent",
@@ -85,8 +78,51 @@ def test_root_readme_uses_prd_scenario_categories_without_overclaiming():
         "Customer Support",
         "Multi-Agent Team",
     ):
-        assert planned in roadmap
-        assert planned not in before_roadmap
+        assert available in readme
+
+    if "## 后续计划" in readme:
+        roadmap = readme[readme.index("## 后续计划"):]
+        for implemented in (
+            "Deep Research Agent",
+            "Coding Agent",
+            "Browser Agent",
+            "Data Analyst",
+            "Customer Support",
+            "Multi-Agent Team",
+        ):
+            assert implemented not in roadmap
+
+
+def test_readme_roadmap_scenarios_have_runnable_agents():
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    required_scenarios = {
+        "Deep Research Agent": "02-use-cases/deep-research/langgraph",
+        "Coding Agent": "02-use-cases/coding-agent/langgraph",
+        "Browser Agent": "02-use-cases/browser-agent/langgraph",
+        "Data Analyst": "02-use-cases/data-analyst/langgraph",
+        "Customer Support": "02-use-cases/customer-support/langgraph",
+        "Multi-Agent Team": "02-use-cases/multi-agent-team/langgraph",
+    }
+
+    for scenario_name, relative_dir in required_scenarios.items():
+        assert scenario_name in readme
+        assert relative_dir in readme
+        sample_dir = ROOT / relative_dir
+        assert (sample_dir / "README.md").is_file()
+        assert (sample_dir / "agent.py").is_file()
+        assert (sample_dir / "workflow.py").is_file()
+        assert (sample_dir / "prompts.py").is_file()
+        assert (sample_dir / "agentengine.yaml").is_file()
+        assert (sample_dir / "requirements.txt").is_file()
+        assert (sample_dir / "demo.py").is_file()
+        assert (sample_dir / "tools.py").is_file() or (sample_dir / "data.py").is_file()
+        assert len((sample_dir / "agent.py").read_text(encoding="utf-8").splitlines()) <= 40
+
+    roadmap_start = readme.find("## 后续计划")
+    if roadmap_start != -1:
+        roadmap = readme[roadmap_start:]
+        for scenario_name in required_scenarios:
+            assert scenario_name not in roadmap
 
 
 def test_expected_sample_matrix_exists():
@@ -173,6 +209,46 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
 
     assert not check_public_readiness.scan_file(sample / "README.md")
     assert not check_public_readiness.scan_file(sample / "agent.py")
+
+
+def test_new_scenario_agents_invoke_with_demo_questions():
+    scenario_questions = {
+        "02-use-cases/deep-research/langgraph": "研究一下企业 Agent Runtime Platform 的选型维度。",
+        "02-use-cases/coding-agent/langgraph": "这个函数偶尔返回空结果，帮我设计修复和测试。",
+        "02-use-cases/browser-agent/langgraph": "帮我验证本地 Web UI 首页是否能展示调试入口。",
+        "02-use-cases/data-analyst/langgraph": "分析这个月 Agent 调试功能的使用趋势。",
+        "02-use-cases/customer-support/langgraph": "客户说 Web UI 启动后没有响应，帮我排查。",
+        "02-use-cases/multi-agent-team/langgraph": "组织一个团队把 samples 仓库补齐。",
+    }
+
+    for relative_dir, question in scenario_questions.items():
+        sample_dir = ROOT / relative_dir
+        module_name = "sample_invoke_" + "_".join(sample_dir.relative_to(ROOT).parts)
+        sys.path.insert(0, str(ROOT))
+        sys.path.insert(0, str(sample_dir))
+        try:
+            spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
+            assert spec is not None
+            assert spec.loader is not None
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            state = module.ksadk_prepare_state({"input": question}, {})
+            result = module.root_agent.invoke(state)
+            answer = result.get("answer", "")
+            assert "## 证据卡片" in answer
+            assert "## 行动计划" in answer
+            assert "工程说明" in answer
+            assert (sample_dir / "demo.py").read_text(encoding="utf-8").count("root_agent.invoke") == 1
+        finally:
+            for value in (str(sample_dir), str(ROOT)):
+                try:
+                    sys.path.remove(value)
+                except ValueError:
+                    pass
+            sys.modules.pop(module_name, None)
+            for transient in ("workflow", "tools", "data", "prompts"):
+                sys.modules.pop(transient, None)
 
 
 def test_all_sample_readmes_are_actionable_for_new_users():
@@ -297,6 +373,8 @@ def test_all_samples_import_with_ksadk_0_6_2_runtime():
                 except ValueError:
                     pass
             sys.modules.pop(module_name, None)
+            for transient in ("workflow", "tools", "data", "prompts"):
+                sys.modules.pop(transient, None)
 
 
 def test_langgraph_toolsets_route_workspace_to_dispatcher_instead_of_skill_space():
