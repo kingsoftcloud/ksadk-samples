@@ -1,0 +1,2 @@
+ksadk[all]>=0.6.2
+google-adk>=1.0.0

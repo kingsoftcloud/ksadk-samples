@@ -967,6 +967,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一批需求和库存数据，生成供应链计划。",
             ("## 需求预测", "## 库存风险", "## 调拨计划", "## 监控指标"),
         ),
+        "02-use-cases/healthcare-operations/care-coordinator-langgraph": (
+            "langgraph",
+            "分析一组门诊运营数据，生成护理协同计划。",
+            ("## 患者流转", "## 资源瓶颈", "## 协同计划", "## 风险提醒"),
+        ),
+        "02-use-cases/healthcare-operations/care-coordinator-adk": (
+            "adk",
+            "分析一组门诊运营数据，生成护理协同计划。",
+            ("## 患者流转", "## 资源瓶颈", "## 协同计划", "## 风险提醒"),
+        ),
+        "02-use-cases/healthcare-operations/care-coordinator-langchain": (
+            "langchain",
+            "分析一组门诊运营数据，生成护理协同计划。",
+            ("## 患者流转", "## 资源瓶颈", "## 协同计划", "## 风险提醒"),
+        ),
+        "02-use-cases/healthcare-operations/care-coordinator-deepagents": (
+            "deepagents",
+            "分析一组门诊运营数据，生成护理协同计划。",
+            ("## 患者流转", "## 资源瓶颈", "## 协同计划", "## 风险提醒"),
+        ),
+        "02-use-cases/energy-dispatch/load-balancer-langgraph": (
+            "langgraph",
+            "根据负荷预测和设备状态，生成能源调度建议。",
+            ("## 负荷预测", "## 设备状态", "## 调度策略", "## 安全边界"),
+        ),
+        "02-use-cases/energy-dispatch/load-balancer-adk": (
+            "adk",
+            "根据负荷预测和设备状态，生成能源调度建议。",
+            ("## 负荷预测", "## 设备状态", "## 调度策略", "## 安全边界"),
+        ),
+        "02-use-cases/energy-dispatch/load-balancer-langchain": (
+            "langchain",
+            "根据负荷预测和设备状态，生成能源调度建议。",
+            ("## 负荷预测", "## 设备状态", "## 调度策略", "## 安全边界"),
+        ),
+        "02-use-cases/energy-dispatch/load-balancer-deepagents": (
+            "deepagents",
+            "根据负荷预测和设备状态，生成能源调度建议。",
+            ("## 负荷预测", "## 设备状态", "## 调度策略", "## 安全边界"),
+        ),
+        "02-use-cases/public-service/case-assistant-langgraph": (
+            "langgraph",
+            "整理一批政务服务事项，生成办事协同方案。",
+            ("## 事项画像", "## 材料核验", "## 协同流程", "## 服务承诺"),
+        ),
+        "02-use-cases/public-service/case-assistant-adk": (
+            "adk",
+            "整理一批政务服务事项，生成办事协同方案。",
+            ("## 事项画像", "## 材料核验", "## 协同流程", "## 服务承诺"),
+        ),
+        "02-use-cases/public-service/case-assistant-langchain": (
+            "langchain",
+            "整理一批政务服务事项，生成办事协同方案。",
+            ("## 事项画像", "## 材料核验", "## 协同流程", "## 服务承诺"),
+        ),
+        "02-use-cases/public-service/case-assistant-deepagents": (
+            "deepagents",
+            "整理一批政务服务事项，生成办事协同方案。",
+            ("## 事项画像", "## 材料核验", "## 协同流程", "## 服务承诺"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

@@ -1,0 +1,4 @@
+name: load-balancer-adk
+framework: adk
+entry_point: agent.py
+agent_variable: root_agent

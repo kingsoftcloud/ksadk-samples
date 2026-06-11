@@ -31,6 +31,9 @@
 | 教育培训 / Learning Coach 经验 | 学习辅导 Agent 要把学习画像、能力缺口、训练计划和评估方式串起来，不能泄露真实学员数据。 | `education-training/learning-coach-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的学习辅导版本；下一步接 LMS、练习平台、测评系统和学习档案。 |
 | 供应链计划 / Demand Planner 经验 | 供应链 Agent 要把需求预测、库存风险、调拨计划和监控指标拆开，避免只输出库存口号。 | `supply-chain-planning/demand-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的需求计划版本；下一步接 ERP、WMS、OMS、渠道预测和供应商协同系统。 |
 | 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 和 `long-task-resume-*` 已补 LangGraph / ADK / LangChain / DeepAgents 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
+| 医疗运营 / Care Coordination 经验 | 医疗运营 Agent 要把患者流转、资源瓶颈、协同计划和风险提醒拆开，不能处理真实诊断或隐私数据。 | `healthcare-operations/care-coordinator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的护理协同版本；下一步接预约、排队、护理工作站和运营看板的脱敏统计数据。 |
+| 能源调度 / Load Balancer 经验 | 能源调度 Agent 要把负荷预测、设备状态、调度策略和安全边界拆开，不能直接下发真实控制指令。 | `energy-dispatch/load-balancer-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的负荷平衡版本；下一步接 EMS、计量平台、天气服务和需求响应系统。 |
+| 政务服务 / Case Assistant 经验 | 政务服务 Agent 要把事项画像、材料核验、协同流程和服务承诺拆开，审批结论必须人工复核。 | `public-service/case-assistant-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的事项协同版本；下一步接政务服务平台、材料库和办件流转系统。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -72,6 +75,9 @@
 22. **Education Training**：已补学习辅导基础版本；下一步接 LMS、练习平台、测评系统和学习档案。
 23. **Supply Chain Planning**：已补需求计划基础版本；下一步接 ERP、WMS、OMS、渠道预测和供应商协同系统。
 24. **Long Task Resume**：已补 LangGraph / ADK / LangChain / DeepAgents 工程版本；下一步接真实 Postgres session backend 和平台 run/session 事件。
+25. **Healthcare Operations**：已补护理协同基础版本；下一步接预约、排队、护理工作站和运营看板的脱敏统计数据。
+26. **Energy Dispatch**：已补负荷平衡基础版本；下一步接 EMS、计量平台、天气服务和需求响应系统。
+27. **Public Service**：已补事项协同基础版本；下一步接政务服务平台、材料库和办件流转系统。
 
 ## README 写法建议
 
