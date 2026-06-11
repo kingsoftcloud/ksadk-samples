@@ -64,6 +64,9 @@
 | 支付风控 / Payment Risk 经验 | 支付风控 Agent 要把支付异常、风控规则、人工复核和审计留痕拆开，不能泄露真实账户、交易号、设备指纹或真实规则阈值。 | `payment-risk/payment-guard-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的支付风控版本；下一步接支付网关、风控规则引擎、设备指纹、退款系统、人工复核台和审计日志平台。 |
 | 智能导购 / Shopping Assistant 经验 | 导购 Agent 要把需求澄清、商品对比、库存价格和导购转化拆开，不能泄露真实用户、订单、地址、支付记录或未公开促销策略。 | `shopping-assistant/product-advisor-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的智能导购版本；下一步接商品主数据、库存价格系统、活动权益平台、客服知识库和导购会话。 |
 | DevRel 运营 / DevRel Operations 经验 | DevRel Agent 要把开发者反馈、内容运营、活动节奏和社区复盘拆开，不能泄露真实开发者、企业信息、私聊内容或未公开路线图。 | `devrel-operations/community-program-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的开发者运营版本；下一步接 GitHub Issues、Discussions、社群反馈、文档访问分析和贡献者看板。 |
+| 品牌舆情 / Brand Reputation 经验 | 品牌舆情 Agent 要把舆情线索、传播路径、回应策略和品牌复盘拆开，不能泄露真实用户、社媒账号、私信内容或未公开声明。 | `brand-reputation/reputation-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的品牌舆情版本；下一步接舆情监测平台、客服工单、社媒排期、品牌素材库、法务审核和公关复盘看板。 |
+| 渠道运营 / Channel Operations 经验 | 渠道运营 Agent 要把渠道表现、库存协同、价格治理和经营复盘拆开，不能泄露真实经销商、合同价格、结算明细或返点规则。 | `channel-operations/channel-health-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的渠道运营版本；下一步接渠道销售系统、库存系统、价格治理平台、经销商协同、促销系统和经营看板。 |
+| 企业培训 / Enterprise Training 经验 | 企业培训 Agent 要把培训对象、课程设计、练习评估和学习复盘拆开，不能泄露真实员工、绩效、考试成绩或个人评价。 | `enterprise-training/training-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的企业培训版本；下一步接 LMS、HR 系统、课程库、考试平台、练习环境和学习数据看板。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -138,9 +141,12 @@
 55. **Payment Risk**：已补支付风控基础版本；下一步接支付网关、风控规则引擎、设备指纹、退款系统、人工复核台和审计日志平台。
 56. **Shopping Assistant**：已补智能导购基础版本；下一步接商品主数据、库存价格系统、活动权益平台、客服知识库、导购会话和转化分析平台。
 57. **DevRel Operations**：已补 DevRel 运营基础版本；下一步接 GitHub Issues、Discussions、社群反馈、文档访问分析、活动报名和贡献者看板。
-58. **Brand Reputation**：下一步补舆情线索、传播路径、回应策略和品牌复盘。
-59. **Channel Operations**：下一步补渠道表现、库存协同、价格治理和经营复盘。
-60. **Enterprise Training**：下一步补培训对象、课程设计、练习评估和学习复盘。
+58. **Brand Reputation**：已补品牌舆情基础版本；下一步接舆情监测平台、客服工单、社媒排期、品牌素材库、法务审核和公关复盘看板。
+59. **Channel Operations**：已补渠道运营基础版本；下一步接渠道销售系统、库存系统、价格治理平台、经销商协同、促销系统和经营看板。
+60. **Enterprise Training**：已补企业培训基础版本；下一步接 LMS、HR 系统、课程库、考试平台、练习环境和学习数据看板。
+61. **Contract Fulfillment**：下一步补履约节点、风险预警、协同动作和验收复盘。
+62. **Tender Collaboration**：下一步补招标需求、供应商响应、评分协同和风险复盘。
+63. **Campus Operations**：下一步补园区工单、能耗资源、访客安全和运营复盘。
 
 ## README 写法建议
 

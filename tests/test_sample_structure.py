@@ -1661,6 +1661,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组开发者运营反馈，生成 DevRel 运营方案。",
             ("## 开发者反馈", "## 内容运营", "## 活动节奏", "## 社区复盘"),
         ),
+        "02-use-cases/brand-reputation/reputation-response-langgraph": (
+            "langgraph",
+            "分析一组品牌舆情线索，生成品牌回应复盘方案。",
+            ("## 舆情线索", "## 传播路径", "## 回应策略", "## 品牌复盘"),
+        ),
+        "02-use-cases/brand-reputation/reputation-response-adk": (
+            "adk",
+            "分析一组品牌舆情线索，生成品牌回应复盘方案。",
+            ("## 舆情线索", "## 传播路径", "## 回应策略", "## 品牌复盘"),
+        ),
+        "02-use-cases/brand-reputation/reputation-response-langchain": (
+            "langchain",
+            "分析一组品牌舆情线索，生成品牌回应复盘方案。",
+            ("## 舆情线索", "## 传播路径", "## 回应策略", "## 品牌复盘"),
+        ),
+        "02-use-cases/brand-reputation/reputation-response-deepagents": (
+            "deepagents",
+            "分析一组品牌舆情线索，生成品牌回应复盘方案。",
+            ("## 舆情线索", "## 传播路径", "## 回应策略", "## 品牌复盘"),
+        ),
+        "02-use-cases/channel-operations/channel-health-langgraph": (
+            "langgraph",
+            "分析一组渠道运营数据，生成渠道经营复盘方案。",
+            ("## 渠道表现", "## 库存协同", "## 价格治理", "## 经营复盘"),
+        ),
+        "02-use-cases/channel-operations/channel-health-adk": (
+            "adk",
+            "分析一组渠道运营数据，生成渠道经营复盘方案。",
+            ("## 渠道表现", "## 库存协同", "## 价格治理", "## 经营复盘"),
+        ),
+        "02-use-cases/channel-operations/channel-health-langchain": (
+            "langchain",
+            "分析一组渠道运营数据，生成渠道经营复盘方案。",
+            ("## 渠道表现", "## 库存协同", "## 价格治理", "## 经营复盘"),
+        ),
+        "02-use-cases/channel-operations/channel-health-deepagents": (
+            "deepagents",
+            "分析一组渠道运营数据，生成渠道经营复盘方案。",
+            ("## 渠道表现", "## 库存协同", "## 价格治理", "## 经营复盘"),
+        ),
+        "02-use-cases/enterprise-training/training-planner-langgraph": (
+            "langgraph",
+            "分析一组企业培训需求，生成培训计划复盘方案。",
+            ("## 培训对象", "## 课程设计", "## 练习评估", "## 学习复盘"),
+        ),
+        "02-use-cases/enterprise-training/training-planner-adk": (
+            "adk",
+            "分析一组企业培训需求，生成培训计划复盘方案。",
+            ("## 培训对象", "## 课程设计", "## 练习评估", "## 学习复盘"),
+        ),
+        "02-use-cases/enterprise-training/training-planner-langchain": (
+            "langchain",
+            "分析一组企业培训需求，生成培训计划复盘方案。",
+            ("## 培训对象", "## 课程设计", "## 练习评估", "## 学习复盘"),
+        ),
+        "02-use-cases/enterprise-training/training-planner-deepagents": (
+            "deepagents",
+            "分析一组企业培训需求，生成培训计划复盘方案。",
+            ("## 培训对象", "## 课程设计", "## 练习评估", "## 学习复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

@@ -68,6 +68,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Payment Risk",
     "Shopping Assistant",
     "DevRel Operations",
+    "Brand Reputation",
+    "Channel Operations",
+    "Enterprise Training",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
