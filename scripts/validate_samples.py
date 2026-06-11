@@ -50,6 +50,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Media Operations",
     "Financial Risk",
     "Urban Mobility",
+    "Real Estate Marketing",
+    "Public Safety",
+    "Industrial Inspection",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

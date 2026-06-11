@@ -1301,6 +1301,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组城市交通事件，生成出行协同响应方案。",
             ("## 道路拥堵", "## 运力调度", "## 事件响应", "## 公众通知"),
         ),
+        "02-use-cases/real-estate-marketing/lead-conversion-langgraph": (
+            "langgraph",
+            "分析一批楼盘营销线索，生成转化协同方案。",
+            ("## 楼盘线索", "## 渠道投放", "## 内容审核", "## 转化复盘"),
+        ),
+        "02-use-cases/real-estate-marketing/lead-conversion-adk": (
+            "adk",
+            "分析一批楼盘营销线索，生成转化协同方案。",
+            ("## 楼盘线索", "## 渠道投放", "## 内容审核", "## 转化复盘"),
+        ),
+        "02-use-cases/real-estate-marketing/lead-conversion-langchain": (
+            "langchain",
+            "分析一批楼盘营销线索，生成转化协同方案。",
+            ("## 楼盘线索", "## 渠道投放", "## 内容审核", "## 转化复盘"),
+        ),
+        "02-use-cases/real-estate-marketing/lead-conversion-deepagents": (
+            "deepagents",
+            "分析一批楼盘营销线索，生成转化协同方案。",
+            ("## 楼盘线索", "## 渠道投放", "## 内容审核", "## 转化复盘"),
+        ),
+        "02-use-cases/public-safety/incident-coordination-langgraph": (
+            "langgraph",
+            "分析一批公共安全事件线索，生成联动处置方案。",
+            ("## 事件线索", "## 资源联动", "## 风险通报", "## 处置复盘"),
+        ),
+        "02-use-cases/public-safety/incident-coordination-adk": (
+            "adk",
+            "分析一批公共安全事件线索，生成联动处置方案。",
+            ("## 事件线索", "## 资源联动", "## 风险通报", "## 处置复盘"),
+        ),
+        "02-use-cases/public-safety/incident-coordination-langchain": (
+            "langchain",
+            "分析一批公共安全事件线索，生成联动处置方案。",
+            ("## 事件线索", "## 资源联动", "## 风险通报", "## 处置复盘"),
+        ),
+        "02-use-cases/public-safety/incident-coordination-deepagents": (
+            "deepagents",
+            "分析一批公共安全事件线索，生成联动处置方案。",
+            ("## 事件线索", "## 资源联动", "## 风险通报", "## 处置复盘"),
+        ),
+        "02-use-cases/industrial-inspection/safety-patrol-langgraph": (
+            "langgraph",
+            "分析一组工业巡检记录，生成安全复核方案。",
+            ("## 巡检任务", "## 缺陷识别", "## 维修联动", "## 安全复核"),
+        ),
+        "02-use-cases/industrial-inspection/safety-patrol-adk": (
+            "adk",
+            "分析一组工业巡检记录，生成安全复核方案。",
+            ("## 巡检任务", "## 缺陷识别", "## 维修联动", "## 安全复核"),
+        ),
+        "02-use-cases/industrial-inspection/safety-patrol-langchain": (
+            "langchain",
+            "分析一组工业巡检记录，生成安全复核方案。",
+            ("## 巡检任务", "## 缺陷识别", "## 维修联动", "## 安全复核"),
+        ),
+        "02-use-cases/industrial-inspection/safety-patrol-deepagents": (
+            "deepagents",
+            "分析一组工业巡检记录，生成安全复核方案。",
+            ("## 巡检任务", "## 缺陷识别", "## 维修联动", "## 安全复核"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

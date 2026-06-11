@@ -46,6 +46,9 @@
 | 媒体运营 / Content Distribution 经验 | 媒体运营 Agent 要把内容排期、热点监测、版权风险和多渠道发布拆开，不能泄露真实账号、作者、版权合同或平台后台数据。 | `media-operations/content-distribution-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的内容分发版本；下一步接 CMS、热点监测、版权库、审核流、社媒排期和数据看板。 |
 | 金融风控 / Risk Alert 经验 | 金融风控 Agent 要把交易异常、风险规则、人工复核和审计留痕拆开，不能泄露真实账户、交易、客户、卡号、证件号或内部规则阈值。 | `financial-risk/risk-alert-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的风险预警版本；下一步接交易风控、规则引擎、设备指纹、人工复核台和审计系统。 |
 | 城市交通 / Traffic Response 经验 | 城市交通 Agent 要把道路拥堵、运力调度、事件响应和公众通知拆开，不能泄露真实车牌、乘客、摄像头画面或生产调度数据。 | `urban-mobility/traffic-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的交通响应版本；下一步接交通事件平台、公交调度、路况监测、停车诱导和公众通知平台。 |
+| 地产营销 / Lead Conversion 经验 | 地产营销 Agent 要把楼盘线索、渠道投放、内容审核和转化复盘拆开，不能泄露真实客户、手机号、成交价格或渠道后台数据。 | `real-estate-marketing/lead-conversion-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的线索转化版本；下一步接 CRM、广告投放平台、案场系统、内容审核流和成交复盘看板。 |
+| 公共安全 / Incident Coordination 经验 | 公共安全 Agent 要把事件线索、资源联动、风险通报和处置复盘拆开，不能泄露真实报警人、地址、执法记录或监控画面。 | `public-safety/incident-coordination-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的事件联动版本；下一步接事件平台、热线系统、现场巡查、交通协同、医疗联动和公众通知平台。 |
+| 工业巡检 / Safety Patrol 经验 | 工业巡检 Agent 要把巡检任务、缺陷识别、维修联动和安全复核拆开，不能泄露真实设备序列号、车间位置、工艺参数或事故记录。 | `industrial-inspection/safety-patrol-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的安全巡检版本；下一步接点检系统、EAM、CMMS、传感器平台、备件库存和安全作业票系统。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -102,9 +105,12 @@
 37. **Media Operations**：已补内容分发基础版本；下一步接 CMS、热点监测、版权库、审核流、社媒排期和数据看板。
 38. **Financial Risk**：已补风险预警基础版本；下一步接交易风控、规则引擎、设备指纹、人工复核台和审计系统。
 39. **Urban Mobility**：已补交通响应基础版本；下一步接交通事件平台、公交调度、路况监测、停车诱导和公众通知平台。
-40. **Real Estate Marketing**：下一步补楼盘线索、渠道投放、内容审核和转化复盘。
-41. **Public Safety**：下一步补事件线索、资源联动、风险通报和处置复盘。
-42. **Industrial Inspection**：下一步补巡检任务、缺陷识别、维修联动和安全复核。
+40. **Real Estate Marketing**：已补线索转化基础版本；下一步接 CRM、广告投放平台、案场系统、内容审核流和成交复盘看板。
+41. **Public Safety**：已补事件联动基础版本；下一步接事件平台、热线系统、现场巡查、交通协同、医疗联动和公众通知平台。
+42. **Industrial Inspection**：已补安全巡检基础版本；下一步接点检系统、EAM、CMMS、传感器平台、备件库存和安全作业票系统。
+43. **Environmental Monitoring**：下一步补监测点位、污染线索、处置联动和公众披露。
+44. **Restaurant Operations**：下一步补门店排班、食安巡检、库存损耗和顾客反馈。
+45. **Game Operations**：下一步补玩家反馈、活动配置、经济系统监控和版本复盘。
 
 ## README 写法建议
 

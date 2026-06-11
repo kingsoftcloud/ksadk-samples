@@ -56,6 +56,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 媒体运营 Agent（Media Operations） | `02-use-cases/media-operations/content-distribution-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 金融风控 Agent（Financial Risk） | `02-use-cases/financial-risk/risk-alert-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 城市交通 Agent（Urban Mobility） | `02-use-cases/urban-mobility/traffic-response-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 地产营销 Agent（Real Estate Marketing） | `02-use-cases/real-estate-marketing/lead-conversion-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 公共安全 Agent（Public Safety） | `02-use-cases/public-safety/incident-coordination-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 工业巡检 Agent（Industrial Inspection） | `02-use-cases/industrial-inspection/safety-patrol-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 
 ### 最佳实践案例
 
@@ -100,6 +103,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | Media Operations 内容分发 | `02-use-cases/media-operations/content-distribution-langgraph` | `02-use-cases/media-operations/content-distribution-adk` | `02-use-cases/media-operations/content-distribution-langchain` | `02-use-cases/media-operations/content-distribution-deepagents` |
 | Financial Risk 风险预警 | `02-use-cases/financial-risk/risk-alert-langgraph` | `02-use-cases/financial-risk/risk-alert-adk` | `02-use-cases/financial-risk/risk-alert-langchain` | `02-use-cases/financial-risk/risk-alert-deepagents` |
 | Urban Mobility 交通响应 | `02-use-cases/urban-mobility/traffic-response-langgraph` | `02-use-cases/urban-mobility/traffic-response-adk` | `02-use-cases/urban-mobility/traffic-response-langchain` | `02-use-cases/urban-mobility/traffic-response-deepagents` |
+| Real Estate Marketing 线索转化 | `02-use-cases/real-estate-marketing/lead-conversion-langgraph` | `02-use-cases/real-estate-marketing/lead-conversion-adk` | `02-use-cases/real-estate-marketing/lead-conversion-langchain` | `02-use-cases/real-estate-marketing/lead-conversion-deepagents` |
+| Public Safety 事件联动 | `02-use-cases/public-safety/incident-coordination-langgraph` | `02-use-cases/public-safety/incident-coordination-adk` | `02-use-cases/public-safety/incident-coordination-langchain` | `02-use-cases/public-safety/incident-coordination-deepagents` |
+| Industrial Inspection 安全巡检 | `02-use-cases/industrial-inspection/safety-patrol-langgraph` | `02-use-cases/industrial-inspection/safety-patrol-adk` | `02-use-cases/industrial-inspection/safety-patrol-langchain` | `02-use-cases/industrial-inspection/safety-patrol-deepagents` |
 
 长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume/{langgraph,adk,langchain,deepagents}`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
 
@@ -192,7 +198,7 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量、零售运营、物流履约、房地产运营、农业生产、通信运维、旅游服务、设备维护、媒体运营、金融风控和城市交通已覆盖 LangGraph / ADK / LangChain / DeepAgents。
+- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量、零售运营、物流履约、房地产运营、农业生产、通信运维、旅游服务、设备维护、媒体运营、金融风控、城市交通、地产营销、公共安全和工业巡检已覆盖 LangGraph / ADK / LangChain / DeepAgents。
 - 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
-- 增加更多行业场景，如地产营销、公共安全和工业巡检。
+- 增加更多行业场景，如环境监测、餐饮运营和游戏运营。
 - 长任务恢复已补多框架工程版本；后续可继续接真实 Postgres session backend 和平台 run/session 事件。

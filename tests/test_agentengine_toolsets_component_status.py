@@ -115,3 +115,22 @@ def test_e2b_template_id_is_reported_as_ignored_not_used(monkeypatch):
     assert runtime["ignored_env"] == ["E2B_TEMPLATE_ID"]
     assert "KSADK_SANDBOX_TEMPLATE_ID" in runtime["missing_config"]
     assert sandbox["ignored_env"] == ["E2B_TEMPLATE_ID"]
+
+
+def test_legacy_skill_runtime_template_id_is_accepted_but_flagged(monkeypatch):
+    module = _load_agent_module(
+        monkeypatch,
+        {
+            "KSADK_SKILL_RUNTIME_BACKEND": "e2b",
+            "KSADK_SKILL_RUNTIME_TEMPLATE_ID": "legacy-template",
+            "E2B_API_KEY": "test-e2b-key",
+        },
+    )
+
+    runtime = module._resolve_skill_runtime_status()
+
+    assert runtime["configured"] is True
+    assert runtime["template_configured"] is True
+    assert runtime["template_source"] == "KSADK_SKILL_RUNTIME_TEMPLATE_ID"
+    assert runtime["compatibility_alias_used"] is True
+    assert runtime["missing_config"] == []
