@@ -1,0 +1,102 @@
+# 法务合同谈判 Agent - LangGraph
+
+法务合同 Agent 如何围绕合作协议提取关键条款、谈判建议和法务风险。默认使用公开 fixture，不访问真实合同系统。 这是一个多文件 LangGraph Agent 工程，不是单文件脚本；默认不依赖外部账号，适合作为开源样例和二次开发模板。
+
+## 适用场景
+
+- 想学习 LangGraph 如何实现 Legal Contract Negotiation。
+- 想把本地 fixture 替换为真实业务系统，同时保留 KSADK 的统一运行和 Web UI 调试体验。
+- 想比较 LangGraph / ADK / LangChain / DeepAgents 在同一场景下的工程写法。
+- 想为团队沉淀可运行、可部署、可公开审查的 Agent demo。
+
+## 工程结构
+
+| 文件 | 作用 |
+| --- | --- |
+| `agent.py` | LangGraph `root_agent` 入口。 |
+| `tools.py` | 场景工具函数和 Markdown 输出。 |
+| `data.py` | 本地公开 fixture，可替换为真实系统。 |
+| `prompts.py` | Agent 角色、目标和输出约束。 |
+| `demo.py` | 离线演示脚本，不需要模型 key。 |
+| `workflow.py` | LangGraph 编排：证据收集、行动规划、输出报告。 |
+| `agentengine.yaml` | AgentEngine / KSADK 运行配置。 |
+
+## 你会看到什么
+
+- `合同摘要`：先说明合同背景、相对方、金额和周期。
+- `关键条款`：提取需要确认或谈判的条款。
+- `谈判建议`：把风险转成可执行谈判动作。
+- `法务风险`：列出审阅前必须升级确认的事项。
+
+## 环境准备
+
+```bash
+uv venv
+uv pip install -e ".[test]"
+uv pip install -U "ksadk[all]"
+```
+
+单独运行当前样例：
+
+```bash
+cd 02-use-cases/legal-contract/contract-negotiation-langgraph
+cp ../../../.env.example .env
+uv pip install -r requirements.txt
+```
+
+真实模型调用需要在 `.env` 中配置：
+
+```bash
+OPENAI_API_KEY=your-openai-compatible-api-key
+OPENAI_MODEL_NAME=gpt-4o-mini
+```
+
+## 本地运行
+
+快速看离线输出：
+
+```bash
+uv run python demo.py
+```
+
+启动 OpenAI-compatible API：
+
+```bash
+uv run agentengine run -p 18080 .
+```
+
+## Web UI 调试
+
+```bash
+uv run agentengine web .
+```
+
+Web UI 中可以观察 Agent 如何输出 `合同摘要`、`关键条款`、`谈判建议` 和 `法务风险`。未接入真实系统时，输出会明确标注为 fixture。
+
+## 部署
+
+```bash
+uv run agentengine deploy .
+```
+
+部署前请确认真实数据源、脱敏规则、审核流程和回滚策略已经配置；未配置时样例只分析本地 fixture。
+
+## 示例问题
+
+- `审阅一份合作合同，提取关键条款和谈判建议。`
+- `基于当前样例数据，给我一份可执行的改进计划。`
+
+## 接入真实能力
+
+- 把 `CONTRACT_SUMMARY` 替换为合同管理系统中的合同元数据、版本和交易背景。
+- 把 `KEY_CLAUSES` 接入法务规则库、风险等级和历史条款模板。
+- 把谈判建议和法务风险写回合同审阅单、审批流或协同文档。
+- 接入真实能力后建议继续保留 `demo.py`，用公开 fixture 做回归测试。
+
+## 常见问题
+
+- 如果运行时报依赖缺失，请确认已安装 `ksadk[all]` 或当前框架依赖。
+- 如果没有真实业务系统，样例不会访问外部服务，只展示公开 fixture 的完整流程。
+- 如果 `agentengine run` 能启动但对话内容为空，请先运行 `uv run python demo.py` 验证工程输出，再检查模型 key、模型网关日志和当前框架 runner 日志。
+- 如果要开源，请确认输入数据、输出示例和环境变量不包含真实个人信息、真实客户、账号、内部域名或敏感流程。
+- 如果要对比其他框架，请切换到同一场景下的 LangGraph / ADK / LangChain / DeepAgents 版本。

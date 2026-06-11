@@ -21,6 +21,9 @@
 | 合规审阅 / Policy Review Copilot 经验 | 合规 Agent 要可追溯地列出材料、规则、整改建议和审阅记录，不能替代法务结论。 | `compliance-review/policy-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的对外材料审阅版本；下一步接 Workspace 文档、法务规则库和审批流。 |
 | 采购协同 / Vendor Selection Copilot 经验 | 采购 Agent 要把需求、供应商、谈判项和审批风险拆开，避免只做价格排序。 | `procurement-collaboration/vendor-selection-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的供应商筛选版本；下一步接真实采购系统、供应商库和审批流。 |
 | HR 招聘 / Interview Planner 经验 | 招聘 Agent 要把岗位画像、候选人匹配、面试轮次和录用风险拆开，不能泄露真实个人信息。 | `hr-recruiting/interview-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的面试计划版本；下一步接 ATS、日历和面试评价模板。 |
+| 项目管理 / Delivery Planner 经验 | 项目管理 Agent 要把项目状态、风险、推进动作和验收标准拆开，避免只输出周报摘要。 | `project-management/delivery-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的交付计划版本；下一步接真实项目管理系统、风险登记表和发布审批流。 |
+| 法务合同 / Contract Negotiation Copilot 经验 | 合同 Agent 要把合同背景、关键条款、谈判建议和法务风险拆开，不能替代正式法律意见。 | `legal-contract/contract-negotiation-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的合同谈判审阅版本；下一步接合同管理系统、法务规则库和审批流。 |
+| 研发效能 / Engineering Efficiency 经验 | 研发效能 Agent 要把迭代概览、瓶颈、改进动作和度量指标串起来，避免只给管理口号。 | `dev-productivity/engineering-efficiency-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的效能改进版本；下一步接 Git、CI、Issue、评审和发布流水线。 |
 | 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 已补 LangGraph 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
@@ -53,7 +56,10 @@
 12. **Compliance Review**：已补对外材料审阅基础版本；下一步接 Workspace 文档、法务规则库和审批流。
 13. **Procurement Collaboration**：已补供应商筛选基础版本；下一步接真实采购系统、供应商库和审批流。
 14. **HR Recruiting**：已补面试计划基础版本；下一步接 ATS、日历和面试评价模板。
-15. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
+15. **Project Management**：已补交付计划基础版本；下一步接真实项目管理系统、风险登记表和发布审批流。
+16. **Legal Contract**：已补合同谈判审阅基础版本；下一步接合同管理系统、法务规则库和审批流。
+17. **Dev Productivity**：已补研发效能改进基础版本；下一步接 Git、CI、Issue、评审和发布流水线。
+18. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
 
 ## README 写法建议
 

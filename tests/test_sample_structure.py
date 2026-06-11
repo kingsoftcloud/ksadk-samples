@@ -1,6 +1,7 @@
 from pathlib import Path
 import importlib.util
 import os
+import subprocess
 import sys
 
 import yaml
@@ -323,7 +324,21 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
     ):
         assert required in env_example
 
-    smoke_source = (sample / "smoke.py").read_text(encoding="utf-8")
+    leaked_runtime_artifacts = [
+        path
+        for path in sample.rglob("*")
+        if ".agentengine" in path.parts or path.suffix == ".sqlite"
+    ]
+    assert leaked_runtime_artifacts == []
+
+    smoke_result = subprocess.run(
+        [sys.executable, "smoke.py"],
+        cwd=sample,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    smoke_output = smoke_result.stdout
     for required in (
         "run_id",
         "checkpoint_id",
@@ -331,7 +346,7 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "cancel_status",
         "duplicate_tool_count",
     ):
-        assert required in smoke_source
+        assert required in smoke_output
 
     for filename in required_files:
         assert not check_public_readiness.scan_file(sample / filename)
@@ -710,6 +725,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "deepagents",
             "根据岗位要求和候选人简历，生成面试计划。",
             ("## 岗位画像", "## 候选人匹配", "## 面试计划", "## 录用风险"),
+        ),
+        "02-use-cases/project-management/delivery-planner-langgraph": (
+            "langgraph",
+            "根据项目状态生成交付风险评估和推进计划。",
+            ("## 项目状态", "## 风险雷达", "## 推进计划", "## 验收清单"),
+        ),
+        "02-use-cases/project-management/delivery-planner-adk": (
+            "adk",
+            "根据项目状态生成交付风险评估和推进计划。",
+            ("## 项目状态", "## 风险雷达", "## 推进计划", "## 验收清单"),
+        ),
+        "02-use-cases/project-management/delivery-planner-langchain": (
+            "langchain",
+            "根据项目状态生成交付风险评估和推进计划。",
+            ("## 项目状态", "## 风险雷达", "## 推进计划", "## 验收清单"),
+        ),
+        "02-use-cases/project-management/delivery-planner-deepagents": (
+            "deepagents",
+            "根据项目状态生成交付风险评估和推进计划。",
+            ("## 项目状态", "## 风险雷达", "## 推进计划", "## 验收清单"),
+        ),
+        "02-use-cases/legal-contract/contract-negotiation-langgraph": (
+            "langgraph",
+            "审阅一份合作合同，提取关键条款和谈判建议。",
+            ("## 合同摘要", "## 关键条款", "## 谈判建议", "## 法务风险"),
+        ),
+        "02-use-cases/legal-contract/contract-negotiation-adk": (
+            "adk",
+            "审阅一份合作合同，提取关键条款和谈判建议。",
+            ("## 合同摘要", "## 关键条款", "## 谈判建议", "## 法务风险"),
+        ),
+        "02-use-cases/legal-contract/contract-negotiation-langchain": (
+            "langchain",
+            "审阅一份合作合同，提取关键条款和谈判建议。",
+            ("## 合同摘要", "## 关键条款", "## 谈判建议", "## 法务风险"),
+        ),
+        "02-use-cases/legal-contract/contract-negotiation-deepagents": (
+            "deepagents",
+            "审阅一份合作合同，提取关键条款和谈判建议。",
+            ("## 合同摘要", "## 关键条款", "## 谈判建议", "## 法务风险"),
+        ),
+        "02-use-cases/dev-productivity/engineering-efficiency-langgraph": (
+            "langgraph",
+            "分析研发团队迭代数据，给出效能改进计划。",
+            ("## 研发概览", "## 瓶颈分析", "## 改进计划", "## 度量指标"),
+        ),
+        "02-use-cases/dev-productivity/engineering-efficiency-adk": (
+            "adk",
+            "分析研发团队迭代数据，给出效能改进计划。",
+            ("## 研发概览", "## 瓶颈分析", "## 改进计划", "## 度量指标"),
+        ),
+        "02-use-cases/dev-productivity/engineering-efficiency-langchain": (
+            "langchain",
+            "分析研发团队迭代数据，给出效能改进计划。",
+            ("## 研发概览", "## 瓶颈分析", "## 改进计划", "## 度量指标"),
+        ),
+        "02-use-cases/dev-productivity/engineering-efficiency-deepagents": (
+            "deepagents",
+            "分析研发团队迭代数据，给出效能改进计划。",
+            ("## 研发概览", "## 瓶颈分析", "## 改进计划", "## 度量指标"),
         ),
     }
 
