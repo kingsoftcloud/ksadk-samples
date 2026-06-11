@@ -61,6 +61,9 @@
 | 直播运营 / Live Commerce Operations 经验 | 直播运营 Agent 要把直播场控、商品讲解、异常舆情和转化复盘拆开，不能泄露真实观众、订单、直播间后台或未公开价格策略。 | `live-commerce-operations/session-control-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的直播场控版本；下一步接直播中控台、商品池、库存系统、客服工单、舆情看板和转化分析。 |
 | 会员增长 / Membership Growth 经验 | 会员增长 Agent 要把会员分层、权益推荐、触达节奏和留存复盘拆开，不能泄露真实会员、手机号、订单、支付记录或画像明细。 | `membership-growth/member-lifecycle-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的会员生命周期版本；下一步接 CRM、会员中心、权益平台、营销触达系统和客服反馈。 |
 | 搜索推荐 / Search Recommendation 经验 | 搜索推荐 Agent 要把查询意图、召回质量、排序诊断和反馈闭环拆开，不能泄露真实 query、点击日志、排序权重或反作弊逻辑。 | `search-recommendation/relevance-diagnostics-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的相关性诊断版本；下一步接搜索日志、召回服务、排序服务、标注平台、AB 实验和指标看板。 |
+| 支付风控 / Payment Risk 经验 | 支付风控 Agent 要把支付异常、风控规则、人工复核和审计留痕拆开，不能泄露真实账户、交易号、设备指纹或真实规则阈值。 | `payment-risk/payment-guard-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的支付风控版本；下一步接支付网关、风控规则引擎、设备指纹、退款系统、人工复核台和审计日志平台。 |
+| 智能导购 / Shopping Assistant 经验 | 导购 Agent 要把需求澄清、商品对比、库存价格和导购转化拆开，不能泄露真实用户、订单、地址、支付记录或未公开促销策略。 | `shopping-assistant/product-advisor-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的智能导购版本；下一步接商品主数据、库存价格系统、活动权益平台、客服知识库和导购会话。 |
+| DevRel 运营 / DevRel Operations 经验 | DevRel Agent 要把开发者反馈、内容运营、活动节奏和社区复盘拆开，不能泄露真实开发者、企业信息、私聊内容或未公开路线图。 | `devrel-operations/community-program-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的开发者运营版本；下一步接 GitHub Issues、Discussions、社群反馈、文档访问分析和贡献者看板。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -132,9 +135,12 @@
 52. **Live Commerce Operations**：已补直播场控基础版本；下一步接直播中控台、商品池、库存系统、客服工单、舆情看板和转化分析平台。
 53. **Membership Growth**：已补会员增长基础版本；下一步接 CRM、会员中心、权益平台、营销触达系统、订单分析和客服反馈平台。
 54. **Search Recommendation**：已补搜索推荐诊断基础版本；下一步接搜索日志平台、召回服务、排序服务、标注平台、AB 实验和指标看板。
-55. **Payment Risk**：下一步补支付异常、风控规则、人工复核和审计留痕。
-56. **Shopping Assistant**：下一步补需求澄清、商品对比、库存价格和导购转化。
-57. **DevRel Operations**：下一步补开发者反馈、内容运营、活动节奏和社区复盘。
+55. **Payment Risk**：已补支付风控基础版本；下一步接支付网关、风控规则引擎、设备指纹、退款系统、人工复核台和审计日志平台。
+56. **Shopping Assistant**：已补智能导购基础版本；下一步接商品主数据、库存价格系统、活动权益平台、客服知识库、导购会话和转化分析平台。
+57. **DevRel Operations**：已补 DevRel 运营基础版本；下一步接 GitHub Issues、Discussions、社群反馈、文档访问分析、活动报名和贡献者看板。
+58. **Brand Reputation**：下一步补舆情线索、传播路径、回应策略和品牌复盘。
+59. **Channel Operations**：下一步补渠道表现、库存协同、价格治理和经营复盘。
+60. **Enterprise Training**：下一步补培训对象、课程设计、练习评估和学习复盘。
 
 ## README 写法建议
 

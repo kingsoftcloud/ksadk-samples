@@ -1601,6 +1601,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一批搜索推荐样本，生成相关性诊断方案。",
             ("## 查询意图", "## 召回质量", "## 排序诊断", "## 反馈闭环"),
         ),
+        "02-use-cases/payment-risk/payment-guard-langgraph": (
+            "langgraph",
+            "分析一批支付异常样本，生成支付风控处置方案。",
+            ("## 支付异常", "## 风控规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/payment-risk/payment-guard-adk": (
+            "adk",
+            "分析一批支付异常样本，生成支付风控处置方案。",
+            ("## 支付异常", "## 风控规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/payment-risk/payment-guard-langchain": (
+            "langchain",
+            "分析一批支付异常样本，生成支付风控处置方案。",
+            ("## 支付异常", "## 风控规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/payment-risk/payment-guard-deepagents": (
+            "deepagents",
+            "分析一批支付异常样本，生成支付风控处置方案。",
+            ("## 支付异常", "## 风控规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/shopping-assistant/product-advisor-langgraph": (
+            "langgraph",
+            "分析一组导购咨询样本，生成智能导购方案。",
+            ("## 需求澄清", "## 商品对比", "## 库存价格", "## 导购转化"),
+        ),
+        "02-use-cases/shopping-assistant/product-advisor-adk": (
+            "adk",
+            "分析一组导购咨询样本，生成智能导购方案。",
+            ("## 需求澄清", "## 商品对比", "## 库存价格", "## 导购转化"),
+        ),
+        "02-use-cases/shopping-assistant/product-advisor-langchain": (
+            "langchain",
+            "分析一组导购咨询样本，生成智能导购方案。",
+            ("## 需求澄清", "## 商品对比", "## 库存价格", "## 导购转化"),
+        ),
+        "02-use-cases/shopping-assistant/product-advisor-deepagents": (
+            "deepagents",
+            "分析一组导购咨询样本，生成智能导购方案。",
+            ("## 需求澄清", "## 商品对比", "## 库存价格", "## 导购转化"),
+        ),
+        "02-use-cases/devrel-operations/community-program-langgraph": (
+            "langgraph",
+            "分析一组开发者运营反馈，生成 DevRel 运营方案。",
+            ("## 开发者反馈", "## 内容运营", "## 活动节奏", "## 社区复盘"),
+        ),
+        "02-use-cases/devrel-operations/community-program-adk": (
+            "adk",
+            "分析一组开发者运营反馈，生成 DevRel 运营方案。",
+            ("## 开发者反馈", "## 内容运营", "## 活动节奏", "## 社区复盘"),
+        ),
+        "02-use-cases/devrel-operations/community-program-langchain": (
+            "langchain",
+            "分析一组开发者运营反馈，生成 DevRel 运营方案。",
+            ("## 开发者反馈", "## 内容运营", "## 活动节奏", "## 社区复盘"),
+        ),
+        "02-use-cases/devrel-operations/community-program-deepagents": (
+            "deepagents",
+            "分析一组开发者运营反馈，生成 DevRel 运营方案。",
+            ("## 开发者反馈", "## 内容运营", "## 活动节奏", "## 社区复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

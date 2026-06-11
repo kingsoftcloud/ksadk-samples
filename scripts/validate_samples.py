@@ -65,6 +65,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Live Commerce Operations",
     "Membership Growth",
     "Search Recommendation",
+    "Payment Risk",
+    "Shopping Assistant",
+    "DevRel Operations",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
