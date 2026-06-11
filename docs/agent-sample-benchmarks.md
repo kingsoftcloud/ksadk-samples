@@ -24,6 +24,9 @@
 | 项目管理 / Delivery Planner 经验 | 项目管理 Agent 要把项目状态、风险、推进动作和验收标准拆开，避免只输出周报摘要。 | `project-management/delivery-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的交付计划版本；下一步接真实项目管理系统、风险登记表和发布审批流。 |
 | 法务合同 / Contract Negotiation Copilot 经验 | 合同 Agent 要把合同背景、关键条款、谈判建议和法务风险拆开，不能替代正式法律意见。 | `legal-contract/contract-negotiation-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的合同谈判审阅版本；下一步接合同管理系统、法务规则库和审批流。 |
 | 研发效能 / Engineering Efficiency 经验 | 研发效能 Agent 要把迭代概览、瓶颈、改进动作和度量指标串起来，避免只给管理口号。 | `dev-productivity/engineering-efficiency-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的效能改进版本；下一步接 Git、CI、Issue、评审和发布流水线。 |
+| 产品运营 / Experiment Review 经验 | 产品运营 Agent 要把实验结果、用户分群、运营动作和复盘指标拆开，避免只追单一转化率。 | `product-operations/experiment-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的实验复盘版本；下一步接真实埋点、实验平台和运营触达系统。 |
+| 数据治理 / Quality Audit 经验 | 数据治理 Agent 要把资产、质量问题、治理动作和责任矩阵串起来，避免只输出抽象治理建议。 | `data-governance/quality-audit-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的质量审计版本；下一步接数据目录、质量规则、血缘和整改工单。 |
+| 安全审计 / Threat Review 经验 | 安全审计 Agent 要把变更摘要、威胁、整改和验证证据拆开，避免泄露真实漏洞或生产细节。 | `security-audit/threat-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的威胁评审版本；下一步接 SAST、DAST、权限审计和发布审批流。 |
 | 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 已补 LangGraph 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
@@ -59,7 +62,10 @@
 15. **Project Management**：已补交付计划基础版本；下一步接真实项目管理系统、风险登记表和发布审批流。
 16. **Legal Contract**：已补合同谈判审阅基础版本；下一步接合同管理系统、法务规则库和审批流。
 17. **Dev Productivity**：已补研发效能改进基础版本；下一步接 Git、CI、Issue、评审和发布流水线。
-18. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
+18. **Product Operations**：已补实验复盘基础版本；下一步接真实埋点、实验平台和运营触达系统。
+19. **Data Governance**：已补质量审计基础版本；下一步接数据目录、质量规则、血缘和整改工单。
+20. **Security Audit**：已补威胁评审基础版本；下一步接 SAST、DAST、权限审计和发布审批流。
+21. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
 
 ## README 写法建议
 

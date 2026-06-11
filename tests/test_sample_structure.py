@@ -786,6 +786,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析研发团队迭代数据，给出效能改进计划。",
             ("## 研发概览", "## 瓶颈分析", "## 改进计划", "## 度量指标"),
         ),
+        "02-use-cases/product-operations/experiment-review-langgraph": (
+            "langgraph",
+            "分析一组产品实验数据，给出运营优化计划。",
+            ("## 实验概览", "## 用户分群", "## 优化动作", "## 复盘指标"),
+        ),
+        "02-use-cases/product-operations/experiment-review-adk": (
+            "adk",
+            "分析一组产品实验数据，给出运营优化计划。",
+            ("## 实验概览", "## 用户分群", "## 优化动作", "## 复盘指标"),
+        ),
+        "02-use-cases/product-operations/experiment-review-langchain": (
+            "langchain",
+            "分析一组产品实验数据，给出运营优化计划。",
+            ("## 实验概览", "## 用户分群", "## 优化动作", "## 复盘指标"),
+        ),
+        "02-use-cases/product-operations/experiment-review-deepagents": (
+            "deepagents",
+            "分析一组产品实验数据，给出运营优化计划。",
+            ("## 实验概览", "## 用户分群", "## 优化动作", "## 复盘指标"),
+        ),
+        "02-use-cases/data-governance/quality-audit-langgraph": (
+            "langgraph",
+            "审计一批数据资产，生成质量问题和治理计划。",
+            ("## 资产清单", "## 质量问题", "## 治理计划", "## 责任矩阵"),
+        ),
+        "02-use-cases/data-governance/quality-audit-adk": (
+            "adk",
+            "审计一批数据资产，生成质量问题和治理计划。",
+            ("## 资产清单", "## 质量问题", "## 治理计划", "## 责任矩阵"),
+        ),
+        "02-use-cases/data-governance/quality-audit-langchain": (
+            "langchain",
+            "审计一批数据资产，生成质量问题和治理计划。",
+            ("## 资产清单", "## 质量问题", "## 治理计划", "## 责任矩阵"),
+        ),
+        "02-use-cases/data-governance/quality-audit-deepagents": (
+            "deepagents",
+            "审计一批数据资产，生成质量问题和治理计划。",
+            ("## 资产清单", "## 质量问题", "## 治理计划", "## 责任矩阵"),
+        ),
+        "02-use-cases/security-audit/threat-review-langgraph": (
+            "langgraph",
+            "审查一次安全变更，输出威胁分析和整改计划。",
+            ("## 变更摘要", "## 威胁分析", "## 整改计划", "## 验证证据"),
+        ),
+        "02-use-cases/security-audit/threat-review-adk": (
+            "adk",
+            "审查一次安全变更，输出威胁分析和整改计划。",
+            ("## 变更摘要", "## 威胁分析", "## 整改计划", "## 验证证据"),
+        ),
+        "02-use-cases/security-audit/threat-review-langchain": (
+            "langchain",
+            "审查一次安全变更，输出威胁分析和整改计划。",
+            ("## 变更摘要", "## 威胁分析", "## 整改计划", "## 验证证据"),
+        ),
+        "02-use-cases/security-audit/threat-review-deepagents": (
+            "deepagents",
+            "审查一次安全变更，输出威胁分析和整改计划。",
+            ("## 变更摘要", "## 威胁分析", "## 整改计划", "## 验证证据"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

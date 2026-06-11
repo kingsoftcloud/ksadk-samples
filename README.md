@@ -34,6 +34,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 项目管理 Agent（Project Management） | `02-use-cases/project-management/delivery-planner-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 法务合同 Agent（Legal Contract） | `02-use-cases/legal-contract/contract-negotiation-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 研发效能 Agent（Dev Productivity） | `02-use-cases/dev-productivity/engineering-efficiency-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 产品运营 Agent（Product Operations） | `02-use-cases/product-operations/experiment-review-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 数据治理 Agent（Data Governance） | `02-use-cases/data-governance/quality-audit-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 安全审计 Agent（Security Audit） | `02-use-cases/security-audit/threat-review-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 长任务恢复 Agent（Long Task Resume） | `02-use-cases/long-task-resume` | Built With LangGraph |
 
 ### 最佳实践案例
@@ -57,6 +60,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | Project Management 交付计划 | `02-use-cases/project-management/delivery-planner-langgraph` | `02-use-cases/project-management/delivery-planner-adk` | `02-use-cases/project-management/delivery-planner-langchain` | `02-use-cases/project-management/delivery-planner-deepagents` |
 | Legal Contract 合同谈判 | `02-use-cases/legal-contract/contract-negotiation-langgraph` | `02-use-cases/legal-contract/contract-negotiation-adk` | `02-use-cases/legal-contract/contract-negotiation-langchain` | `02-use-cases/legal-contract/contract-negotiation-deepagents` |
 | Dev Productivity 研发效能 | `02-use-cases/dev-productivity/engineering-efficiency-langgraph` | `02-use-cases/dev-productivity/engineering-efficiency-adk` | `02-use-cases/dev-productivity/engineering-efficiency-langchain` | `02-use-cases/dev-productivity/engineering-efficiency-deepagents` |
+| Product Operations 实验复盘 | `02-use-cases/product-operations/experiment-review-langgraph` | `02-use-cases/product-operations/experiment-review-adk` | `02-use-cases/product-operations/experiment-review-langchain` | `02-use-cases/product-operations/experiment-review-deepagents` |
+| Data Governance 质量审计 | `02-use-cases/data-governance/quality-audit-langgraph` | `02-use-cases/data-governance/quality-audit-adk` | `02-use-cases/data-governance/quality-audit-langchain` | `02-use-cases/data-governance/quality-audit-deepagents` |
+| Security Audit 威胁评审 | `02-use-cases/security-audit/threat-review-langgraph` | `02-use-cases/security-audit/threat-review-adk` | `02-use-cases/security-audit/threat-review-langchain` | `02-use-cases/security-audit/threat-review-deepagents` |
 
 长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
 
@@ -149,7 +155,7 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同和研发效能已覆盖 LangGraph / ADK / LangChain / DeepAgents。
+- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理和安全审计已覆盖 LangGraph / ADK / LangChain / DeepAgents。
 - 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
-- 增加更多行业场景，如产品运营、数据治理和安全审计。
+- 增加更多行业场景，如客户成功、教育培训和供应链计划。
 - 长任务恢复已补 LangGraph 工程版本；后续可继续补 ADK / LangChain / DeepAgents 写法，并接真实 session backend。
