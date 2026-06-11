@@ -1027,6 +1027,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "整理一批政务服务事项，生成办事协同方案。",
             ("## 事项画像", "## 材料核验", "## 协同流程", "## 服务承诺"),
         ),
+        "02-use-cases/insurance-claims/claim-review-langgraph": (
+            "langgraph",
+            "分析一批理赔材料，生成理赔审核协同建议。",
+            ("## 案件摘要", "## 材料核验", "## 审核建议", "## 风险控制"),
+        ),
+        "02-use-cases/insurance-claims/claim-review-adk": (
+            "adk",
+            "分析一批理赔材料，生成理赔审核协同建议。",
+            ("## 案件摘要", "## 材料核验", "## 审核建议", "## 风险控制"),
+        ),
+        "02-use-cases/insurance-claims/claim-review-langchain": (
+            "langchain",
+            "分析一批理赔材料，生成理赔审核协同建议。",
+            ("## 案件摘要", "## 材料核验", "## 审核建议", "## 风险控制"),
+        ),
+        "02-use-cases/insurance-claims/claim-review-deepagents": (
+            "deepagents",
+            "分析一批理赔材料，生成理赔审核协同建议。",
+            ("## 案件摘要", "## 材料核验", "## 审核建议", "## 风险控制"),
+        ),
+        "02-use-cases/manufacturing-quality/defect-analysis-langgraph": (
+            "langgraph",
+            "分析一批产线质检数据，生成质量改进计划。",
+            ("## 质量概览", "## 缺陷归因", "## 改进措施", "## 验证指标"),
+        ),
+        "02-use-cases/manufacturing-quality/defect-analysis-adk": (
+            "adk",
+            "分析一批产线质检数据，生成质量改进计划。",
+            ("## 质量概览", "## 缺陷归因", "## 改进措施", "## 验证指标"),
+        ),
+        "02-use-cases/manufacturing-quality/defect-analysis-langchain": (
+            "langchain",
+            "分析一批产线质检数据，生成质量改进计划。",
+            ("## 质量概览", "## 缺陷归因", "## 改进措施", "## 验证指标"),
+        ),
+        "02-use-cases/manufacturing-quality/defect-analysis-deepagents": (
+            "deepagents",
+            "分析一批产线质检数据，生成质量改进计划。",
+            ("## 质量概览", "## 缺陷归因", "## 改进措施", "## 验证指标"),
+        ),
+        "02-use-cases/retail-operations/store-optimizer-langgraph": (
+            "langgraph",
+            "分析一组门店销售和库存数据，生成零售运营优化方案。",
+            ("## 门店表现", "## 库存结构", "## 运营动作", "## 复盘指标"),
+        ),
+        "02-use-cases/retail-operations/store-optimizer-adk": (
+            "adk",
+            "分析一组门店销售和库存数据，生成零售运营优化方案。",
+            ("## 门店表现", "## 库存结构", "## 运营动作", "## 复盘指标"),
+        ),
+        "02-use-cases/retail-operations/store-optimizer-langchain": (
+            "langchain",
+            "分析一组门店销售和库存数据，生成零售运营优化方案。",
+            ("## 门店表现", "## 库存结构", "## 运营动作", "## 复盘指标"),
+        ),
+        "02-use-cases/retail-operations/store-optimizer-deepagents": (
+            "deepagents",
+            "分析一组门店销售和库存数据，生成零售运营优化方案。",
+            ("## 门店表现", "## 库存结构", "## 运营动作", "## 复盘指标"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

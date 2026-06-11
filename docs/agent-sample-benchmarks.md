@@ -34,6 +34,9 @@
 | 医疗运营 / Care Coordination 经验 | 医疗运营 Agent 要把患者流转、资源瓶颈、协同计划和风险提醒拆开，不能处理真实诊断或隐私数据。 | `healthcare-operations/care-coordinator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的护理协同版本；下一步接预约、排队、护理工作站和运营看板的脱敏统计数据。 |
 | 能源调度 / Load Balancer 经验 | 能源调度 Agent 要把负荷预测、设备状态、调度策略和安全边界拆开，不能直接下发真实控制指令。 | `energy-dispatch/load-balancer-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的负荷平衡版本；下一步接 EMS、计量平台、天气服务和需求响应系统。 |
 | 政务服务 / Case Assistant 经验 | 政务服务 Agent 要把事项画像、材料核验、协同流程和服务承诺拆开，审批结论必须人工复核。 | `public-service/case-assistant-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的事项协同版本；下一步接政务服务平台、材料库和办件流转系统。 |
+| 保险理赔 / Claim Review 经验 | 理赔 Agent 要把案件摘要、材料核验、审核建议和风险控制拆开，不能自动给出赔付结论或泄露真实保单信息。 | `insurance-claims/claim-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的理赔审核协同版本；下一步接理赔系统、影像件库、定损系统和人工审核工作台。 |
+| 制造质量 / Defect Analysis 经验 | 制造质量 Agent 要把质量概览、缺陷归因、改进措施和验证指标串起来，避免泄露真实工艺参数或客户产品信息。 | `manufacturing-quality/defect-analysis-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的缺陷分析版本；下一步接 MES、QMS、设备点检和质量看板。 |
+| 零售运营 / Store Optimization 经验 | 零售 Agent 要同时看门店表现、库存结构、运营动作和复盘指标，不能只追销售额或暴露真实会员数据。 | `retail-operations/store-optimizer-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的门店优化版本；下一步接 POS、WMS、商品主数据、促销和会员分析。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -78,6 +81,12 @@
 25. **Healthcare Operations**：已补护理协同基础版本；下一步接预约、排队、护理工作站和运营看板的脱敏统计数据。
 26. **Energy Dispatch**：已补负荷平衡基础版本；下一步接 EMS、计量平台、天气服务和需求响应系统。
 27. **Public Service**：已补事项协同基础版本；下一步接政务服务平台、材料库和办件流转系统。
+28. **Insurance Claims**：已补理赔审核协同基础版本；下一步接理赔系统、影像件库、定损系统和人工审核工作台。
+29. **Manufacturing Quality**：已补缺陷分析基础版本；下一步接 MES、QMS、设备点检和质量看板。
+30. **Retail Operations**：已补门店优化基础版本；下一步接 POS、WMS、商品主数据、促销和会员分析。
+31. **Logistics Fulfillment**：下一步补履约异常、配送资源、客户承诺和复盘指标。
+32. **Real Estate Operations**：下一步补资产状态、租户服务、工单协同和收益风险。
+33. **Agriculture Production**：下一步补种植计划、环境数据、农事任务和产量预测。
 
 ## README 写法建议
 
