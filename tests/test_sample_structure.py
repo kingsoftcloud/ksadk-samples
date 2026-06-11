@@ -249,7 +249,9 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
         "KSADK_SANDBOX_BACKEND",
         "KSADK_SANDBOX_TEMPLATE_ID",
         "KSADK_SANDBOX_TIMEOUT",
+        "E2B_API_URL",
         "E2B_API_KEY",
+        "E2B_TEMPLATE_ID",
         "KSADK_KB_DATASET_ID",
         "KSADK_KB_ENDPOINT",
         "KSADK_KB_TOP_K",
@@ -271,6 +273,11 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
         "graph_status",
         "component_status",
         "missing_for_skill_space",
+        "_resolve_skill_runtime_status",
+        "_resolve_sandbox_status",
+        "template_required",
+        "template_source",
+        "ignored_env",
         "space_ids_configured",
         "list_skills",
         "search_skills",
@@ -283,7 +290,7 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
 
 
 def test_long_task_resume_sample_exists_and_is_public_ready():
-    sample = ROOT / "02-use-cases/long-task-resume"
+    sample = ROOT / "02-use-cases/long-task-resume/langgraph"
     required_files = (
         "README.md",
         ".env.example",
@@ -355,15 +362,22 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
 def test_long_task_resume_multi_framework_variants_exist_and_render_resume_sections():
     """Long Task Resume 作为横向 Runtime 能力，也要补齐多框架写法。"""
 
+    for obsolete_dir in (
+        "02-use-cases/long-task-resume-adk",
+        "02-use-cases/long-task-resume-langchain",
+        "02-use-cases/long-task-resume-deepagents",
+    ):
+        assert not (ROOT / obsolete_dir).exists(), f"{obsolete_dir} should be nested under long-task-resume/"
+
     os.environ.setdefault("OPENAI_API_KEY", "test-key")
     os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
     os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
 
     samples = {
-        "02-use-cases/long-task-resume": ("langgraph", True),
-        "02-use-cases/long-task-resume-adk": ("adk", False),
-        "02-use-cases/long-task-resume-langchain": ("langchain", False),
-        "02-use-cases/long-task-resume-deepagents": ("deepagents", False),
+        "02-use-cases/long-task-resume/langgraph": ("langgraph", True),
+        "02-use-cases/long-task-resume/adk": ("adk", False),
+        "02-use-cases/long-task-resume/langchain": ("langchain", False),
+        "02-use-cases/long-task-resume/deepagents": ("deepagents", False),
     }
     required_sections = (
         "## checkpoint 列表",
@@ -1086,6 +1100,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "deepagents",
             "分析一组门店销售和库存数据，生成零售运营优化方案。",
             ("## 门店表现", "## 库存结构", "## 运营动作", "## 复盘指标"),
+        ),
+        "02-use-cases/logistics-fulfillment/delivery-exception-langgraph": (
+            "langgraph",
+            "分析一批履约异常订单，生成物流协同处置方案。",
+            ("## 履约异常", "## 配送资源", "## 客户承诺", "## 复盘指标"),
+        ),
+        "02-use-cases/logistics-fulfillment/delivery-exception-adk": (
+            "adk",
+            "分析一批履约异常订单，生成物流协同处置方案。",
+            ("## 履约异常", "## 配送资源", "## 客户承诺", "## 复盘指标"),
+        ),
+        "02-use-cases/logistics-fulfillment/delivery-exception-langchain": (
+            "langchain",
+            "分析一批履约异常订单，生成物流协同处置方案。",
+            ("## 履约异常", "## 配送资源", "## 客户承诺", "## 复盘指标"),
+        ),
+        "02-use-cases/logistics-fulfillment/delivery-exception-deepagents": (
+            "deepagents",
+            "分析一批履约异常订单，生成物流协同处置方案。",
+            ("## 履约异常", "## 配送资源", "## 客户承诺", "## 复盘指标"),
+        ),
+        "02-use-cases/real-estate-operations/asset-service-langgraph": (
+            "langgraph",
+            "分析一批园区资产和租户服务数据，生成运营协同方案。",
+            ("## 资产状态", "## 租户服务", "## 工单协同", "## 收益风险"),
+        ),
+        "02-use-cases/real-estate-operations/asset-service-adk": (
+            "adk",
+            "分析一批园区资产和租户服务数据，生成运营协同方案。",
+            ("## 资产状态", "## 租户服务", "## 工单协同", "## 收益风险"),
+        ),
+        "02-use-cases/real-estate-operations/asset-service-langchain": (
+            "langchain",
+            "分析一批园区资产和租户服务数据，生成运营协同方案。",
+            ("## 资产状态", "## 租户服务", "## 工单协同", "## 收益风险"),
+        ),
+        "02-use-cases/real-estate-operations/asset-service-deepagents": (
+            "deepagents",
+            "分析一批园区资产和租户服务数据，生成运营协同方案。",
+            ("## 资产状态", "## 租户服务", "## 工单协同", "## 收益风险"),
+        ),
+        "02-use-cases/agriculture-production/crop-planner-langgraph": (
+            "langgraph",
+            "分析一组农业生产数据，生成农事生产计划。",
+            ("## 种植计划", "## 环境数据", "## 农事任务", "## 产量预测"),
+        ),
+        "02-use-cases/agriculture-production/crop-planner-adk": (
+            "adk",
+            "分析一组农业生产数据，生成农事生产计划。",
+            ("## 种植计划", "## 环境数据", "## 农事任务", "## 产量预测"),
+        ),
+        "02-use-cases/agriculture-production/crop-planner-langchain": (
+            "langchain",
+            "分析一组农业生产数据，生成农事生产计划。",
+            ("## 种植计划", "## 环境数据", "## 农事任务", "## 产量预测"),
+        ),
+        "02-use-cases/agriculture-production/crop-planner-deepagents": (
+            "deepagents",
+            "分析一组农业生产数据，生成农事生产计划。",
+            ("## 种植计划", "## 环境数据", "## 农事任务", "## 产量预测"),
         ),
     }
 

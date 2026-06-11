@@ -1,25 +1,25 @@
-# 长任务恢复 Agent - DeepAgents
+# 长任务恢复 Agent - LangGraph
 
-这个 demo 演示长任务 Agent 如何在中断后恢复执行：读取 checkpoint 列表、发起 ResumeRun、检查 tool receipt、处理 CancelRun，并在未配置持久化组件时给出清晰降级说明。它是一个多文件 DeepAgents Agent 工程，不是单文件脚本；默认使用本地 fixture，方便公开仓库用户 clone 后直接运行。
+这个 demo 演示长任务 Agent 如何在中断后恢复执行：读取 checkpoint 列表、发起 ResumeRun、检查 tool receipt、处理 CancelRun，并在未配置持久化组件时给出清晰降级说明。它是一个多文件 LangGraph Agent 工程，不是单文件脚本；默认使用本地 fixture，方便公开仓库用户 clone 后直接运行。
 
 ## 适用场景
 
 - Agent 需要执行研究、报表生成、代码修复、数据分析等耗时任务。
 - 任务中途可能因为进程重启、网络抖动、用户关闭 Web UI 或主动取消而中断。
 - 恢复后必须避免重复调用外部工具，例如重复扣费、重复写文件、重复提交工单。
-- 你希望对比 LangGraph / ADK / LangChain / DeepAgents 在长任务恢复场景下的工程写法。
+- 你希望在本地先理解 checkpoint / ResumeRun / CancelRun 的工程边界，再接入真实 AgentEngine session store。
 
 ## 工程结构
 
 | 文件 | 作用 |
 | --- | --- |
-| `agent.py` | DeepAgents `root_agent` 入口。 |
+| `agent.py` | KSADK 入口，暴露 `root_agent` 和 `ksadk_prepare_state`。 |
+| `workflow.py` | LangGraph 编排：加载 checkpoint、恢复执行、检查取消状态、渲染结果。 |
 | `tools.py` | 本地 fixture 和长任务恢复工具函数，生产环境可替换为数据库和平台 API。 |
 | `demo.py` | 离线演示，不需要模型 key、数据库或云账号。 |
 | `smoke.py` | 最小 e2e 烟测，验证恢复字段和 tool receipt 去重字段。 |
 | `.env.example` | session backend、DSN 和 namespace 示例。 |
 | `agentengine.yaml` | AgentEngine / KSADK 运行配置。 |
-| `requirements.txt` | 当前框架运行依赖。 |
 
 ## 环境准备
 
@@ -34,8 +34,8 @@ uv pip install -U "ksadk[all]"
 进入样例目录后复制环境变量模板：
 
 ```bash
-cd 02-use-cases/long-task-resume-deepagents
-cp ../../.env.example .env
+cd 02-use-cases/long-task-resume/langgraph
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 ```
 

@@ -187,9 +187,9 @@ uv run agentengine deploy .
 | 能力 | 最小配置 | 主要工具 | 没配置时的表现 |
 | --- | --- | --- | --- |
 | Skill Space | `KSADK_SKILL_SPACE_IDS` 或 `SKILL_SPACE_ID` | `list_skills`、`search_skills`、`load_skill` | 无法发现用户 Skill |
-| Skill Runtime | `KSADK_SKILL_RUNTIME_BACKEND`，需要执行隔离任务时再配 template | `execute_skills` | 只解释缺少运行后端，不执行 Skill workflow |
+| Skill Runtime | `local_process` 配 `KSADK_SKILL_RUNTIME_AGENT_PATH`；`e2b` 配 `KSADK_SANDBOX_TEMPLATE_ID` + `E2B_API_KEY` | `execute_skills` | 只解释缺少运行后端，不执行 Skill workflow |
 | Workspace | 本地运行不需要额外变量；部署后由 AgentEngine 会话提供 workspace | `workspace_status`、`list_workspace_files`、`read_workspace_file` | 只能访问当前会话 workspace，不能访问任意宿主机路径 |
-| Sandbox | `KSADK_SANDBOX_BACKEND=e2b` + `KSADK_SANDBOX_TEMPLATE_ID` | `sandbox_status`、`run_command`、`run_code` | 命令执行类工具返回未配置或不可用 |
+| Sandbox | `KSADK_SANDBOX_BACKEND=e2b` + `KSADK_SANDBOX_TEMPLATE_ID` + `E2B_API_KEY` | `sandbox_status`、`run_command`、`run_code` | 命令执行类工具返回未配置或不可用 |
 | 知识库 | `KSADK_KB_DATASET_ID` + 云账号 AK/SK | `search_knowledge_base` | 不暴露或无法完成云知识库检索 |
 | 长期记忆 | `KSADK_LTM_BACKEND`，云端模式还需要 namespace 或 HTTP URL | `load_memory`、`save_memory` | 不加载历史长期记忆 |
 
@@ -269,14 +269,17 @@ KSADK_SKILL_RUNTIME_AGENT_PATH=/absolute/path/to/skill-runtime-agent.py
 KSADK_SKILL_RUNTIME_TIMEOUT=900
 ```
 
+`local_process` 不需要 template，也不需要 `E2B_API_KEY`。如果 `component_status` 里看到它还提示 template，说明你使用的不是当前版本示例或当前环境变量被旧配置污染了。
+
 隔离沙箱模式适合执行更高风险的 Skill workflow：
 
 ```bash
 KSADK_SKILL_RUNTIME_BACKEND=e2b
-KSADK_SKILL_RUNTIME_TEMPLATE_ID=your-runtime-template-id
+KSADK_SANDBOX_TEMPLATE_ID=your-runtime-template-id
+E2B_API_URL=https://mgr.cn-beijing-6.sandbox.ksyun.com
+E2B_API_KEY=your-e2b-api-key
 KSADK_SKILL_RUNTIME_TIMEOUT=900
 KSADK_SKILL_RUNTIME_ALLOW_INTERNET_ACCESS=true
-E2B_API_KEY=your-e2b-api-key
 ```
 
 变量含义：
@@ -285,10 +288,16 @@ E2B_API_KEY=your-e2b-api-key
 | --- | --- |
 | `KSADK_SKILL_RUNTIME_BACKEND` | Runtime 后端。`disabled` / `none` / `off` 表示关闭；`local_process` 表示本地子进程；`e2b` 表示 E2B 沙箱。 |
 | `KSADK_SKILL_RUNTIME_AGENT_PATH` | `local_process` 模式下要执行的 runtime agent 文件路径。 |
-| `KSADK_SKILL_RUNTIME_TEMPLATE_ID` | E2B runtime template ID；也可用 `KSADK_SANDBOX_TEMPLATE_ID` 复用同一个 template。 |
+| `KSADK_SANDBOX_TEMPLATE_ID` | E2B runtime / sandbox template ID。新配置统一优先使用这个变量。 |
+| `E2B_API_URL` | E2B-compatible manager endpoint，例如 `https://mgr.cn-beijing-6.sandbox.ksyun.com`。 |
 | `KSADK_SKILL_RUNTIME_TIMEOUT` | Skill workflow 超时时间，单位秒，默认 `900`。 |
 | `KSADK_SKILL_RUNTIME_ALLOW_INTERNET_ACCESS` | E2B runtime 是否允许访问互联网，默认 `true`。 |
 | `E2B_API_KEY` | E2B SDK 使用的认证密钥。KSADK 透传给 `e2b` 包，不会在日志里明文展示。 |
+
+兼容说明：
+
+- `KSADK_SKILL_RUNTIME_TEMPLATE_ID` 是旧兼容别名；历史项目还能用，新 demo 不建议优先配置。
+- `E2B_TEMPLATE_ID` 不是 KSADK 当前读取的变量；如果你只配置它，`component_status` 会把它放到 `ignored_env`，并继续提示缺少 `KSADK_SANDBOX_TEMPLATE_ID`。
 
 验证方式：
 
@@ -338,10 +347,11 @@ E2B 最小配置：
 ```bash
 KSADK_SANDBOX_BACKEND=e2b
 KSADK_SANDBOX_TEMPLATE_ID=your-sandbox-template-id
+E2B_API_URL=https://mgr.cn-beijing-6.sandbox.ksyun.com
+E2B_API_KEY=your-e2b-api-key
 KSADK_SANDBOX_TIMEOUT=900
 KSADK_SANDBOX_ALLOW_INTERNET_ACCESS=true
 KSADK_SANDBOX_TYPE=aio
-E2B_API_KEY=your-e2b-api-key
 ```
 
 变量含义：
@@ -349,7 +359,8 @@ E2B_API_KEY=your-e2b-api-key
 | 变量 | 含义 |
 | --- | --- |
 | `KSADK_SANDBOX_BACKEND` | Sandbox 后端。KSADK 0.6.2+ 支持 `e2b`；`none` / `disabled` / `off` 表示关闭。 |
-| `KSADK_SANDBOX_TEMPLATE_ID` | E2B sandbox template ID。也会被 Skill Runtime 作为兼容 template 使用。 |
+| `KSADK_SANDBOX_TEMPLATE_ID` | E2B sandbox template ID。Skill Runtime 的 e2b 模式也优先读取它。 |
+| `E2B_API_URL` | E2B-compatible manager endpoint。 |
 | `KSADK_SANDBOX_TIMEOUT` | 命令执行超时时间，单位秒，默认 `900`。 |
 | `KSADK_SANDBOX_ALLOW_INTERNET_ACCESS` | 是否允许 sandbox 访问互联网，默认 `true`。 |
 | `KSADK_SANDBOX_TYPE` | Sandbox 类型，默认 `aio`。 |

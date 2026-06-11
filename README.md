@@ -47,6 +47,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 保险理赔 Agent（Insurance Claims） | `02-use-cases/insurance-claims/claim-review-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 制造质量 Agent（Manufacturing Quality） | `02-use-cases/manufacturing-quality/defect-analysis-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 零售运营 Agent（Retail Operations） | `02-use-cases/retail-operations/store-optimizer-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 物流履约 Agent（Logistics Fulfillment） | `02-use-cases/logistics-fulfillment/delivery-exception-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 房地产运营 Agent（Real Estate Operations） | `02-use-cases/real-estate-operations/asset-service-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 农业生产 Agent（Agriculture Production） | `02-use-cases/agriculture-production/crop-planner-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 
 ### 最佳实践案例
 
@@ -75,15 +78,18 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | Customer Success 健康复盘 | `02-use-cases/customer-success/health-review-langgraph` | `02-use-cases/customer-success/health-review-adk` | `02-use-cases/customer-success/health-review-langchain` | `02-use-cases/customer-success/health-review-deepagents` |
 | Education Training 学习辅导 | `02-use-cases/education-training/learning-coach-langgraph` | `02-use-cases/education-training/learning-coach-adk` | `02-use-cases/education-training/learning-coach-langchain` | `02-use-cases/education-training/learning-coach-deepagents` |
 | Supply Chain Planning 需求计划 | `02-use-cases/supply-chain-planning/demand-planner-langgraph` | `02-use-cases/supply-chain-planning/demand-planner-adk` | `02-use-cases/supply-chain-planning/demand-planner-langchain` | `02-use-cases/supply-chain-planning/demand-planner-deepagents` |
-| Long Task Resume 长任务恢复 | `02-use-cases/long-task-resume` | `02-use-cases/long-task-resume-adk` | `02-use-cases/long-task-resume-langchain` | `02-use-cases/long-task-resume-deepagents` |
+| Long Task Resume 长任务恢复 | `02-use-cases/long-task-resume/langgraph` | `02-use-cases/long-task-resume/adk` | `02-use-cases/long-task-resume/langchain` | `02-use-cases/long-task-resume/deepagents` |
 | Healthcare Operations 护理协同 | `02-use-cases/healthcare-operations/care-coordinator-langgraph` | `02-use-cases/healthcare-operations/care-coordinator-adk` | `02-use-cases/healthcare-operations/care-coordinator-langchain` | `02-use-cases/healthcare-operations/care-coordinator-deepagents` |
 | Energy Dispatch 负荷平衡 | `02-use-cases/energy-dispatch/load-balancer-langgraph` | `02-use-cases/energy-dispatch/load-balancer-adk` | `02-use-cases/energy-dispatch/load-balancer-langchain` | `02-use-cases/energy-dispatch/load-balancer-deepagents` |
 | Public Service 事项协同 | `02-use-cases/public-service/case-assistant-langgraph` | `02-use-cases/public-service/case-assistant-adk` | `02-use-cases/public-service/case-assistant-langchain` | `02-use-cases/public-service/case-assistant-deepagents` |
 | Insurance Claims 理赔审核 | `02-use-cases/insurance-claims/claim-review-langgraph` | `02-use-cases/insurance-claims/claim-review-adk` | `02-use-cases/insurance-claims/claim-review-langchain` | `02-use-cases/insurance-claims/claim-review-deepagents` |
 | Manufacturing Quality 缺陷分析 | `02-use-cases/manufacturing-quality/defect-analysis-langgraph` | `02-use-cases/manufacturing-quality/defect-analysis-adk` | `02-use-cases/manufacturing-quality/defect-analysis-langchain` | `02-use-cases/manufacturing-quality/defect-analysis-deepagents` |
 | Retail Operations 门店优化 | `02-use-cases/retail-operations/store-optimizer-langgraph` | `02-use-cases/retail-operations/store-optimizer-adk` | `02-use-cases/retail-operations/store-optimizer-langchain` | `02-use-cases/retail-operations/store-optimizer-deepagents` |
+| Logistics Fulfillment 履约异常 | `02-use-cases/logistics-fulfillment/delivery-exception-langgraph` | `02-use-cases/logistics-fulfillment/delivery-exception-adk` | `02-use-cases/logistics-fulfillment/delivery-exception-langchain` | `02-use-cases/logistics-fulfillment/delivery-exception-deepagents` |
+| Real Estate Operations 资产服务 | `02-use-cases/real-estate-operations/asset-service-langgraph` | `02-use-cases/real-estate-operations/asset-service-adk` | `02-use-cases/real-estate-operations/asset-service-langchain` | `02-use-cases/real-estate-operations/asset-service-deepagents` |
+| Agriculture Production 农事计划 | `02-use-cases/agriculture-production/crop-planner-langgraph` | `02-use-cases/agriculture-production/crop-planner-adk` | `02-use-cases/agriculture-production/crop-planner-langchain` | `02-use-cases/agriculture-production/crop-planner-deepagents` |
 
-长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume` 和 `02-use-cases/long-task-resume-*`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
+长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume/{langgraph,adk,langchain,deepagents}`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
 
 ### 推荐主推 Demo
 
@@ -143,9 +149,9 @@ OPENAI_MODEL_NAME=gpt-4o-mini
 | --- | --- | --- |
 | 云账号 | `KSYUN_ACCESS_KEY`、`KSYUN_SECRET_KEY`、`KSYUN_REGION=cn-beijing-6` | 不能部署或调用云服务 |
 | Skill Space | `KSADK_SKILL_SPACE_IDS` / `SKILL_SPACE_ID`、`KSADK_PUBLIC_SKILL_SPACE_IDS`、`KSADK_SKILL_SERVICE_URL`、`KSADK_SKILL_SERVICE_ACCESS_KEY` | 只能提示缺少 Space、endpoint 或凭证 |
-| Skill Runtime | `KSADK_SKILL_RUNTIME_BACKEND`、`KSADK_SKILL_RUNTIME_AGENT_PATH`、`KSADK_SKILL_RUNTIME_TEMPLATE_ID`、`E2B_API_KEY` | 可发现 Skill，但不执行 workflow |
+| Skill Runtime | `local_process` 配 `KSADK_SKILL_RUNTIME_AGENT_PATH`；`e2b` 配 `KSADK_SANDBOX_TEMPLATE_ID`、`E2B_API_URL`、`E2B_API_KEY` | 可发现 Skill，但不执行 workflow |
 | Workspace | 本地 `agentengine run/web` 自动注入；远端由 AgentEngine runtime 注入 | 不能读写会话 workspace 文件 |
-| Sandbox | `KSADK_SANDBOX_BACKEND=e2b`、`KSADK_SANDBOX_TEMPLATE_ID`、`KSADK_SANDBOX_TIMEOUT`、`E2B_API_KEY` | `run_command` / `run_code` 返回不可用 |
+| Sandbox | `KSADK_SANDBOX_BACKEND=e2b`、`KSADK_SANDBOX_TEMPLATE_ID`、`E2B_API_URL`、`E2B_API_KEY` | `run_command` / `run_code` 返回不可用 |
 | 知识库 | `KSADK_KB_DATASET_ID`、`KSADK_KB_ENDPOINT`、`KSADK_KB_REGION`、`KSADK_KB_TOP_K` | RAG demo 使用本地 corpus |
 | 长期记忆 | `KSADK_LTM_BACKEND`、`KSADK_LTM_INDEX`、`KSADK_LTM_NAMESPACE`、`KSADK_LTM_HTTP_URL` | 记忆 demo 使用本地示例记忆 |
 
@@ -174,7 +180,7 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量和零售运营已覆盖 LangGraph / ADK / LangChain / DeepAgents。
+- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量、零售运营、物流履约、房地产运营和农业生产已覆盖 LangGraph / ADK / LangChain / DeepAgents。
 - 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
-- 增加更多行业场景，如物流履约、房地产运营和农业生产。
+- 增加更多行业场景，如通信运维、旅游服务和设备维护。
 - 长任务恢复已补多框架工程版本；后续可继续接真实 Postgres session backend 和平台 run/session 事件。

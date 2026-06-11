@@ -30,13 +30,16 @@
 | 客户成功 / Health Review Copilot 经验 | 客户成功 Agent 要把客户健康、风险信号、成功计划和跟进节奏拆开，避免只做续费话术。 | `customer-success/health-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的健康复盘版本；下一步接真实 CRM、产品埋点、续费系统和客户旅程平台。 |
 | 教育培训 / Learning Coach 经验 | 学习辅导 Agent 要把学习画像、能力缺口、训练计划和评估方式串起来，不能泄露真实学员数据。 | `education-training/learning-coach-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的学习辅导版本；下一步接 LMS、练习平台、测评系统和学习档案。 |
 | 供应链计划 / Demand Planner 经验 | 供应链 Agent 要把需求预测、库存风险、调拨计划和监控指标拆开，避免只输出库存口号。 | `supply-chain-planning/demand-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的需求计划版本；下一步接 ERP、WMS、OMS、渠道预测和供应商协同系统。 |
-| 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 和 `long-task-resume-*` 已补 LangGraph / ADK / LangChain / DeepAgents 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
+| 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume/{langgraph,adk,langchain,deepagents}` 已补四种框架工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | 医疗运营 / Care Coordination 经验 | 医疗运营 Agent 要把患者流转、资源瓶颈、协同计划和风险提醒拆开，不能处理真实诊断或隐私数据。 | `healthcare-operations/care-coordinator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的护理协同版本；下一步接预约、排队、护理工作站和运营看板的脱敏统计数据。 |
 | 能源调度 / Load Balancer 经验 | 能源调度 Agent 要把负荷预测、设备状态、调度策略和安全边界拆开，不能直接下发真实控制指令。 | `energy-dispatch/load-balancer-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的负荷平衡版本；下一步接 EMS、计量平台、天气服务和需求响应系统。 |
 | 政务服务 / Case Assistant 经验 | 政务服务 Agent 要把事项画像、材料核验、协同流程和服务承诺拆开，审批结论必须人工复核。 | `public-service/case-assistant-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的事项协同版本；下一步接政务服务平台、材料库和办件流转系统。 |
 | 保险理赔 / Claim Review 经验 | 理赔 Agent 要把案件摘要、材料核验、审核建议和风险控制拆开，不能自动给出赔付结论或泄露真实保单信息。 | `insurance-claims/claim-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的理赔审核协同版本；下一步接理赔系统、影像件库、定损系统和人工审核工作台。 |
 | 制造质量 / Defect Analysis 经验 | 制造质量 Agent 要把质量概览、缺陷归因、改进措施和验证指标串起来，避免泄露真实工艺参数或客户产品信息。 | `manufacturing-quality/defect-analysis-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的缺陷分析版本；下一步接 MES、QMS、设备点检和质量看板。 |
 | 零售运营 / Store Optimization 经验 | 零售 Agent 要同时看门店表现、库存结构、运营动作和复盘指标，不能只追销售额或暴露真实会员数据。 | `retail-operations/store-optimizer-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的门店优化版本；下一步接 POS、WMS、商品主数据、促销和会员分析。 |
+| 物流履约 / Delivery Exception 经验 | 物流履约 Agent 要把异常订单、配送资源、客户承诺和复盘指标拆开，不能泄露真实地址、订单或司机信息。 | `logistics-fulfillment/delivery-exception-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的履约异常版本；下一步接 OMS、TMS、WMS、客服系统和地图服务。 |
+| 房地产运营 / Asset Service 经验 | 房地产运营 Agent 要把资产状态、租户服务、工单协同和收益风险串起来，不能泄露真实租户、合同或财务数据。 | `real-estate-operations/asset-service-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的资产服务版本；下一步接资产台账、工单系统、合同系统和财务看板。 |
+| 农业生产 / Crop Planner 经验 | 农业生产 Agent 要把种植计划、环境数据、农事任务和产量预测拆开，农业处方必须保留人工农技师确认。 | `agriculture-production/crop-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的农事计划版本；下一步接农事计划、IoT、天气服务和采收台账。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -84,9 +87,12 @@
 28. **Insurance Claims**：已补理赔审核协同基础版本；下一步接理赔系统、影像件库、定损系统和人工审核工作台。
 29. **Manufacturing Quality**：已补缺陷分析基础版本；下一步接 MES、QMS、设备点检和质量看板。
 30. **Retail Operations**：已补门店优化基础版本；下一步接 POS、WMS、商品主数据、促销和会员分析。
-31. **Logistics Fulfillment**：下一步补履约异常、配送资源、客户承诺和复盘指标。
-32. **Real Estate Operations**：下一步补资产状态、租户服务、工单协同和收益风险。
-33. **Agriculture Production**：下一步补种植计划、环境数据、农事任务和产量预测。
+31. **Logistics Fulfillment**：已补履约异常基础版本；下一步接 OMS、TMS、WMS、客服系统和地图服务。
+32. **Real Estate Operations**：已补资产服务基础版本；下一步接资产台账、工单系统、合同系统和财务看板。
+33. **Agriculture Production**：已补农事计划基础版本；下一步接农事计划、IoT、天气服务和采收台账。
+34. **Telecom Operations**：下一步补网络告警、容量分析、割接计划和客户影响。
+35. **Travel Service**：下一步补行程变更、资源协调、客户通知和服务补偿。
+36. **Equipment Maintenance**：下一步补设备状态、备件计划、维修任务和停机风险。
 
 ## README 写法建议
 

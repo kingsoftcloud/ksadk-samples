@@ -1,6 +1,6 @@
-# 长任务恢复 Agent - ADK
+# 长任务恢复 Agent - DeepAgents
 
-这个 demo 演示长任务 Agent 如何在中断后恢复执行：读取 checkpoint 列表、发起 ResumeRun、检查 tool receipt、处理 CancelRun，并在未配置持久化组件时给出清晰降级说明。它是一个多文件 ADK Agent 工程，不是单文件脚本；默认使用本地 fixture，方便公开仓库用户 clone 后直接运行。
+这个 demo 演示长任务 Agent 如何在中断后恢复执行：读取 checkpoint 列表、发起 ResumeRun、检查 tool receipt、处理 CancelRun，并在未配置持久化组件时给出清晰降级说明。它是一个多文件 DeepAgents Agent 工程，不是单文件脚本；默认使用本地 fixture，方便公开仓库用户 clone 后直接运行。
 
 ## 适用场景
 
@@ -13,7 +13,7 @@
 
 | 文件 | 作用 |
 | --- | --- |
-| `agent.py` | ADK `root_agent` 入口。 |
+| `agent.py` | DeepAgents `root_agent` 入口。 |
 | `tools.py` | 本地 fixture 和长任务恢复工具函数，生产环境可替换为数据库和平台 API。 |
 | `demo.py` | 离线演示，不需要模型 key、数据库或云账号。 |
 | `smoke.py` | 最小 e2e 烟测，验证恢复字段和 tool receipt 去重字段。 |
@@ -34,8 +34,8 @@ uv pip install -U "ksadk[all]"
 进入样例目录后复制环境变量模板：
 
 ```bash
-cd 02-use-cases/long-task-resume-adk
-cp ../../.env.example .env
+cd 02-use-cases/long-task-resume/deepagents
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 ```
 

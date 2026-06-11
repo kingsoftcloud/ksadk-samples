@@ -31,6 +31,7 @@ SYSTEM_PROMPT = """你是 AgentEngine Toolsets 示例助手，用中文回答。
 - 用户问 Space 下有哪些 skill、技能列表、Skill Space、可用工具时，必须优先使用 list_skills。
 - 用户带有搜索意图时，优先使用 search_skills。
 - 用户指定加载某个 Skill 时，使用 load_skill。
+- 用户问知识库、RAG、长期记忆、历史偏好、保存记忆时，必须通过 agentengine_tool_dispatcher，include=platform，按需调用 search_knowledge_base、load_memory、save_memory。
 - 用户问当前绑定了哪些能力、运行环境或配置边界时，调用 component_status。
 - 用户问 LangGraph 图结构、节点、边或自定义扩展方式时，调用 graph_status。
 - 用户要生成发布风险清单或评审发布改动时，调用 release_risk_matrix。
@@ -78,6 +79,119 @@ def _skill_space_ids() -> list[str]:
 
 def _public_skill_space_ids() -> list[str]:
     return [item.strip() for item in _env("KSADK_PUBLIC_SKILL_SPACE_IDS").split(",") if item.strip()]
+
+
+def _disabled_backend(value: str) -> bool:
+    return value.lower() in {"", "disabled", "none", "off", "false", "0"}
+
+
+def _ignored_e2b_template_env() -> list[str]:
+    return ["E2B_TEMPLATE_ID"] if _env("E2B_TEMPLATE_ID") else []
+
+
+def _template_status() -> tuple[bool, str, bool]:
+    if _env("KSADK_SANDBOX_TEMPLATE_ID"):
+        return True, "KSADK_SANDBOX_TEMPLATE_ID", False
+    if _env("KSADK_SKILL_RUNTIME_TEMPLATE_ID"):
+        return True, "KSADK_SKILL_RUNTIME_TEMPLATE_ID", True
+    return False, "", False
+
+
+def _resolve_skill_runtime_status() -> dict[str, Any]:
+    """给模型返回结构化事实，避免把 e2b 的要求误套到 local_process。"""
+
+    backend = _env("KSADK_SKILL_RUNTIME_BACKEND")
+    sandbox_backend = _env("KSADK_SANDBOX_BACKEND")
+    template_configured, template_source, compatibility_alias_used = _template_status()
+    e2b_api_key_configured = _env_enabled("E2B_API_KEY")
+    agent_path_configured = _env_enabled("KSADK_SKILL_RUNTIME_AGENT_PATH")
+
+    if not _disabled_backend(backend):
+        effective_backend = backend.lower()
+        inferred_from = "KSADK_SKILL_RUNTIME_BACKEND"
+    elif sandbox_backend.lower() == "e2b":
+        effective_backend = "e2b"
+        inferred_from = "KSADK_SANDBOX_BACKEND"
+    elif template_configured:
+        effective_backend = "e2b"
+        inferred_from = template_source
+    else:
+        effective_backend = "disabled"
+        inferred_from = ""
+
+    missing_config: list[str] = []
+    template_required = False
+    e2b_api_key_required = False
+    agent_path_required = False
+    if effective_backend == "local_process":
+        agent_path_required = True
+        if not agent_path_configured:
+            missing_config.append("KSADK_SKILL_RUNTIME_AGENT_PATH")
+    elif effective_backend == "e2b":
+        template_required = True
+        e2b_api_key_required = True
+        if not template_configured:
+            missing_config.append("KSADK_SANDBOX_TEMPLATE_ID")
+        if not e2b_api_key_configured:
+            missing_config.append("E2B_API_KEY")
+
+    return {
+        "configured": effective_backend not in {"disabled", "none", "off"} and not missing_config,
+        "backend": backend,
+        "effective_backend": effective_backend,
+        "inferred_from": inferred_from,
+        "template_required": template_required,
+        "template_configured": template_configured,
+        "template_source": template_source,
+        "compatibility_alias_used": compatibility_alias_used,
+        "agent_path_required": agent_path_required,
+        "agent_path_configured": agent_path_configured,
+        "e2b_api_key_required": e2b_api_key_required,
+        "e2b_api_key_configured": e2b_api_key_configured,
+        "e2b_api_url_configured": _env_enabled("E2B_API_URL"),
+        "missing_config": missing_config,
+        "ignored_env": _ignored_e2b_template_env(),
+        "meaning": "execute_skills 使用的隔离执行后端；local_process 不需要 template/E2B key，e2b 优先使用 KSADK_SANDBOX_TEMPLATE_ID。",
+    }
+
+
+def _resolve_sandbox_status() -> dict[str, Any]:
+    backend = _env("KSADK_SANDBOX_BACKEND")
+    template_configured = _env_enabled("KSADK_SANDBOX_TEMPLATE_ID")
+    e2b_api_key_configured = _env_enabled("E2B_API_KEY")
+
+    if not _disabled_backend(backend):
+        effective_backend = backend.lower()
+        inferred_from = "KSADK_SANDBOX_BACKEND"
+    elif template_configured:
+        effective_backend = "e2b"
+        inferred_from = "KSADK_SANDBOX_TEMPLATE_ID"
+    else:
+        effective_backend = "disabled"
+        inferred_from = ""
+
+    missing_config: list[str] = []
+    if effective_backend == "e2b":
+        if not template_configured:
+            missing_config.append("KSADK_SANDBOX_TEMPLATE_ID")
+        if not e2b_api_key_configured:
+            missing_config.append("E2B_API_KEY")
+
+    return {
+        "configured": effective_backend not in {"disabled", "none", "off"} and not missing_config,
+        "backend": backend,
+        "effective_backend": effective_backend,
+        "inferred_from": inferred_from,
+        "template_required": effective_backend == "e2b",
+        "template_configured": template_configured,
+        "template_source": "KSADK_SANDBOX_TEMPLATE_ID" if template_configured else "",
+        "e2b_api_key_required": effective_backend == "e2b",
+        "e2b_api_key_configured": e2b_api_key_configured,
+        "e2b_api_url_configured": _env_enabled("E2B_API_URL"),
+        "missing_config": missing_config,
+        "ignored_env": _ignored_e2b_template_env(),
+        "meaning": "run_command/run_code 等隔离执行能力需要配置 sandbox backend；E2B_TEMPLATE_ID 不是 KSADK 当前读取的变量。",
+    }
 
 
 @tool
@@ -215,25 +329,18 @@ def component_status() -> dict[str, Any]:
             "tools": ["list_skills", "search_skills", "load_skill"],
             "note": "只发现和加载 Skill 不需要 Skill Runtime；执行 Skill workflow 才需要配置 Runtime。",
         },
-        "skill_runtime": {
-            "backend": _env("KSADK_SKILL_RUNTIME_BACKEND") or "disabled",
-            "template_configured": bool(_env("KSADK_SKILL_RUNTIME_TEMPLATE_ID") or _env("KSADK_SANDBOX_TEMPLATE_ID")),
-            "agent_path_configured": bool(_env("KSADK_SKILL_RUNTIME_AGENT_PATH")),
-            "meaning": "execute_skills 使用的隔离执行后端；未配置时仍可 list/search/load Skill。",
-        },
+        "skill_runtime": _resolve_skill_runtime_status(),
         "workspace": {
-            "root_configured": bool(_env("AGENTENGINE_WORKSPACE_ROOT") or _env("WORKSPACE_ROOT")),
+            "root_configured": bool(_env("KSADK_WORKSPACE_ROOT")),
+            "root_source": "KSADK_WORKSPACE_ROOT" if _env("KSADK_WORKSPACE_ROOT") else "",
             "meaning": "Workspace 工具只操作 AgentEngine 会话 workspace，不等同于任意宿主机目录。",
             "tools": ["workspace_status", "list_workspace_files", "read_workspace_file", "search_workspace_files"],
         },
-        "sandbox": {
-            "backend": _env("KSADK_SANDBOX_BACKEND") or "disabled",
-            "template_configured": bool(_env("KSADK_SANDBOX_TEMPLATE_ID")),
-            "meaning": "run_command/run_code 等隔离执行能力需要单独配置 sandbox backend。",
-        },
+        "sandbox": _resolve_sandbox_status(),
         "platform": {
             "knowledge_base_configured": bool(_env("KSADK_KB_DATASET_ID")),
             "long_term_memory_configured": bool(_env("KSADK_LTM_BACKEND") or _env("KSADK_LTM_NAMESPACE")),
+            "routing": "知识库和长期记忆通过 agentengine_tool_dispatcher include=platform 调用 search_knowledge_base/load_memory/save_memory。",
         },
         "boundaries": {
             "skill": "list/search/load 可直接用于 Skill 指令发现；execute_skills 需要额外配置 Skill Runtime。",

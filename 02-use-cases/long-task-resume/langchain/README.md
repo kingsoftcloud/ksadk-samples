@@ -34,8 +34,8 @@ uv pip install -U "ksadk[all]"
 进入样例目录后复制环境变量模板：
 
 ```bash
-cd 02-use-cases/long-task-resume-langchain
-cp ../../.env.example .env
+cd 02-use-cases/long-task-resume/langchain
+cp ../../../.env.example .env
 uv pip install -r requirements.txt
 ```
 
