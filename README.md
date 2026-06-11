@@ -40,7 +40,7 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 客户成功 Agent（Customer Success） | `02-use-cases/customer-success/health-review-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 教育培训 Agent（Education Training） | `02-use-cases/education-training/learning-coach-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 供应链计划 Agent（Supply Chain Planning） | `02-use-cases/supply-chain-planning/demand-planner-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
-| 长任务恢复 Agent（Long Task Resume） | `02-use-cases/long-task-resume` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 长任务恢复 Agent（Long Task Resume） | [LangGraph](02-use-cases/long-task-resume/langgraph/README.md) / [ADK](02-use-cases/long-task-resume/adk/README.md) / [LangChain](02-use-cases/long-task-resume/langchain/README.md) / [DeepAgents](02-use-cases/long-task-resume/deepagents/README.md) | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 医疗运营 Agent（Healthcare Operations） | `02-use-cases/healthcare-operations/care-coordinator-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 能源调度 Agent（Energy Dispatch） | `02-use-cases/energy-dispatch/load-balancer-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 政务服务 Agent（Public Service） | `02-use-cases/public-service/case-assistant-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
@@ -161,7 +161,7 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | Enterprise OKR 企业 OKR | `02-use-cases/enterprise-okr/okr-review-langgraph` | `02-use-cases/enterprise-okr/okr-review-adk` | `02-use-cases/enterprise-okr/okr-review-langchain` | `02-use-cases/enterprise-okr/okr-review-deepagents` |
 | Organization Knowledge Graph 组织知识图谱 | `02-use-cases/organization-knowledge-graph/graph-curator-langgraph` | `02-use-cases/organization-knowledge-graph/graph-curator-adk` | `02-use-cases/organization-knowledge-graph/graph-curator-langchain` | `02-use-cases/organization-knowledge-graph/graph-curator-deepagents` |
 
-长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume/{langgraph,adk,langchain,deepagents}`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
+长任务恢复是横向 Runtime 能力样例，见 [LangGraph](02-use-cases/long-task-resume/langgraph/README.md)、[ADK](02-use-cases/long-task-resume/adk/README.md)、[LangChain](02-use-cases/long-task-resume/langchain/README.md)、[DeepAgents](02-use-cases/long-task-resume/deepagents/README.md)。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
 
 ### 推荐主推 Demo
 

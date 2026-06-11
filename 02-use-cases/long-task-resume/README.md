@@ -13,10 +13,10 @@
 
 | 框架 | 目录 | 适合用户 |
 | --- | --- | --- |
-| LangGraph | `langgraph` | 需要显式状态图、节点拆分和恢复编排的用户。 |
-| ADK | `adk` | 想按 Google ADK 风格组织工具和 Agent 的用户。 |
-| LangChain | `langchain` | 已有 LangChain 链路，希望快速接入 KSADK 运行时的用户。 |
-| DeepAgents | `deepagents` | 想用更高层 Agent 抽象表达长任务恢复流程的用户。 |
+| LangGraph | [langgraph](langgraph/README.md) | 需要显式状态图、节点拆分和恢复编排的用户。 |
+| ADK | [adk](adk/README.md) | 想按 Google ADK 风格组织工具和 Agent 的用户。 |
+| LangChain | [langchain](langchain/README.md) | 已有 LangChain 链路，希望快速接入 KSADK 运行时的用户。 |
+| DeepAgents | [deepagents](deepagents/README.md) | 想用更高层 Agent 抽象表达长任务恢复流程的用户。 |
 
 ## 环境准备
 
