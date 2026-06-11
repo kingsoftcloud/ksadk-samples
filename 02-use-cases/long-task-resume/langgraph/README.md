@@ -18,6 +18,7 @@
 | `tools.py` | 本地 fixture 和长任务恢复工具函数，生产环境可替换为数据库和平台 API。 |
 | `demo.py` | 离线演示，不需要模型 key、数据库或云账号。 |
 | `smoke.py` | 最小 e2e 烟测，验证恢复字段和 tool receipt 去重字段。 |
+| `pg_smoke.py` | 可选 Postgres smoke，验证用户自己的 DSN 可连接、可建表、可读写。 |
 | `.env.example` | session backend、DSN 和 namespace 示例。 |
 | `agentengine.yaml` | AgentEngine / KSADK 运行配置。 |
 
@@ -69,6 +70,20 @@ uv run python demo.py
 ```bash
 uv run python smoke.py
 ```
+
+## 可选真实 PG smoke
+
+公开样例默认不会连接真实数据库。需要验证自己的 Postgres 是否能作为长任务持久化后端时，先安装 PG 客户端依赖，并显式切换模式：
+
+```bash
+uv pip install "psycopg[binary]>=3.2"
+export LONG_TASK_RESUME_DEMO_MODE=postgres
+export KSADK_SESSION_DSN='postgresql://<user>:<password>@<postgres-host>:5432/<database>'
+export KSADK_SESSION_NAMESPACE=long_task_resume_demo
+uv run python pg_smoke.py
+```
+
+`pg_smoke.py` 会创建样例专用表 `long_task_resume_smoke`，写入并读取一条 checkpoint/receipt 记录，然后清理本次 smoke 数据。脚本不会打印密码，也不会内置任何真实 PG 地址。它只验证数据库连接和建表权限；完整的 checkpoint resume / runtime cancel E2E 仍应在目标运行环境用正式验证脚本执行。
 
 启动本地 OpenAI-compatible 服务：
 

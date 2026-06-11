@@ -321,6 +321,7 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "tools.py",
         "demo.py",
         "smoke.py",
+        "pg_smoke.py",
         "agentengine.yaml",
         "requirements.txt",
     )
@@ -342,6 +343,7 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "CancelRun",
         "降级说明",
         "常见问题",
+        "可选真实 PG smoke",
     ):
         assert required in readme
 
@@ -350,8 +352,28 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "KSADK_SESSION_BACKEND=postgres",
         "KSADK_SESSION_DSN=postgresql://<user>:<password>@<postgres-host>:5432/<database>",
         "KSADK_SESSION_NAMESPACE=long_task_resume_demo",
+        "LONG_TASK_RESUME_DEMO_MODE=fixture",
     ):
         assert required in env_example
+
+    pg_smoke = (sample / "pg_smoke.py").read_text(encoding="utf-8")
+    for required in (
+        "LONG_TASK_RESUME_DEMO_MODE",
+        "postgres",
+        "KSADK_SESSION_DSN",
+        "long_task_resume_smoke",
+        "CREATE TABLE IF NOT EXISTS",
+    ):
+        assert required in pg_smoke
+    forbidden_values = (
+        ".".join(("35", "37", "7", "168")),
+        "Ksadk" + "@2026",
+        "agent_" + "session_test",
+    )
+    for forbidden in forbidden_values:
+        assert forbidden not in pg_smoke
+        assert forbidden not in readme
+        assert forbidden not in env_example
 
     leaked_runtime_artifacts = [
         path
