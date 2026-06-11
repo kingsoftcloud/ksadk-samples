@@ -71,17 +71,18 @@ uv pip install -U "ksadk[all]"
 进入本示例目录后复制环境变量模板：
 
 ```bash
-cp ../../../.env.example .env
+cp .env.example .env
 ```
 
-`agentengine run/web` 默认读取当前样例目录的 `.env`。如果你把 `.env` 放在仓库根目录，需要先 `source ../../../.env`，或者复制到本示例目录。
+`agentengine run/web` 默认读取当前样例目录的 `.env`。这个示例自带的 `.env.example` 已把 Skill Runtime、Workspace、Sandbox、知识库和长期记忆的可选变量集中在一起。只跑基础问答时，你只需要填模型变量；平台能力按需打开即可。
 
 至少填写：
 
 ```bash
 OPENAI_API_KEY=your-openai-compatible-api-key
-OPENAI_BASE_URL=https://api.openai.com/v1
 OPENAI_MODEL_NAME=gpt-4o-mini
+# 非默认 OpenAI-compatible endpoint 时再设置：
+# OPENAI_BASE_URL=https://api.openai.com/v1
 ```
 
 只要你的模型服务兼容 OpenAI Chat Completions API，就可以替换 `OPENAI_BASE_URL` 和 `OPENAI_MODEL_NAME`。

@@ -217,6 +217,7 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
     sample = ROOT / "02-use-cases/agentengine-toolsets/langgraph"
     readme = (sample / "README.md").read_text(encoding="utf-8")
     source = (sample / "agent.py").read_text(encoding="utf-8")
+    env_example = (sample / ".env.example").read_text(encoding="utf-8")
 
     for required in (
         "环境准备",
@@ -264,6 +265,24 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
         assert required in readme
 
     for required in (
+        "OPENAI_API_KEY=your-openai-compatible-api-key",
+        "OPENAI_MODEL_NAME=gpt-4o-mini",
+        "KSYUN_REGION=cn-beijing-6",
+        "KSADK_SKILL_RUNTIME_BACKEND=disabled",
+        "KSADK_SKILL_RUNTIME_AGENT_PATH=/absolute/path/to/skill-runtime-agent.py",
+        "KSADK_SANDBOX_BACKEND=disabled",
+        "KSADK_SANDBOX_TEMPLATE_ID=your-sandbox-template-id",
+        "E2B_API_URL=https://mgr.cn-beijing-6.sandbox.ksyun.com",
+        "E2B_API_KEY=your-e2b-api-key",
+        "KSADK_KB_ENDPOINT=aicp.api.ksyun.com",
+        "KSADK_LTM_BACKEND=",
+    ):
+        assert required in env_example
+
+    assert "E2B_TEMPLATE_ID" not in env_example
+    assert "KSADK_SKILL_RUNTIME_TEMPLATE_ID" not in env_example
+
+    for required in (
         "get_agentengine_tools",
         "describe_agentengine_tools",
         "resolve_skill_service_url",
@@ -287,6 +306,7 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
 
     assert not check_public_readiness.scan_file(sample / "README.md")
     assert not check_public_readiness.scan_file(sample / "agent.py")
+    assert not check_public_readiness.scan_file(sample / ".env.example")
 
 
 def test_long_task_resume_sample_exists_and_is_public_ready():
@@ -1161,6 +1181,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组农业生产数据，生成农事生产计划。",
             ("## 种植计划", "## 环境数据", "## 农事任务", "## 产量预测"),
         ),
+        "02-use-cases/telecom-operations/network-change-langgraph": (
+            "langgraph",
+            "分析一次通信网络割接计划，生成运维协同方案。",
+            ("## 网络告警", "## 容量分析", "## 割接计划", "## 客户影响"),
+        ),
+        "02-use-cases/telecom-operations/network-change-adk": (
+            "adk",
+            "分析一次通信网络割接计划，生成运维协同方案。",
+            ("## 网络告警", "## 容量分析", "## 割接计划", "## 客户影响"),
+        ),
+        "02-use-cases/telecom-operations/network-change-langchain": (
+            "langchain",
+            "分析一次通信网络割接计划，生成运维协同方案。",
+            ("## 网络告警", "## 容量分析", "## 割接计划", "## 客户影响"),
+        ),
+        "02-use-cases/telecom-operations/network-change-deepagents": (
+            "deepagents",
+            "分析一次通信网络割接计划，生成运维协同方案。",
+            ("## 网络告警", "## 容量分析", "## 割接计划", "## 客户影响"),
+        ),
+        "02-use-cases/travel-service/trip-recovery-langgraph": (
+            "langgraph",
+            "分析一批行程变更事件，生成旅游服务恢复方案。",
+            ("## 行程变更", "## 资源协调", "## 客户通知", "## 服务补偿"),
+        ),
+        "02-use-cases/travel-service/trip-recovery-adk": (
+            "adk",
+            "分析一批行程变更事件，生成旅游服务恢复方案。",
+            ("## 行程变更", "## 资源协调", "## 客户通知", "## 服务补偿"),
+        ),
+        "02-use-cases/travel-service/trip-recovery-langchain": (
+            "langchain",
+            "分析一批行程变更事件，生成旅游服务恢复方案。",
+            ("## 行程变更", "## 资源协调", "## 客户通知", "## 服务补偿"),
+        ),
+        "02-use-cases/travel-service/trip-recovery-deepagents": (
+            "deepagents",
+            "分析一批行程变更事件，生成旅游服务恢复方案。",
+            ("## 行程变更", "## 资源协调", "## 客户通知", "## 服务补偿"),
+        ),
+        "02-use-cases/equipment-maintenance/maintenance-planner-langgraph": (
+            "langgraph",
+            "分析一组设备维护数据，生成维修协同计划。",
+            ("## 设备状态", "## 备件计划", "## 维修任务", "## 停机风险"),
+        ),
+        "02-use-cases/equipment-maintenance/maintenance-planner-adk": (
+            "adk",
+            "分析一组设备维护数据，生成维修协同计划。",
+            ("## 设备状态", "## 备件计划", "## 维修任务", "## 停机风险"),
+        ),
+        "02-use-cases/equipment-maintenance/maintenance-planner-langchain": (
+            "langchain",
+            "分析一组设备维护数据，生成维修协同计划。",
+            ("## 设备状态", "## 备件计划", "## 维修任务", "## 停机风险"),
+        ),
+        "02-use-cases/equipment-maintenance/maintenance-planner-deepagents": (
+            "deepagents",
+            "分析一组设备维护数据，生成维修协同计划。",
+            ("## 设备状态", "## 备件计划", "## 维修任务", "## 停机风险"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
@@ -1220,6 +1300,8 @@ def test_all_sample_readmes_are_actionable_for_new_users():
 
 def test_sample_readmes_copy_env_template_into_sample_directory():
     for readme_path in ROOT.glob("0*/**/README.md"):
+        if readme_path.parent == ROOT / "02-use-cases/agentengine-toolsets/langgraph":
+            continue
         text = readme_path.read_text(encoding="utf-8")
         assert "cp .env.example .env" not in text, (
             f"{readme_path.relative_to(ROOT)} should copy the root .env.example into the sample directory"

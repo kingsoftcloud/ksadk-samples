@@ -44,6 +44,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Customer Success",
     "Education Training",
     "Supply Chain Planning",
+    "Telecom Operations",
+    "Travel Service",
+    "Equipment Maintenance",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

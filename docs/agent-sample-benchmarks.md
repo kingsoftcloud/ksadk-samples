@@ -40,6 +40,9 @@
 | 物流履约 / Delivery Exception 经验 | 物流履约 Agent 要把异常订单、配送资源、客户承诺和复盘指标拆开，不能泄露真实地址、订单或司机信息。 | `logistics-fulfillment/delivery-exception-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的履约异常版本；下一步接 OMS、TMS、WMS、客服系统和地图服务。 |
 | 房地产运营 / Asset Service 经验 | 房地产运营 Agent 要把资产状态、租户服务、工单协同和收益风险串起来，不能泄露真实租户、合同或财务数据。 | `real-estate-operations/asset-service-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的资产服务版本；下一步接资产台账、工单系统、合同系统和财务看板。 |
 | 农业生产 / Crop Planner 经验 | 农业生产 Agent 要把种植计划、环境数据、农事任务和产量预测拆开，农业处方必须保留人工农技师确认。 | `agriculture-production/crop-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的农事计划版本；下一步接农事计划、IoT、天气服务和采收台账。 |
+| 通信运维 / Network Change 经验 | 通信运维 Agent 要把网络告警、容量分析、割接计划和客户影响拆开，不能泄露真实拓扑、基站、专线客户或生产告警。 | `telecom-operations/network-change-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的网络割接版本；下一步接 NMS、告警平台、CMDB、容量分析和割接审批系统。 |
+| 旅游服务 / Trip Recovery 经验 | 旅游服务 Agent 要把行程变更、资源协调、客户通知和服务补偿拆开，不能泄露真实旅客、订单、证件或供应商结算数据。 | `travel-service/trip-recovery-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的行程恢复版本；下一步接订单系统、航旅动态、酒店库存、车辆调度和通知平台。 |
+| 设备维护 / Maintenance Planner 经验 | 设备维护 Agent 要把设备状态、备件计划、维修任务和停机风险拆开，不能泄露真实设备序列号、工艺参数或生产数据。 | `equipment-maintenance/maintenance-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的维修计划版本；下一步接 EAM、CMMS、点检系统、传感器平台和备件库存。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -90,9 +93,12 @@
 31. **Logistics Fulfillment**：已补履约异常基础版本；下一步接 OMS、TMS、WMS、客服系统和地图服务。
 32. **Real Estate Operations**：已补资产服务基础版本；下一步接资产台账、工单系统、合同系统和财务看板。
 33. **Agriculture Production**：已补农事计划基础版本；下一步接农事计划、IoT、天气服务和采收台账。
-34. **Telecom Operations**：下一步补网络告警、容量分析、割接计划和客户影响。
-35. **Travel Service**：下一步补行程变更、资源协调、客户通知和服务补偿。
-36. **Equipment Maintenance**：下一步补设备状态、备件计划、维修任务和停机风险。
+34. **Telecom Operations**：已补网络割接基础版本；下一步接 NMS、告警平台、CMDB、容量分析、客服工单和割接审批系统。
+35. **Travel Service**：已补行程恢复基础版本；下一步接订单系统、航旅动态、酒店库存、车辆调度、客服工单和通知平台。
+36. **Equipment Maintenance**：已补维修计划基础版本；下一步接 EAM、CMMS、点检系统、传感器平台、备件库存和生产排程。
+37. **Media Operations**：下一步补内容排期、热点监测、版权风险和多渠道发布。
+38. **Financial Risk**：下一步补交易异常、风险规则、人工复核和审计留痕。
+39. **Urban Mobility**：下一步补道路拥堵、运力调度、事件响应和公众通知。
 
 ## README 写法建议
 
