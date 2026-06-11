@@ -59,6 +59,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Advertising Operations",
     "Community Operations",
     "Customer QA",
+    "Store Service",
+    "After-sales Service",
+    "Content Safety",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

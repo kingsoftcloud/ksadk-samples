@@ -1481,6 +1481,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一批客服质检样本，生成服务质量改进方案。",
             ("## 质检样本", "## 规则命中", "## 改进建议", "## 培训闭环"),
         ),
+        "02-use-cases/store-service/store-advisor-langgraph": (
+            "langgraph",
+            "分析一组门店咨询记录，生成门店服务改进方案。",
+            ("## 门店咨询", "## 服务承诺", "## 问题升级", "## 体验复盘"),
+        ),
+        "02-use-cases/store-service/store-advisor-adk": (
+            "adk",
+            "分析一组门店咨询记录，生成门店服务改进方案。",
+            ("## 门店咨询", "## 服务承诺", "## 问题升级", "## 体验复盘"),
+        ),
+        "02-use-cases/store-service/store-advisor-langchain": (
+            "langchain",
+            "分析一组门店咨询记录，生成门店服务改进方案。",
+            ("## 门店咨询", "## 服务承诺", "## 问题升级", "## 体验复盘"),
+        ),
+        "02-use-cases/store-service/store-advisor-deepagents": (
+            "deepagents",
+            "分析一组门店咨询记录，生成门店服务改进方案。",
+            ("## 门店咨询", "## 服务承诺", "## 问题升级", "## 体验复盘"),
+        ),
+        "02-use-cases/after-sales-service/repair-coordinator-langgraph": (
+            "langgraph",
+            "分析一批售后工单，生成售后服务协同方案。",
+            ("## 售后工单", "## 备件协同", "## 服务时效", "## 客户回访"),
+        ),
+        "02-use-cases/after-sales-service/repair-coordinator-adk": (
+            "adk",
+            "分析一批售后工单，生成售后服务协同方案。",
+            ("## 售后工单", "## 备件协同", "## 服务时效", "## 客户回访"),
+        ),
+        "02-use-cases/after-sales-service/repair-coordinator-langchain": (
+            "langchain",
+            "分析一批售后工单，生成售后服务协同方案。",
+            ("## 售后工单", "## 备件协同", "## 服务时效", "## 客户回访"),
+        ),
+        "02-use-cases/after-sales-service/repair-coordinator-deepagents": (
+            "deepagents",
+            "分析一批售后工单，生成售后服务协同方案。",
+            ("## 售后工单", "## 备件协同", "## 服务时效", "## 客户回访"),
+        ),
+        "02-use-cases/content-safety/moderation-review-langgraph": (
+            "langgraph",
+            "分析一批内容安全样本，生成审核处置方案。",
+            ("## 内容样本", "## 规则命中", "## 人工复核", "## 风险处置"),
+        ),
+        "02-use-cases/content-safety/moderation-review-adk": (
+            "adk",
+            "分析一批内容安全样本，生成审核处置方案。",
+            ("## 内容样本", "## 规则命中", "## 人工复核", "## 风险处置"),
+        ),
+        "02-use-cases/content-safety/moderation-review-langchain": (
+            "langchain",
+            "分析一批内容安全样本，生成审核处置方案。",
+            ("## 内容样本", "## 规则命中", "## 人工复核", "## 风险处置"),
+        ),
+        "02-use-cases/content-safety/moderation-review-deepagents": (
+            "deepagents",
+            "分析一批内容安全样本，生成审核处置方案。",
+            ("## 内容样本", "## 规则命中", "## 人工复核", "## 风险处置"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
