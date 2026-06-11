@@ -1541,6 +1541,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一批内容安全样本，生成审核处置方案。",
             ("## 内容样本", "## 规则命中", "## 人工复核", "## 风险处置"),
         ),
+        "02-use-cases/live-commerce-operations/session-control-langgraph": (
+            "langgraph",
+            "分析一场直播运营数据，生成直播场控复盘方案。",
+            ("## 直播场控", "## 商品讲解", "## 异常舆情", "## 转化复盘"),
+        ),
+        "02-use-cases/live-commerce-operations/session-control-adk": (
+            "adk",
+            "分析一场直播运营数据，生成直播场控复盘方案。",
+            ("## 直播场控", "## 商品讲解", "## 异常舆情", "## 转化复盘"),
+        ),
+        "02-use-cases/live-commerce-operations/session-control-langchain": (
+            "langchain",
+            "分析一场直播运营数据，生成直播场控复盘方案。",
+            ("## 直播场控", "## 商品讲解", "## 异常舆情", "## 转化复盘"),
+        ),
+        "02-use-cases/live-commerce-operations/session-control-deepagents": (
+            "deepagents",
+            "分析一场直播运营数据，生成直播场控复盘方案。",
+            ("## 直播场控", "## 商品讲解", "## 异常舆情", "## 转化复盘"),
+        ),
+        "02-use-cases/membership-growth/member-lifecycle-langgraph": (
+            "langgraph",
+            "分析一组会员运营数据，生成会员增长方案。",
+            ("## 会员分层", "## 权益推荐", "## 触达节奏", "## 留存复盘"),
+        ),
+        "02-use-cases/membership-growth/member-lifecycle-adk": (
+            "adk",
+            "分析一组会员运营数据，生成会员增长方案。",
+            ("## 会员分层", "## 权益推荐", "## 触达节奏", "## 留存复盘"),
+        ),
+        "02-use-cases/membership-growth/member-lifecycle-langchain": (
+            "langchain",
+            "分析一组会员运营数据，生成会员增长方案。",
+            ("## 会员分层", "## 权益推荐", "## 触达节奏", "## 留存复盘"),
+        ),
+        "02-use-cases/membership-growth/member-lifecycle-deepagents": (
+            "deepagents",
+            "分析一组会员运营数据，生成会员增长方案。",
+            ("## 会员分层", "## 权益推荐", "## 触达节奏", "## 留存复盘"),
+        ),
+        "02-use-cases/search-recommendation/relevance-diagnostics-langgraph": (
+            "langgraph",
+            "分析一批搜索推荐样本，生成相关性诊断方案。",
+            ("## 查询意图", "## 召回质量", "## 排序诊断", "## 反馈闭环"),
+        ),
+        "02-use-cases/search-recommendation/relevance-diagnostics-adk": (
+            "adk",
+            "分析一批搜索推荐样本，生成相关性诊断方案。",
+            ("## 查询意图", "## 召回质量", "## 排序诊断", "## 反馈闭环"),
+        ),
+        "02-use-cases/search-recommendation/relevance-diagnostics-langchain": (
+            "langchain",
+            "分析一批搜索推荐样本，生成相关性诊断方案。",
+            ("## 查询意图", "## 召回质量", "## 排序诊断", "## 反馈闭环"),
+        ),
+        "02-use-cases/search-recommendation/relevance-diagnostics-deepagents": (
+            "deepagents",
+            "分析一批搜索推荐样本，生成相关性诊断方案。",
+            ("## 查询意图", "## 召回质量", "## 排序诊断", "## 反馈闭环"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

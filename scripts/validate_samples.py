@@ -62,6 +62,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Store Service",
     "After-sales Service",
     "Content Safety",
+    "Live Commerce Operations",
+    "Membership Growth",
+    "Search Recommendation",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
