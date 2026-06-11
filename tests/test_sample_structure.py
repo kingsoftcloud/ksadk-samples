@@ -1421,6 +1421,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组游戏运营数据，生成版本复盘方案。",
             ("## 玩家反馈", "## 活动配置", "## 经济系统监控", "## 版本复盘"),
         ),
+        "02-use-cases/advertising-operations/campaign-optimization-langgraph": (
+            "langgraph",
+            "分析一组广告投放数据，生成投放优化方案。",
+            ("## 投放目标", "## 素材审核", "## 预算节奏", "## 效果复盘"),
+        ),
+        "02-use-cases/advertising-operations/campaign-optimization-adk": (
+            "adk",
+            "分析一组广告投放数据，生成投放优化方案。",
+            ("## 投放目标", "## 素材审核", "## 预算节奏", "## 效果复盘"),
+        ),
+        "02-use-cases/advertising-operations/campaign-optimization-langchain": (
+            "langchain",
+            "分析一组广告投放数据，生成投放优化方案。",
+            ("## 投放目标", "## 素材审核", "## 预算节奏", "## 效果复盘"),
+        ),
+        "02-use-cases/advertising-operations/campaign-optimization-deepagents": (
+            "deepagents",
+            "分析一组广告投放数据，生成投放优化方案。",
+            ("## 投放目标", "## 素材审核", "## 预算节奏", "## 效果复盘"),
+        ),
+        "02-use-cases/community-operations/community-growth-langgraph": (
+            "langgraph",
+            "分析一组社群运营数据，生成社群增长方案。",
+            ("## 社群画像", "## 内容日历", "## 互动风险", "## 转化复盘"),
+        ),
+        "02-use-cases/community-operations/community-growth-adk": (
+            "adk",
+            "分析一组社群运营数据，生成社群增长方案。",
+            ("## 社群画像", "## 内容日历", "## 互动风险", "## 转化复盘"),
+        ),
+        "02-use-cases/community-operations/community-growth-langchain": (
+            "langchain",
+            "分析一组社群运营数据，生成社群增长方案。",
+            ("## 社群画像", "## 内容日历", "## 互动风险", "## 转化复盘"),
+        ),
+        "02-use-cases/community-operations/community-growth-deepagents": (
+            "deepagents",
+            "分析一组社群运营数据，生成社群增长方案。",
+            ("## 社群画像", "## 内容日历", "## 互动风险", "## 转化复盘"),
+        ),
+        "02-use-cases/customer-qa/service-quality-langgraph": (
+            "langgraph",
+            "分析一批客服质检样本，生成服务质量改进方案。",
+            ("## 质检样本", "## 规则命中", "## 改进建议", "## 培训闭环"),
+        ),
+        "02-use-cases/customer-qa/service-quality-adk": (
+            "adk",
+            "分析一批客服质检样本，生成服务质量改进方案。",
+            ("## 质检样本", "## 规则命中", "## 改进建议", "## 培训闭环"),
+        ),
+        "02-use-cases/customer-qa/service-quality-langchain": (
+            "langchain",
+            "分析一批客服质检样本，生成服务质量改进方案。",
+            ("## 质检样本", "## 规则命中", "## 改进建议", "## 培训闭环"),
+        ),
+        "02-use-cases/customer-qa/service-quality-deepagents": (
+            "deepagents",
+            "分析一批客服质检样本，生成服务质量改进方案。",
+            ("## 质检样本", "## 规则命中", "## 改进建议", "## 培训闭环"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

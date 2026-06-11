@@ -52,6 +52,9 @@
 | 环境监测 / Pollution Response 经验 | 环境监测 Agent 要把监测点位、污染线索、处置联动和公众披露拆开，不能泄露真实企业排污数据、坐标、执法记录或敏感事件。 | `environmental-monitoring/pollution-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的污染响应版本；下一步接监测点位平台、IoT 传感器、环保工单、巡查记录、气象服务和公众披露平台。 |
 | 餐饮运营 / Store Ops 经验 | 餐饮运营 Agent 要把门店排班、食安巡检、库存损耗和顾客反馈拆开，不能泄露真实会员、员工、流水、供应商价格或监管记录。 | `restaurant-operations/store-ops-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的门店协同版本；下一步接 POS、排班系统、食安巡检、库存系统、外卖平台和顾客反馈看板。 |
 | 游戏运营 / LiveOps Review 经验 | 游戏运营 Agent 要把玩家反馈、活动配置、经济系统监控和版本复盘拆开，不能泄露真实玩家 ID、充值记录、反作弊规则或未公开版本计划。 | `game-operations/liveops-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的版本复盘版本；下一步接玩家反馈平台、活动配置、数据看板、经济系统监控、公告系统和版本管理。 |
+| 广告投放 / Campaign Optimization 经验 | 广告投放 Agent 要把投放目标、素材审核、预算节奏和效果复盘拆开，不能泄露真实账户、转化明细、用户画像或广告后台数据。 | `advertising-operations/campaign-optimization-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的投放优化版本；下一步接广告平台、素材库、落地页分析、转化归因、品牌审核和预算看板。 |
+| 社群运营 / Community Growth 经验 | 社群运营 Agent 要把社群画像、内容日历、互动风险和转化复盘拆开，不能泄露真实群成员、聊天记录、手机号或私域标签。 | `community-operations/community-growth-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的社群增长版本；下一步接社群平台、内容日历、知识库、活动报名、CRM 线索池和运营看板。 |
+| 客服质检 / Service Quality 经验 | 客服质检 Agent 要把质检样本、规则命中、改进建议和培训闭环拆开，不能泄露真实通话录音、客户身份、坐席工号或投诉详情。 | `customer-qa/service-quality-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的服务质检版本；下一步接客服工单、质检规则库、知识库、培训系统、坐席反馈和质量看板。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -114,9 +117,12 @@
 43. **Environmental Monitoring**：已补污染响应基础版本；下一步接监测点位平台、IoT 传感器、环保工单、巡查记录、气象服务和公众披露平台。
 44. **Restaurant Operations**：已补门店协同基础版本；下一步接 POS、排班系统、食安巡检、库存系统、外卖平台和顾客反馈看板。
 45. **Game Operations**：已补版本复盘基础版本；下一步接玩家反馈平台、活动配置、数据看板、经济系统监控、公告系统和版本管理。
-46. **Advertising Operations**：下一步补投放目标、素材审核、预算节奏和效果复盘。
-47. **Community Operations**：下一步补社群画像、内容日历、互动风险和转化复盘。
-48. **Customer QA**：下一步补质检样本、规则命中、改进建议和培训闭环。
+46. **Advertising Operations**：已补投放优化基础版本；下一步接广告平台、素材库、落地页分析、转化归因、品牌审核和预算看板。
+47. **Community Operations**：已补社群增长基础版本；下一步接社群平台、内容日历、知识库、活动报名、CRM 线索池和运营看板。
+48. **Customer QA**：已补服务质检基础版本；下一步接客服工单、质检规则库、知识库、培训系统、坐席反馈和质量看板。
+49. **Store Service**：下一步补门店咨询、服务承诺、问题升级和体验复盘。
+50. **After-sales Service**：下一步补售后工单、备件协同、服务时效和客户回访。
+51. **Content Safety**：下一步补内容样本、规则命中、人工复核和风险处置。
 
 ## README 写法建议
 

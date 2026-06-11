@@ -56,6 +56,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Environmental Monitoring",
     "Restaurant Operations",
     "Game Operations",
+    "Advertising Operations",
+    "Community Operations",
+    "Customer QA",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
