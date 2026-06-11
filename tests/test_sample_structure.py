@@ -1721,6 +1721,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组企业培训需求，生成培训计划复盘方案。",
             ("## 培训对象", "## 课程设计", "## 练习评估", "## 学习复盘"),
         ),
+        "02-use-cases/contract-fulfillment/fulfillment-monitor-langgraph": (
+            "langgraph",
+            "分析一组合同履约记录，生成履约风险复盘方案。",
+            ("## 履约节点", "## 风险预警", "## 协同动作", "## 验收复盘"),
+        ),
+        "02-use-cases/contract-fulfillment/fulfillment-monitor-adk": (
+            "adk",
+            "分析一组合同履约记录，生成履约风险复盘方案。",
+            ("## 履约节点", "## 风险预警", "## 协同动作", "## 验收复盘"),
+        ),
+        "02-use-cases/contract-fulfillment/fulfillment-monitor-langchain": (
+            "langchain",
+            "分析一组合同履约记录，生成履约风险复盘方案。",
+            ("## 履约节点", "## 风险预警", "## 协同动作", "## 验收复盘"),
+        ),
+        "02-use-cases/contract-fulfillment/fulfillment-monitor-deepagents": (
+            "deepagents",
+            "分析一组合同履约记录，生成履约风险复盘方案。",
+            ("## 履约节点", "## 风险预警", "## 协同动作", "## 验收复盘"),
+        ),
+        "02-use-cases/tender-collaboration/bid-evaluator-langgraph": (
+            "langgraph",
+            "分析一组招投标协同材料，生成评分协同复盘方案。",
+            ("## 招标需求", "## 供应商响应", "## 评分协同", "## 风险复盘"),
+        ),
+        "02-use-cases/tender-collaboration/bid-evaluator-adk": (
+            "adk",
+            "分析一组招投标协同材料，生成评分协同复盘方案。",
+            ("## 招标需求", "## 供应商响应", "## 评分协同", "## 风险复盘"),
+        ),
+        "02-use-cases/tender-collaboration/bid-evaluator-langchain": (
+            "langchain",
+            "分析一组招投标协同材料，生成评分协同复盘方案。",
+            ("## 招标需求", "## 供应商响应", "## 评分协同", "## 风险复盘"),
+        ),
+        "02-use-cases/tender-collaboration/bid-evaluator-deepagents": (
+            "deepagents",
+            "分析一组招投标协同材料，生成评分协同复盘方案。",
+            ("## 招标需求", "## 供应商响应", "## 评分协同", "## 风险复盘"),
+        ),
+        "02-use-cases/campus-operations/campus-service-langgraph": (
+            "langgraph",
+            "分析一组园区运营事件，生成园区服务复盘方案。",
+            ("## 园区工单", "## 能耗资源", "## 访客安全", "## 运营复盘"),
+        ),
+        "02-use-cases/campus-operations/campus-service-adk": (
+            "adk",
+            "分析一组园区运营事件，生成园区服务复盘方案。",
+            ("## 园区工单", "## 能耗资源", "## 访客安全", "## 运营复盘"),
+        ),
+        "02-use-cases/campus-operations/campus-service-langchain": (
+            "langchain",
+            "分析一组园区运营事件，生成园区服务复盘方案。",
+            ("## 园区工单", "## 能耗资源", "## 访客安全", "## 运营复盘"),
+        ),
+        "02-use-cases/campus-operations/campus-service-deepagents": (
+            "deepagents",
+            "分析一组园区运营事件，生成园区服务复盘方案。",
+            ("## 园区工单", "## 能耗资源", "## 访客安全", "## 运营复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

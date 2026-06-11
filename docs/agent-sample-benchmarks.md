@@ -67,6 +67,9 @@
 | 品牌舆情 / Brand Reputation 经验 | 品牌舆情 Agent 要把舆情线索、传播路径、回应策略和品牌复盘拆开，不能泄露真实用户、社媒账号、私信内容或未公开声明。 | `brand-reputation/reputation-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的品牌舆情版本；下一步接舆情监测平台、客服工单、社媒排期、品牌素材库、法务审核和公关复盘看板。 |
 | 渠道运营 / Channel Operations 经验 | 渠道运营 Agent 要把渠道表现、库存协同、价格治理和经营复盘拆开，不能泄露真实经销商、合同价格、结算明细或返点规则。 | `channel-operations/channel-health-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的渠道运营版本；下一步接渠道销售系统、库存系统、价格治理平台、经销商协同、促销系统和经营看板。 |
 | 企业培训 / Enterprise Training 经验 | 企业培训 Agent 要把培训对象、课程设计、练习评估和学习复盘拆开，不能泄露真实员工、绩效、考试成绩或个人评价。 | `enterprise-training/training-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的企业培训版本；下一步接 LMS、HR 系统、课程库、考试平台、练习环境和学习数据看板。 |
+| 合同履约 / Contract Fulfillment 经验 | 合同履约 Agent 要把履约节点、风险预警、协同动作和验收复盘拆开，不能泄露真实合同、客户名称、金额或商务条款。 | `contract-fulfillment/fulfillment-monitor-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的合同履约版本；下一步接合同管理系统、项目管理系统、交付工单、验收材料库、客户确认记录和财务回款看板。 |
+| 招投标协同 / Tender Collaboration 经验 | 招投标 Agent 要把招标需求、供应商响应、评分协同和风险复盘拆开，不能泄露真实供应商、报价、投标文件原文或评分细节。 | `tender-collaboration/bid-evaluator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的招投标协同版本；下一步接招标需求库、供应商响应文档、评分表、合规规则库、评审会议纪要和采购审批系统。 |
+| 园区运营 / Campus Operations 经验 | 园区运营 Agent 要把园区工单、能耗资源、访客安全和运营复盘拆开，不能泄露真实租户、访客、车牌、门禁记录或监控画面。 | `campus-operations/campus-service-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的园区运营版本；下一步接园区工单系统、能耗平台、访客系统、安防巡检、会议室预订和物业排班。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -144,9 +147,12 @@
 58. **Brand Reputation**：已补品牌舆情基础版本；下一步接舆情监测平台、客服工单、社媒排期、品牌素材库、法务审核和公关复盘看板。
 59. **Channel Operations**：已补渠道运营基础版本；下一步接渠道销售系统、库存系统、价格治理平台、经销商协同、促销系统和经营看板。
 60. **Enterprise Training**：已补企业培训基础版本；下一步接 LMS、HR 系统、课程库、考试平台、练习环境和学习数据看板。
-61. **Contract Fulfillment**：下一步补履约节点、风险预警、协同动作和验收复盘。
-62. **Tender Collaboration**：下一步补招标需求、供应商响应、评分协同和风险复盘。
-63. **Campus Operations**：下一步补园区工单、能耗资源、访客安全和运营复盘。
+61. **Contract Fulfillment**：已补合同履约基础版本；下一步接合同管理系统、项目管理系统、交付工单、验收材料库、客户确认记录和财务回款看板。
+62. **Tender Collaboration**：已补招投标协同基础版本；下一步接招标需求库、供应商响应文档、评分表、合规规则库、评审会议纪要和采购审批系统。
+63. **Campus Operations**：已补园区运营基础版本；下一步接园区工单系统、能耗平台、访客系统、安防巡检、会议室预订、物业排班和运营看板。
+64. **Property Leasing**：下一步补招商线索、租赁方案、合同协同和转化复盘。
+65. **Support Knowledge Operations**：下一步补知识缺口、工单反馈、内容更新和发布复盘。
+66. **Event Operations**：下一步补活动报名、现场执行、资源调度和效果复盘。
 
 ## README 写法建议
 

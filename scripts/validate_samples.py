@@ -71,6 +71,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Brand Reputation",
     "Channel Operations",
     "Enterprise Training",
+    "Contract Fulfillment",
+    "Tender Collaboration",
+    "Campus Operations",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
