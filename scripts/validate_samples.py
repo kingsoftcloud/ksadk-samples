@@ -41,6 +41,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Data Analyst",
     "Customer Support",
     "Multi-Agent Team",
+    "Customer Success",
+    "Education Training",
+    "Supply Chain Planning",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

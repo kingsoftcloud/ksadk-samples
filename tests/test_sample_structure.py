@@ -846,6 +846,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "审查一次安全变更，输出威胁分析和整改计划。",
             ("## 变更摘要", "## 威胁分析", "## 整改计划", "## 验证证据"),
         ),
+        "02-use-cases/customer-success/health-review-langgraph": (
+            "langgraph",
+            "分析一组客户使用数据，给出客户成功行动计划。",
+            ("## 客户健康", "## 风险信号", "## 成功计划", "## 跟进节奏"),
+        ),
+        "02-use-cases/customer-success/health-review-adk": (
+            "adk",
+            "分析一组客户使用数据，给出客户成功行动计划。",
+            ("## 客户健康", "## 风险信号", "## 成功计划", "## 跟进节奏"),
+        ),
+        "02-use-cases/customer-success/health-review-langchain": (
+            "langchain",
+            "分析一组客户使用数据，给出客户成功行动计划。",
+            ("## 客户健康", "## 风险信号", "## 成功计划", "## 跟进节奏"),
+        ),
+        "02-use-cases/customer-success/health-review-deepagents": (
+            "deepagents",
+            "分析一组客户使用数据，给出客户成功行动计划。",
+            ("## 客户健康", "## 风险信号", "## 成功计划", "## 跟进节奏"),
+        ),
+        "02-use-cases/education-training/learning-coach-langgraph": (
+            "langgraph",
+            "根据学习目标和练习记录，生成培训辅导计划。",
+            ("## 学习画像", "## 能力缺口", "## 训练计划", "## 评估方式"),
+        ),
+        "02-use-cases/education-training/learning-coach-adk": (
+            "adk",
+            "根据学习目标和练习记录，生成培训辅导计划。",
+            ("## 学习画像", "## 能力缺口", "## 训练计划", "## 评估方式"),
+        ),
+        "02-use-cases/education-training/learning-coach-langchain": (
+            "langchain",
+            "根据学习目标和练习记录，生成培训辅导计划。",
+            ("## 学习画像", "## 能力缺口", "## 训练计划", "## 评估方式"),
+        ),
+        "02-use-cases/education-training/learning-coach-deepagents": (
+            "deepagents",
+            "根据学习目标和练习记录，生成培训辅导计划。",
+            ("## 学习画像", "## 能力缺口", "## 训练计划", "## 评估方式"),
+        ),
+        "02-use-cases/supply-chain-planning/demand-planner-langgraph": (
+            "langgraph",
+            "分析一批需求和库存数据，生成供应链计划。",
+            ("## 需求预测", "## 库存风险", "## 调拨计划", "## 监控指标"),
+        ),
+        "02-use-cases/supply-chain-planning/demand-planner-adk": (
+            "adk",
+            "分析一批需求和库存数据，生成供应链计划。",
+            ("## 需求预测", "## 库存风险", "## 调拨计划", "## 监控指标"),
+        ),
+        "02-use-cases/supply-chain-planning/demand-planner-langchain": (
+            "langchain",
+            "分析一批需求和库存数据，生成供应链计划。",
+            ("## 需求预测", "## 库存风险", "## 调拨计划", "## 监控指标"),
+        ),
+        "02-use-cases/supply-chain-planning/demand-planner-deepagents": (
+            "deepagents",
+            "分析一批需求和库存数据，生成供应链计划。",
+            ("## 需求预测", "## 库存风险", "## 调拨计划", "## 监控指标"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
