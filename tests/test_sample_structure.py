@@ -1841,6 +1841,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组活动会务数据，生成活动运营复盘方案。",
             ("## 活动报名", "## 现场执行", "## 资源调度", "## 效果复盘"),
         ),
+        "02-use-cases/meeting-minutes/action-tracker-langgraph": (
+            "langgraph",
+            "分析一组会议材料，生成会议纪要和行动跟踪方案。",
+            ("## 会议材料", "## 行动项", "## 决策追踪", "## 纪要复盘"),
+        ),
+        "02-use-cases/meeting-minutes/action-tracker-adk": (
+            "adk",
+            "分析一组会议材料，生成会议纪要和行动跟踪方案。",
+            ("## 会议材料", "## 行动项", "## 决策追踪", "## 纪要复盘"),
+        ),
+        "02-use-cases/meeting-minutes/action-tracker-langchain": (
+            "langchain",
+            "分析一组会议材料，生成会议纪要和行动跟踪方案。",
+            ("## 会议材料", "## 行动项", "## 决策追踪", "## 纪要复盘"),
+        ),
+        "02-use-cases/meeting-minutes/action-tracker-deepagents": (
+            "deepagents",
+            "分析一组会议材料，生成会议纪要和行动跟踪方案。",
+            ("## 会议材料", "## 行动项", "## 决策追踪", "## 纪要复盘"),
+        ),
+        "02-use-cases/enterprise-okr/okr-review-langgraph": (
+            "langgraph",
+            "分析一组企业 OKR 进展，生成季度复盘方案。",
+            ("## 目标拆解", "## 进度风险", "## 协同动作", "## 季度复盘"),
+        ),
+        "02-use-cases/enterprise-okr/okr-review-adk": (
+            "adk",
+            "分析一组企业 OKR 进展，生成季度复盘方案。",
+            ("## 目标拆解", "## 进度风险", "## 协同动作", "## 季度复盘"),
+        ),
+        "02-use-cases/enterprise-okr/okr-review-langchain": (
+            "langchain",
+            "分析一组企业 OKR 进展，生成季度复盘方案。",
+            ("## 目标拆解", "## 进度风险", "## 协同动作", "## 季度复盘"),
+        ),
+        "02-use-cases/enterprise-okr/okr-review-deepagents": (
+            "deepagents",
+            "分析一组企业 OKR 进展，生成季度复盘方案。",
+            ("## 目标拆解", "## 进度风险", "## 协同动作", "## 季度复盘"),
+        ),
+        "02-use-cases/organization-knowledge-graph/graph-curator-langgraph": (
+            "langgraph",
+            "分析一组组织知识材料，生成知识图谱更新复盘方案。",
+            ("## 实体抽取", "## 关系校验", "## 知识更新", "## 图谱复盘"),
+        ),
+        "02-use-cases/organization-knowledge-graph/graph-curator-adk": (
+            "adk",
+            "分析一组组织知识材料，生成知识图谱更新复盘方案。",
+            ("## 实体抽取", "## 关系校验", "## 知识更新", "## 图谱复盘"),
+        ),
+        "02-use-cases/organization-knowledge-graph/graph-curator-langchain": (
+            "langchain",
+            "分析一组组织知识材料，生成知识图谱更新复盘方案。",
+            ("## 实体抽取", "## 关系校验", "## 知识更新", "## 图谱复盘"),
+        ),
+        "02-use-cases/organization-knowledge-graph/graph-curator-deepagents": (
+            "deepagents",
+            "分析一组组织知识材料，生成知识图谱更新复盘方案。",
+            ("## 实体抽取", "## 关系校验", "## 知识更新", "## 图谱复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

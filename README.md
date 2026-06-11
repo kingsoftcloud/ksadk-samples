@@ -83,6 +83,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | 物业招商 Agent（Property Leasing） | `02-use-cases/property-leasing/leasing-copilot-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 客服知识运营 Agent（Support Knowledge Operations） | `02-use-cases/support-knowledge-operations/knowledge-feedback-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 | 活动会务运营 Agent（Event Operations） | `02-use-cases/event-operations/event-runbook-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 会议纪要 Agent（Meeting Minutes） | `02-use-cases/meeting-minutes/action-tracker-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 企业 OKR Agent（Enterprise OKR） | `02-use-cases/enterprise-okr/okr-review-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
+| 组织知识图谱 Agent（Organization Knowledge Graph） | `02-use-cases/organization-knowledge-graph/graph-curator-langgraph` | Built With LangGraph / Built With ADK / Built With LangChain / Built With DeepAgents |
 
 ### 最佳实践案例
 
@@ -154,6 +157,9 @@ KSADK Samples 是 AgentEngine / KSADK 的官方场景化代码工坊。仓库默
 | Property Leasing 物业招商 | `02-use-cases/property-leasing/leasing-copilot-langgraph` | `02-use-cases/property-leasing/leasing-copilot-adk` | `02-use-cases/property-leasing/leasing-copilot-langchain` | `02-use-cases/property-leasing/leasing-copilot-deepagents` |
 | Support Knowledge Operations 客服知识运营 | `02-use-cases/support-knowledge-operations/knowledge-feedback-langgraph` | `02-use-cases/support-knowledge-operations/knowledge-feedback-adk` | `02-use-cases/support-knowledge-operations/knowledge-feedback-langchain` | `02-use-cases/support-knowledge-operations/knowledge-feedback-deepagents` |
 | Event Operations 活动会务运营 | `02-use-cases/event-operations/event-runbook-langgraph` | `02-use-cases/event-operations/event-runbook-adk` | `02-use-cases/event-operations/event-runbook-langchain` | `02-use-cases/event-operations/event-runbook-deepagents` |
+| Meeting Minutes 会议纪要 | `02-use-cases/meeting-minutes/action-tracker-langgraph` | `02-use-cases/meeting-minutes/action-tracker-adk` | `02-use-cases/meeting-minutes/action-tracker-langchain` | `02-use-cases/meeting-minutes/action-tracker-deepagents` |
+| Enterprise OKR 企业 OKR | `02-use-cases/enterprise-okr/okr-review-langgraph` | `02-use-cases/enterprise-okr/okr-review-adk` | `02-use-cases/enterprise-okr/okr-review-langchain` | `02-use-cases/enterprise-okr/okr-review-deepagents` |
+| Organization Knowledge Graph 组织知识图谱 | `02-use-cases/organization-knowledge-graph/graph-curator-langgraph` | `02-use-cases/organization-knowledge-graph/graph-curator-adk` | `02-use-cases/organization-knowledge-graph/graph-curator-langchain` | `02-use-cases/organization-knowledge-graph/graph-curator-deepagents` |
 
 长任务恢复是横向 Runtime 能力样例，见 `02-use-cases/long-task-resume/{langgraph,adk,langchain,deepagents}`。它重点演示 checkpoint 列表、ResumeRun、tool receipt 去重、CancelRun 和未配置持久化后端时的降级行为。
 
@@ -246,7 +252,7 @@ make public-preflight
 
 后续会继续补充更多框架版本和更重的行业样例。新增样例只有在本地可运行、可部署、可脱敏验证、README 足够完整时，才会加入代码目录。
 
-- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量、零售运营、物流履约、房地产运营、农业生产、通信运维、旅游服务、设备维护、媒体运营、金融风控、城市交通、地产营销、公共安全、工业巡检、环境监测、餐饮运营、游戏运营、广告投放、社群运营、客服质检、门店客服、售后服务、内容安全、直播运营、会员增长、搜索推荐、支付风控、智能导购、DevRel 运营、品牌舆情、渠道运营、企业培训、合同履约、招投标协同、园区运营、物业招商、客服知识运营和活动会务运营已覆盖 LangGraph / ADK / LangChain / DeepAgents。
+- 为更多场景补充框架版本；当前报告生成、工作区沙箱、浏览器 DOM 诊断、CSV 洞察、工单分级、团队协作、AIOps 告警分诊、财务报表审阅、内容生产、企业知识运营、销售运营、合规审阅、采购协同、HR 招聘、项目管理、法务合同、研发效能、产品运营、数据治理、安全审计、客户成功、教育培训、供应链计划、长任务恢复、医疗运营、能源调度、政务服务、保险理赔、制造质量、零售运营、物流履约、房地产运营、农业生产、通信运维、旅游服务、设备维护、媒体运营、金融风控、城市交通、地产营销、公共安全、工业巡检、环境监测、餐饮运营、游戏运营、广告投放、社群运营、客服质检、门店客服、售后服务、内容安全、直播运营、会员增长、搜索推荐、支付风控、智能导购、DevRel 运营、品牌舆情、渠道运营、企业培训、合同履约、招投标协同、园区运营、物业招商、客服知识运营、活动会务运营、会议纪要、企业 OKR 和组织知识图谱已覆盖 LangGraph / ADK / LangChain / DeepAgents。
 - 增加更多真实 Web UI GIF 和端到端部署录屏；当前已提供 Deep Research Web UI 演示。
-- 增加更多行业场景，如会议纪要、企业 OKR 和组织知识图谱。
+- 增加更多行业场景，如预算管理、成本优化和供应商绩效。
 - 长任务恢复已补多框架工程版本；后续可继续接真实 Postgres session backend 和平台 run/session 事件。

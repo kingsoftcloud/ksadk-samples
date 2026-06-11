@@ -73,6 +73,9 @@
 | 物业招商 / Property Leasing 经验 | 物业招商 Agent 要把招商线索、租赁方案、合同协同和转化复盘拆开，不能泄露真实租户、联系人、报价、底价或佣金规则。 | `property-leasing/leasing-copilot-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的物业招商版本；下一步接招商 CRM、楼宇资源台账、租赁方案库、合同管理系统、带看日程和转化分析看板。 |
 | 客服知识运营 / Support Knowledge Operations 经验 | 客服知识运营 Agent 要把知识缺口、工单反馈、内容更新和发布复盘拆开，不能泄露真实客户、工单原文、账号信息或坐席工号。 | `support-knowledge-operations/knowledge-feedback-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的客服知识运营版本；下一步接客服工单系统、知识库、坐席反馈、搜索日志、内容审核流和发布看板。 |
 | 活动会务运营 / Event Operations 经验 | 活动运营 Agent 要把活动报名、现场执行、资源调度和效果复盘拆开，不能泄露真实参会者、签到明细、嘉宾联系方式或活动预算。 | `event-operations/event-runbook-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的活动会务运营版本；下一步接活动报名系统、签到系统、场地资源、物料清单、讲师日程、问卷反馈和转化看板。 |
+| 会议纪要 / Meeting Minutes 经验 | 会议纪要 Agent 要把会议材料、行动项、决策追踪和纪要复盘拆开，不能泄露真实参会人、会议录音原文、敏感决策或未公开路线图。 | `meeting-minutes/action-tracker-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的会议纪要版本；下一步接会议转写、任务系统、决策台账、日历和纪要发布流。 |
+| 企业 OKR / Enterprise OKR 经验 | OKR Agent 要把目标拆解、进度风险、协同动作和季度复盘拆开，不能泄露真实员工、绩效评分、薪酬、客户名单或组织调整。 | `enterprise-okr/okr-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的企业 OKR 版本；下一步接 OKR 系统、项目管理系统、指标看板、周报和风险登记表。 |
+| 组织知识图谱 / Organization Knowledge Graph 经验 | 知识图谱 Agent 要把实体抽取、关系校验、知识更新和图谱复盘拆开，不能泄露真实员工关系、权限信息、客户项目或敏感知识资产。 | `organization-knowledge-graph/graph-curator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的组织知识图谱版本；下一步接文档库、组织目录、项目台账、专家库和图谱质量看板。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -156,9 +159,12 @@
 64. **Property Leasing**：已补物业招商基础版本；下一步接招商 CRM、楼宇资源台账、租赁方案库、合同管理系统、带看日程和转化分析看板。
 65. **Support Knowledge Operations**：已补客服知识运营基础版本；下一步接客服工单系统、知识库、坐席反馈、搜索日志、内容审核流和发布看板。
 66. **Event Operations**：已补活动会务运营基础版本；下一步接活动报名系统、签到系统、场地资源、物料清单、讲师日程、问卷反馈和转化看板。
-67. **Meeting Minutes**：下一步补会议材料、行动项、决策追踪和纪要复盘。
-68. **Enterprise OKR**：下一步补目标拆解、进度风险、协同动作和季度复盘。
-69. **Organization Knowledge Graph**：下一步补实体抽取、关系校验、知识更新和图谱复盘。
+67. **Meeting Minutes**：已补会议纪要基础版本；下一步接会议转写、任务系统、决策台账、日历和纪要发布流。
+68. **Enterprise OKR**：已补企业 OKR 基础版本；下一步接 OKR 系统、项目管理系统、指标看板、周报和风险登记表。
+69. **Organization Knowledge Graph**：已补组织知识图谱基础版本；下一步接文档库、组织目录、项目台账、专家库和图谱质量看板。
+70. **Budget Management**：下一步补预算编制、执行偏差、审批协同和复盘预测。
+71. **Cost Optimization**：下一步补成本结构、节省机会、执行计划和收益复盘。
+72. **Supplier Performance**：下一步补供应商指标、交付风险、整改动作和绩效复盘。
 
 ## README 写法建议
 

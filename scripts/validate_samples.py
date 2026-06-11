@@ -77,6 +77,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Property Leasing",
     "Support Knowledge Operations",
     "Event Operations",
+    "Meeting Minutes",
+    "Enterprise OKR",
+    "Organization Knowledge Graph",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",
