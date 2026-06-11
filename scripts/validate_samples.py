@@ -47,6 +47,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Telecom Operations",
     "Travel Service",
     "Equipment Maintenance",
+    "Media Operations",
+    "Financial Risk",
+    "Urban Mobility",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

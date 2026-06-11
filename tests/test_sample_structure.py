@@ -1241,6 +1241,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组设备维护数据，生成维修协同计划。",
             ("## 设备状态", "## 备件计划", "## 维修任务", "## 停机风险"),
         ),
+        "02-use-cases/media-operations/content-distribution-langgraph": (
+            "langgraph",
+            "分析一组媒体运营数据，生成内容分发协同方案。",
+            ("## 内容排期", "## 热点监测", "## 版权风险", "## 多渠道发布"),
+        ),
+        "02-use-cases/media-operations/content-distribution-adk": (
+            "adk",
+            "分析一组媒体运营数据，生成内容分发协同方案。",
+            ("## 内容排期", "## 热点监测", "## 版权风险", "## 多渠道发布"),
+        ),
+        "02-use-cases/media-operations/content-distribution-langchain": (
+            "langchain",
+            "分析一组媒体运营数据，生成内容分发协同方案。",
+            ("## 内容排期", "## 热点监测", "## 版权风险", "## 多渠道发布"),
+        ),
+        "02-use-cases/media-operations/content-distribution-deepagents": (
+            "deepagents",
+            "分析一组媒体运营数据，生成内容分发协同方案。",
+            ("## 内容排期", "## 热点监测", "## 版权风险", "## 多渠道发布"),
+        ),
+        "02-use-cases/financial-risk/risk-alert-langgraph": (
+            "langgraph",
+            "分析一批金融风控信号，生成风险处置方案。",
+            ("## 交易异常", "## 风险规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/financial-risk/risk-alert-adk": (
+            "adk",
+            "分析一批金融风控信号，生成风险处置方案。",
+            ("## 交易异常", "## 风险规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/financial-risk/risk-alert-langchain": (
+            "langchain",
+            "分析一批金融风控信号，生成风险处置方案。",
+            ("## 交易异常", "## 风险规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/financial-risk/risk-alert-deepagents": (
+            "deepagents",
+            "分析一批金融风控信号，生成风险处置方案。",
+            ("## 交易异常", "## 风险规则", "## 人工复核", "## 审计留痕"),
+        ),
+        "02-use-cases/urban-mobility/traffic-response-langgraph": (
+            "langgraph",
+            "分析一组城市交通事件，生成出行协同响应方案。",
+            ("## 道路拥堵", "## 运力调度", "## 事件响应", "## 公众通知"),
+        ),
+        "02-use-cases/urban-mobility/traffic-response-adk": (
+            "adk",
+            "分析一组城市交通事件，生成出行协同响应方案。",
+            ("## 道路拥堵", "## 运力调度", "## 事件响应", "## 公众通知"),
+        ),
+        "02-use-cases/urban-mobility/traffic-response-langchain": (
+            "langchain",
+            "分析一组城市交通事件，生成出行协同响应方案。",
+            ("## 道路拥堵", "## 运力调度", "## 事件响应", "## 公众通知"),
+        ),
+        "02-use-cases/urban-mobility/traffic-response-deepagents": (
+            "deepagents",
+            "分析一组城市交通事件，生成出行协同响应方案。",
+            ("## 道路拥堵", "## 运力调度", "## 事件响应", "## 公众通知"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():

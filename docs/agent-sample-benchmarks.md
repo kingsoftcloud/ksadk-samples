@@ -43,6 +43,9 @@
 | 通信运维 / Network Change 经验 | 通信运维 Agent 要把网络告警、容量分析、割接计划和客户影响拆开，不能泄露真实拓扑、基站、专线客户或生产告警。 | `telecom-operations/network-change-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的网络割接版本；下一步接 NMS、告警平台、CMDB、容量分析和割接审批系统。 |
 | 旅游服务 / Trip Recovery 经验 | 旅游服务 Agent 要把行程变更、资源协调、客户通知和服务补偿拆开，不能泄露真实旅客、订单、证件或供应商结算数据。 | `travel-service/trip-recovery-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的行程恢复版本；下一步接订单系统、航旅动态、酒店库存、车辆调度和通知平台。 |
 | 设备维护 / Maintenance Planner 经验 | 设备维护 Agent 要把设备状态、备件计划、维修任务和停机风险拆开，不能泄露真实设备序列号、工艺参数或生产数据。 | `equipment-maintenance/maintenance-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的维修计划版本；下一步接 EAM、CMMS、点检系统、传感器平台和备件库存。 |
+| 媒体运营 / Content Distribution 经验 | 媒体运营 Agent 要把内容排期、热点监测、版权风险和多渠道发布拆开，不能泄露真实账号、作者、版权合同或平台后台数据。 | `media-operations/content-distribution-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的内容分发版本；下一步接 CMS、热点监测、版权库、审核流、社媒排期和数据看板。 |
+| 金融风控 / Risk Alert 经验 | 金融风控 Agent 要把交易异常、风险规则、人工复核和审计留痕拆开，不能泄露真实账户、交易、客户、卡号、证件号或内部规则阈值。 | `financial-risk/risk-alert-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的风险预警版本；下一步接交易风控、规则引擎、设备指纹、人工复核台和审计系统。 |
+| 城市交通 / Traffic Response 经验 | 城市交通 Agent 要把道路拥堵、运力调度、事件响应和公众通知拆开，不能泄露真实车牌、乘客、摄像头画面或生产调度数据。 | `urban-mobility/traffic-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的交通响应版本；下一步接交通事件平台、公交调度、路况监测、停车诱导和公众通知平台。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -96,9 +99,12 @@
 34. **Telecom Operations**：已补网络割接基础版本；下一步接 NMS、告警平台、CMDB、容量分析、客服工单和割接审批系统。
 35. **Travel Service**：已补行程恢复基础版本；下一步接订单系统、航旅动态、酒店库存、车辆调度、客服工单和通知平台。
 36. **Equipment Maintenance**：已补维修计划基础版本；下一步接 EAM、CMMS、点检系统、传感器平台、备件库存和生产排程。
-37. **Media Operations**：下一步补内容排期、热点监测、版权风险和多渠道发布。
-38. **Financial Risk**：下一步补交易异常、风险规则、人工复核和审计留痕。
-39. **Urban Mobility**：下一步补道路拥堵、运力调度、事件响应和公众通知。
+37. **Media Operations**：已补内容分发基础版本；下一步接 CMS、热点监测、版权库、审核流、社媒排期和数据看板。
+38. **Financial Risk**：已补风险预警基础版本；下一步接交易风控、规则引擎、设备指纹、人工复核台和审计系统。
+39. **Urban Mobility**：已补交通响应基础版本；下一步接交通事件平台、公交调度、路况监测、停车诱导和公众通知平台。
+40. **Real Estate Marketing**：下一步补楼盘线索、渠道投放、内容审核和转化复盘。
+41. **Public Safety**：下一步补事件线索、资源联动、风险通报和处置复盘。
+42. **Industrial Inspection**：下一步补巡检任务、缺陷识别、维修联动和安全复核。
 
 ## README 写法建议
 
