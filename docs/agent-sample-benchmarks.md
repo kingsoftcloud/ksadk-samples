@@ -70,6 +70,9 @@
 | 合同履约 / Contract Fulfillment 经验 | 合同履约 Agent 要把履约节点、风险预警、协同动作和验收复盘拆开，不能泄露真实合同、客户名称、金额或商务条款。 | `contract-fulfillment/fulfillment-monitor-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的合同履约版本；下一步接合同管理系统、项目管理系统、交付工单、验收材料库、客户确认记录和财务回款看板。 |
 | 招投标协同 / Tender Collaboration 经验 | 招投标 Agent 要把招标需求、供应商响应、评分协同和风险复盘拆开，不能泄露真实供应商、报价、投标文件原文或评分细节。 | `tender-collaboration/bid-evaluator-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的招投标协同版本；下一步接招标需求库、供应商响应文档、评分表、合规规则库、评审会议纪要和采购审批系统。 |
 | 园区运营 / Campus Operations 经验 | 园区运营 Agent 要把园区工单、能耗资源、访客安全和运营复盘拆开，不能泄露真实租户、访客、车牌、门禁记录或监控画面。 | `campus-operations/campus-service-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的园区运营版本；下一步接园区工单系统、能耗平台、访客系统、安防巡检、会议室预订和物业排班。 |
+| 物业招商 / Property Leasing 经验 | 物业招商 Agent 要把招商线索、租赁方案、合同协同和转化复盘拆开，不能泄露真实租户、联系人、报价、底价或佣金规则。 | `property-leasing/leasing-copilot-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的物业招商版本；下一步接招商 CRM、楼宇资源台账、租赁方案库、合同管理系统、带看日程和转化分析看板。 |
+| 客服知识运营 / Support Knowledge Operations 经验 | 客服知识运营 Agent 要把知识缺口、工单反馈、内容更新和发布复盘拆开，不能泄露真实客户、工单原文、账号信息或坐席工号。 | `support-knowledge-operations/knowledge-feedback-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的客服知识运营版本；下一步接客服工单系统、知识库、坐席反馈、搜索日志、内容审核流和发布看板。 |
+| 活动会务运营 / Event Operations 经验 | 活动运营 Agent 要把活动报名、现场执行、资源调度和效果复盘拆开，不能泄露真实参会者、签到明细、嘉宾联系方式或活动预算。 | `event-operations/event-runbook-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的活动会务运营版本；下一步接活动报名系统、签到系统、场地资源、物料清单、讲师日程、问卷反馈和转化看板。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -150,9 +153,12 @@
 61. **Contract Fulfillment**：已补合同履约基础版本；下一步接合同管理系统、项目管理系统、交付工单、验收材料库、客户确认记录和财务回款看板。
 62. **Tender Collaboration**：已补招投标协同基础版本；下一步接招标需求库、供应商响应文档、评分表、合规规则库、评审会议纪要和采购审批系统。
 63. **Campus Operations**：已补园区运营基础版本；下一步接园区工单系统、能耗平台、访客系统、安防巡检、会议室预订、物业排班和运营看板。
-64. **Property Leasing**：下一步补招商线索、租赁方案、合同协同和转化复盘。
-65. **Support Knowledge Operations**：下一步补知识缺口、工单反馈、内容更新和发布复盘。
-66. **Event Operations**：下一步补活动报名、现场执行、资源调度和效果复盘。
+64. **Property Leasing**：已补物业招商基础版本；下一步接招商 CRM、楼宇资源台账、租赁方案库、合同管理系统、带看日程和转化分析看板。
+65. **Support Knowledge Operations**：已补客服知识运营基础版本；下一步接客服工单系统、知识库、坐席反馈、搜索日志、内容审核流和发布看板。
+66. **Event Operations**：已补活动会务运营基础版本；下一步接活动报名系统、签到系统、场地资源、物料清单、讲师日程、问卷反馈和转化看板。
+67. **Meeting Minutes**：下一步补会议材料、行动项、决策追踪和纪要复盘。
+68. **Enterprise OKR**：下一步补目标拆解、进度风险、协同动作和季度复盘。
+69. **Organization Knowledge Graph**：下一步补实体抽取、关系校验、知识更新和图谱复盘。
 
 ## README 写法建议
 

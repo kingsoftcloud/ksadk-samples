@@ -74,6 +74,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Contract Fulfillment",
     "Tender Collaboration",
     "Campus Operations",
+    "Property Leasing",
+    "Support Knowledge Operations",
+    "Event Operations",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

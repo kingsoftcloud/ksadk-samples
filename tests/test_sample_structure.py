@@ -1781,6 +1781,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组园区运营事件，生成园区服务复盘方案。",
             ("## 园区工单", "## 能耗资源", "## 访客安全", "## 运营复盘"),
         ),
+        "02-use-cases/property-leasing/leasing-copilot-langgraph": (
+            "langgraph",
+            "分析一组物业招商线索，生成租赁转化复盘方案。",
+            ("## 招商线索", "## 租赁方案", "## 合同协同", "## 转化复盘"),
+        ),
+        "02-use-cases/property-leasing/leasing-copilot-adk": (
+            "adk",
+            "分析一组物业招商线索，生成租赁转化复盘方案。",
+            ("## 招商线索", "## 租赁方案", "## 合同协同", "## 转化复盘"),
+        ),
+        "02-use-cases/property-leasing/leasing-copilot-langchain": (
+            "langchain",
+            "分析一组物业招商线索，生成租赁转化复盘方案。",
+            ("## 招商线索", "## 租赁方案", "## 合同协同", "## 转化复盘"),
+        ),
+        "02-use-cases/property-leasing/leasing-copilot-deepagents": (
+            "deepagents",
+            "分析一组物业招商线索，生成租赁转化复盘方案。",
+            ("## 招商线索", "## 租赁方案", "## 合同协同", "## 转化复盘"),
+        ),
+        "02-use-cases/support-knowledge-operations/knowledge-feedback-langgraph": (
+            "langgraph",
+            "分析一批客服知识反馈，生成知识运营复盘方案。",
+            ("## 知识缺口", "## 工单反馈", "## 内容更新", "## 发布复盘"),
+        ),
+        "02-use-cases/support-knowledge-operations/knowledge-feedback-adk": (
+            "adk",
+            "分析一批客服知识反馈，生成知识运营复盘方案。",
+            ("## 知识缺口", "## 工单反馈", "## 内容更新", "## 发布复盘"),
+        ),
+        "02-use-cases/support-knowledge-operations/knowledge-feedback-langchain": (
+            "langchain",
+            "分析一批客服知识反馈，生成知识运营复盘方案。",
+            ("## 知识缺口", "## 工单反馈", "## 内容更新", "## 发布复盘"),
+        ),
+        "02-use-cases/support-knowledge-operations/knowledge-feedback-deepagents": (
+            "deepagents",
+            "分析一批客服知识反馈，生成知识运营复盘方案。",
+            ("## 知识缺口", "## 工单反馈", "## 内容更新", "## 发布复盘"),
+        ),
+        "02-use-cases/event-operations/event-runbook-langgraph": (
+            "langgraph",
+            "分析一组活动会务数据，生成活动运营复盘方案。",
+            ("## 活动报名", "## 现场执行", "## 资源调度", "## 效果复盘"),
+        ),
+        "02-use-cases/event-operations/event-runbook-adk": (
+            "adk",
+            "分析一组活动会务数据，生成活动运营复盘方案。",
+            ("## 活动报名", "## 现场执行", "## 资源调度", "## 效果复盘"),
+        ),
+        "02-use-cases/event-operations/event-runbook-langchain": (
+            "langchain",
+            "分析一组活动会务数据，生成活动运营复盘方案。",
+            ("## 活动报名", "## 现场执行", "## 资源调度", "## 效果复盘"),
+        ),
+        "02-use-cases/event-operations/event-runbook-deepagents": (
+            "deepagents",
+            "分析一组活动会务数据，生成活动运营复盘方案。",
+            ("## 活动报名", "## 现场执行", "## 资源调度", "## 效果复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
