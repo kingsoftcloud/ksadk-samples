@@ -352,6 +352,67 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         assert not check_public_readiness.scan_file(sample / filename)
 
 
+def test_long_task_resume_multi_framework_variants_exist_and_render_resume_sections():
+    """Long Task Resume 作为横向 Runtime 能力，也要补齐多框架写法。"""
+
+    os.environ.setdefault("OPENAI_API_KEY", "test-key")
+    os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
+
+    samples = {
+        "02-use-cases/long-task-resume": ("langgraph", True),
+        "02-use-cases/long-task-resume-adk": ("adk", False),
+        "02-use-cases/long-task-resume-langchain": ("langchain", False),
+        "02-use-cases/long-task-resume-deepagents": ("deepagents", False),
+    }
+    required_sections = (
+        "## checkpoint 列表",
+        "## ResumeRun",
+        "## tool receipt",
+        "## CancelRun",
+        "## 降级说明",
+    )
+
+    for relative_dir, (framework, has_workflow) in samples.items():
+        sample_dir = ROOT / relative_dir
+        required_files = ["README.md", ".env.example", "agent.py", "tools.py", "demo.py", "smoke.py", "agentengine.yaml", "requirements.txt"]
+        if has_workflow:
+            required_files.append("workflow.py")
+        for filename in required_files:
+            assert (sample_dir / filename).is_file(), f"{relative_dir} missing {filename}"
+
+        config = yaml.safe_load((sample_dir / "agentengine.yaml").read_text(encoding="utf-8"))
+        assert config["framework"] == framework
+        readme = (sample_dir / "README.md").read_text(encoding="utf-8")
+        assert "不是单文件脚本" in readme
+        assert "checkpoint 列表" in readme
+
+        module_name = "sample_long_task_resume_" + "_".join(sample_dir.relative_to(ROOT).parts)
+        sys.path.insert(0, str(ROOT))
+        sys.path.insert(0, str(sample_dir))
+        try:
+            spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
+            assert spec is not None
+            assert spec.loader is not None
+            module = importlib.util.module_from_spec(spec)
+            sys.modules[module_name] = module
+            spec.loader.exec_module(module)
+            assert hasattr(module, "root_agent")
+            tools = importlib.import_module("tools")
+            answer = tools.render_demo_answer("帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。")
+            for section in required_sections:
+                assert section in answer
+        finally:
+            for value in (str(sample_dir), str(ROOT)):
+                try:
+                    sys.path.remove(value)
+                except ValueError:
+                    pass
+            sys.modules.pop(module_name, None)
+            for transient in ("workflow", "tools", "data", "prompts"):
+                sys.modules.pop(transient, None)
+
+
 def test_new_scenario_agents_invoke_with_demo_questions():
     scenario_questions = {
         "02-use-cases/deep-research/langgraph": "研究一下企业 Agent Runtime Platform 的选型维度。",

@@ -1,0 +1,4 @@
+name: long-task-resume-langchain
+framework: langchain
+entry_point: agent.py
+agent_variable: root_agent

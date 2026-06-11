@@ -1,0 +1,4 @@
+name: long-task-resume-deepagents
+framework: deepagents
+entry_point: agent.py
+agent_variable: root_agent

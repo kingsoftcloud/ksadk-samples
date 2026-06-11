@@ -30,7 +30,7 @@
 | 客户成功 / Health Review Copilot 经验 | 客户成功 Agent 要把客户健康、风险信号、成功计划和跟进节奏拆开，避免只做续费话术。 | `customer-success/health-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的健康复盘版本；下一步接真实 CRM、产品埋点、续费系统和客户旅程平台。 |
 | 教育培训 / Learning Coach 经验 | 学习辅导 Agent 要把学习画像、能力缺口、训练计划和评估方式串起来，不能泄露真实学员数据。 | `education-training/learning-coach-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的学习辅导版本；下一步接 LMS、练习平台、测评系统和学习档案。 |
 | 供应链计划 / Demand Planner 经验 | 供应链 Agent 要把需求预测、库存风险、调拨计划和监控指标拆开，避免只输出库存口号。 | `supply-chain-planning/demand-planner-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的需求计划版本；下一步接 ERP、WMS、OMS、渠道预测和供应商协同系统。 |
-| 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 已补 LangGraph 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
+| 长任务 Agent / Super Agent Harness 经验 | 长任务需要可恢复 checkpoint、取消语义、tool receipt 去重和用户可观察状态，不能只依赖进程内存。 | `long-task-resume` 和 `long-task-resume-*` 已补 LangGraph / ADK / LangChain / DeepAgents 工程版本，默认用 fixture 演示 checkpoint 列表、ResumeRun、CancelRun 和 receipt 去重；下一步接真实 session backend。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -71,7 +71,7 @@
 21. **Customer Success**：已补健康复盘基础版本；下一步接真实 CRM、产品埋点、续费系统和客户旅程平台。
 22. **Education Training**：已补学习辅导基础版本；下一步接 LMS、练习平台、测评系统和学习档案。
 23. **Supply Chain Planning**：已补需求计划基础版本；下一步接 ERP、WMS、OMS、渠道预测和供应商协同系统。
-24. **Long Task Resume**：已补 LangGraph 工程版本；下一步接真实 Postgres session backend，并补多框架版本。
+24. **Long Task Resume**：已补 LangGraph / ADK / LangChain / DeepAgents 工程版本；下一步接真实 Postgres session backend 和平台 run/session 事件。
 
 ## README 写法建议
 
