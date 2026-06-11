@@ -53,6 +53,9 @@ ROOT_README_REQUIRED_CONTENT = (
     "Real Estate Marketing",
     "Public Safety",
     "Industrial Inspection",
+    "Environmental Monitoring",
+    "Restaurant Operations",
+    "Game Operations",
 )
 SAMPLE_README_REQUIRED_SECTIONS = (
     "适用场景",

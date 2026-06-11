@@ -49,6 +49,9 @@
 | 地产营销 / Lead Conversion 经验 | 地产营销 Agent 要把楼盘线索、渠道投放、内容审核和转化复盘拆开，不能泄露真实客户、手机号、成交价格或渠道后台数据。 | `real-estate-marketing/lead-conversion-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的线索转化版本；下一步接 CRM、广告投放平台、案场系统、内容审核流和成交复盘看板。 |
 | 公共安全 / Incident Coordination 经验 | 公共安全 Agent 要把事件线索、资源联动、风险通报和处置复盘拆开，不能泄露真实报警人、地址、执法记录或监控画面。 | `public-safety/incident-coordination-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的事件联动版本；下一步接事件平台、热线系统、现场巡查、交通协同、医疗联动和公众通知平台。 |
 | 工业巡检 / Safety Patrol 经验 | 工业巡检 Agent 要把巡检任务、缺陷识别、维修联动和安全复核拆开，不能泄露真实设备序列号、车间位置、工艺参数或事故记录。 | `industrial-inspection/safety-patrol-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的安全巡检版本；下一步接点检系统、EAM、CMMS、传感器平台、备件库存和安全作业票系统。 |
+| 环境监测 / Pollution Response 经验 | 环境监测 Agent 要把监测点位、污染线索、处置联动和公众披露拆开，不能泄露真实企业排污数据、坐标、执法记录或敏感事件。 | `environmental-monitoring/pollution-response-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的污染响应版本；下一步接监测点位平台、IoT 传感器、环保工单、巡查记录、气象服务和公众披露平台。 |
+| 餐饮运营 / Store Ops 经验 | 餐饮运营 Agent 要把门店排班、食安巡检、库存损耗和顾客反馈拆开，不能泄露真实会员、员工、流水、供应商价格或监管记录。 | `restaurant-operations/store-ops-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的门店协同版本；下一步接 POS、排班系统、食安巡检、库存系统、外卖平台和顾客反馈看板。 |
+| 游戏运营 / LiveOps Review 经验 | 游戏运营 Agent 要把玩家反馈、活动配置、经济系统监控和版本复盘拆开，不能泄露真实玩家 ID、充值记录、反作弊规则或未公开版本计划。 | `game-operations/liveops-review-*` 已补 LangGraph / ADK / LangChain / DeepAgents 的版本复盘版本；下一步接玩家反馈平台、活动配置、数据看板、经济系统监控、公告系统和版本管理。 |
 | VEADK Examples | 从 quickstart 到 memory、knowledge、multi-agent、routing、tracing 逐层展开。 | 基础教程继续保持按能力矩阵覆盖 ADK / LangGraph / LangChain / DeepAgents。 |
 | AgentKit Samples | 场景 demo 会拆出 tools、prompts、client、web、skills 等工程边界。 | 新 use case 默认多文件工程，核心逻辑不能塞进 `demo.py`。 |
 | DeerFlow | 从 Deep Research 演进到 Super Agent Harness，重视文件系统、memory、skills、sandbox、sub-agents 和长任务可观察性。 | 样例要解释 Workspace、Memory、Skill Runtime、Sandbox 的接入位置和降级行为。 |
@@ -108,9 +111,12 @@
 40. **Real Estate Marketing**：已补线索转化基础版本；下一步接 CRM、广告投放平台、案场系统、内容审核流和成交复盘看板。
 41. **Public Safety**：已补事件联动基础版本；下一步接事件平台、热线系统、现场巡查、交通协同、医疗联动和公众通知平台。
 42. **Industrial Inspection**：已补安全巡检基础版本；下一步接点检系统、EAM、CMMS、传感器平台、备件库存和安全作业票系统。
-43. **Environmental Monitoring**：下一步补监测点位、污染线索、处置联动和公众披露。
-44. **Restaurant Operations**：下一步补门店排班、食安巡检、库存损耗和顾客反馈。
-45. **Game Operations**：下一步补玩家反馈、活动配置、经济系统监控和版本复盘。
+43. **Environmental Monitoring**：已补污染响应基础版本；下一步接监测点位平台、IoT 传感器、环保工单、巡查记录、气象服务和公众披露平台。
+44. **Restaurant Operations**：已补门店协同基础版本；下一步接 POS、排班系统、食安巡检、库存系统、外卖平台和顾客反馈看板。
+45. **Game Operations**：已补版本复盘基础版本；下一步接玩家反馈平台、活动配置、数据看板、经济系统监控、公告系统和版本管理。
+46. **Advertising Operations**：下一步补投放目标、素材审核、预算节奏和效果复盘。
+47. **Community Operations**：下一步补社群画像、内容日历、互动风险和转化复盘。
+48. **Customer QA**：下一步补质检样本、规则命中、改进建议和培训闭环。
 
 ## README 写法建议
 

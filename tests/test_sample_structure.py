@@ -1361,6 +1361,66 @@ def test_best_practice_agents_cover_next_completion_order():
             "分析一组工业巡检记录，生成安全复核方案。",
             ("## 巡检任务", "## 缺陷识别", "## 维修联动", "## 安全复核"),
         ),
+        "02-use-cases/environmental-monitoring/pollution-response-langgraph": (
+            "langgraph",
+            "分析一组环境监测数据，生成污染响应方案。",
+            ("## 监测点位", "## 污染线索", "## 处置联动", "## 公众披露"),
+        ),
+        "02-use-cases/environmental-monitoring/pollution-response-adk": (
+            "adk",
+            "分析一组环境监测数据，生成污染响应方案。",
+            ("## 监测点位", "## 污染线索", "## 处置联动", "## 公众披露"),
+        ),
+        "02-use-cases/environmental-monitoring/pollution-response-langchain": (
+            "langchain",
+            "分析一组环境监测数据，生成污染响应方案。",
+            ("## 监测点位", "## 污染线索", "## 处置联动", "## 公众披露"),
+        ),
+        "02-use-cases/environmental-monitoring/pollution-response-deepagents": (
+            "deepagents",
+            "分析一组环境监测数据，生成污染响应方案。",
+            ("## 监测点位", "## 污染线索", "## 处置联动", "## 公众披露"),
+        ),
+        "02-use-cases/restaurant-operations/store-ops-langgraph": (
+            "langgraph",
+            "分析一组餐饮门店运营数据，生成门店协同方案。",
+            ("## 门店排班", "## 食安巡检", "## 库存损耗", "## 顾客反馈"),
+        ),
+        "02-use-cases/restaurant-operations/store-ops-adk": (
+            "adk",
+            "分析一组餐饮门店运营数据，生成门店协同方案。",
+            ("## 门店排班", "## 食安巡检", "## 库存损耗", "## 顾客反馈"),
+        ),
+        "02-use-cases/restaurant-operations/store-ops-langchain": (
+            "langchain",
+            "分析一组餐饮门店运营数据，生成门店协同方案。",
+            ("## 门店排班", "## 食安巡检", "## 库存损耗", "## 顾客反馈"),
+        ),
+        "02-use-cases/restaurant-operations/store-ops-deepagents": (
+            "deepagents",
+            "分析一组餐饮门店运营数据，生成门店协同方案。",
+            ("## 门店排班", "## 食安巡检", "## 库存损耗", "## 顾客反馈"),
+        ),
+        "02-use-cases/game-operations/liveops-review-langgraph": (
+            "langgraph",
+            "分析一组游戏运营数据，生成版本复盘方案。",
+            ("## 玩家反馈", "## 活动配置", "## 经济系统监控", "## 版本复盘"),
+        ),
+        "02-use-cases/game-operations/liveops-review-adk": (
+            "adk",
+            "分析一组游戏运营数据，生成版本复盘方案。",
+            ("## 玩家反馈", "## 活动配置", "## 经济系统监控", "## 版本复盘"),
+        ),
+        "02-use-cases/game-operations/liveops-review-langchain": (
+            "langchain",
+            "分析一组游戏运营数据，生成版本复盘方案。",
+            ("## 玩家反馈", "## 活动配置", "## 经济系统监控", "## 版本复盘"),
+        ),
+        "02-use-cases/game-operations/liveops-review-deepagents": (
+            "deepagents",
+            "分析一组游戏运营数据，生成版本复盘方案。",
+            ("## 玩家反馈", "## 活动配置", "## 经济系统监控", "## 版本复盘"),
+        ),
     }
 
     for relative_dir, (framework, question, sections) in samples.items():
@@ -1382,6 +1442,11 @@ def test_best_practice_agents_cover_next_completion_order():
             sys.modules[module_name] = module
             spec.loader.exec_module(module)
             assert hasattr(module, "root_agent")
+            if framework == "langgraph":
+                assert hasattr(module, "ksadk_prepare_state"), f"{relative_dir} missing ksadk_prepare_state"
+                state = module.ksadk_prepare_state({"input": question}, {})
+                assert state["query"] == question
+                assert state["answer"] == ""
             tools = importlib.import_module("tools")
             answer = tools.render_demo_answer(question)
             for section in sections:
