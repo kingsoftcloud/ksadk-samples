@@ -122,6 +122,66 @@ def test_research_question_emits_only_launch_message(monkeypatch: Any, tmp_path:
     assert not any(event["type"] == "checkpoint" for event in events)
 
 
+def test_builtin_search_parser_extracts_real_result_shape(monkeypatch: Any, tmp_path: Path):
+    agent_module = load_agent(monkeypatch, tmp_path)
+    html = """
+    <html><body>
+      <li class="b_algo">
+        <h2><a href="https://example.org/report">国产 AI Agent Runtime 报告</a></h2>
+        <p>来自公开网页的摘要内容。</p>
+      </li>
+    </body></html>
+    """
+
+    results = agent_module._parse_search_html(html, query="国产 AI Agent Runtime", source="bing", max_results=3)
+
+    assert results == [
+        {
+            "title": "国产 AI Agent Runtime 报告",
+            "url": "https://example.org/report",
+            "snippet": "来自公开网页的摘要内容。",
+            "query": "国产 AI Agent Runtime",
+            "source": "bing",
+        }
+    ]
+
+
+def test_web_fetch_cleans_html_content(monkeypatch: Any, tmp_path: Path):
+    agent_module = load_agent(monkeypatch, tmp_path)
+
+    class FakeResponse:
+        text = """
+        <html><head><title>测试页面</title><style>.x{}</style></head>
+        <body><script>alert(1)</script><main><h1>标题</h1><p>正文 内容</p></main></body></html>
+        """
+
+        def raise_for_status(self):
+            return None
+
+    class FakeClient:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return None
+
+        async def get(self, *args, **kwargs):
+            return FakeResponse()
+
+    monkeypatch.setattr(agent_module.httpx, "AsyncClient", FakeClient)
+
+    fetched = asyncio.run(agent_module._web_fetch("https://example.org/report"))
+
+    assert fetched["title"] == "测试页面"
+    assert fetched["status"] == "fetched"
+    assert "正文 内容" in fetched["content"]
+    assert "alert" not in fetched["content"]
+    assert ".x" not in fetched["content"]
+
+
 def test_resume_continues_after_checkpoint_without_replaying_prior_stages(monkeypatch: Any, tmp_path: Path):
     agent_module = load_agent(monkeypatch, tmp_path)
     runner = make_runner(agent_module)

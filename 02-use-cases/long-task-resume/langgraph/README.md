@@ -104,7 +104,8 @@ KSADK_SESSION_NAMESPACE=long_task_resume_demo
 | `KSADK_LANGGRAPH_CHECKPOINT_DSN` | LangGraph Postgres checkpointer 连接串；PG 模式优先使用它，未配置时回退到 `KSADK_SESSION_DSN`。 |
 | `LONG_TASK_RESUME_DEMO_MODE` | 本地演示模式，默认 `fixture`，使用 LangGraph `InMemorySaver`；设为 `postgres` 后连接真实 PG。 |
 | `LONG_TASK_STAGE_DELAY_SECONDS` | 每个业务阶段的演示延迟。Web UI 人工演示建议设为 `6`，避免还没点取消任务就跑完。 |
-| `DEEPRESEARCH_WEB_SEARCH_URL` | 可选 web_search HTTP 接口，期望 `GET ?q=<query>&max_results=<n>` 返回 `results` 列表；未配置时使用可运行降级结果。 |
+| `DEEPRESEARCH_WEB_SEARCH_URL` | 可选生产 web_search HTTP 接口，期望 `GET ?q=<query>&max_results=<n>` 返回 `results` 列表；优先级高于内置公开搜索。 |
+| `DEEPRESEARCH_SEARCH_PROVIDERS` | 内置公开搜索页顺序，默认 `bing,sogou`。本地和算力集群能访问互联网时会先尝试真实搜索；网络失败或被反爬时才降级。 |
 
 ## 本地运行
 
@@ -177,6 +178,17 @@ Web UI 中可以提问：
 6. ResumeRun 会用该快照索引里的 `framework_ref.langgraph` 构造 LangGraph checkpoint config，并以 `graph.astream(None, checkpoint_config, stream_mode="updates")` 继续执行。checkpoint 前的节点不会重跑；恢复输出会说明已跳过的阶段和复用的 tool receipt。
 
 不要在原后台任务仍在运行时同时点击恢复同一个 run；真实产品路径应先 CancelRun、等待任务进入 `cancelled/failed`，再从最新 checkpoint 恢复。否则原任务和恢复任务会并发推进同一个 `thread_id`，UI 上会出现重复阶段，不能作为验收路径。
+
+## 真实工具边界
+
+这个样例默认已经不是纯 fixture 进度条。Web/API 路径会按下面顺序调用真实边界：
+
+1. `web_search`：优先调用 `DEEPRESEARCH_WEB_SEARCH_URL` 指向的搜索 API；未配置时尝试公开搜索页 `bing,sogou`，结果会带 `source` 字段；全部失败时才写入 `source=fallback` 的降级结果。
+2. `web_fetch`：对搜索结果 URL 发起 HTTP GET，清洗 HTML 的 `script/style/noscript` 后把正文片段写入 LangGraph state。
+3. `llm.plan/analyze/critic`：配置 `OPENAI_API_KEY`、`OPENAI_BASE_URL`、`OPENAI_MODEL_NAME` 后走 OpenAI-compatible `/chat/completions`；失败时返回带错误原因的降级分析，方便演示继续跑完。
+4. `workspace.write`：每个业务安全点都会把中间产物写入 `LONG_TASK_RESUME_WORKSPACE_DIR`，恢复后通过 tool receipt 和 LangGraph checkpoint 避免重复外部工具调用。
+
+生产接入时建议只替换 `_web_search`、`_web_fetch`、`_run_analysis_stage` 和 `_run_write_report_stage`，保留 `REPORT_STAGES` 的 receipt key、LangGraph checkpoint config 和 `run_checkpoint` 事件结构。这样业务逻辑可以换，ResumeRun/ListSessionCheckpoints/CancelRun 的平台闭环不需要重写。
 
 ## HTTP E2E 验收
 
