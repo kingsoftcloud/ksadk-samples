@@ -6,7 +6,7 @@
 
 - Agent 需要执行研究、报表、代码修复、数据分析等长时间任务。
 - 用户可能关闭 Web UI、取消任务，或者运行时因为网络/进程重启中断。
-- 恢复执行时必须知道哪些工具调用已经完成，避免重复扣费、重复写文件或重复提交工单。
+- 恢复执行时必须知道哪些工具调用已经完成，避免重复扣费、重复写文件或重复写入工作区。
 - 团队想对比 LangGraph、ADK、LangChain、DeepAgents 在同一个 Runtime 能力上的工程组织方式。
 
 ## 如何选择
@@ -36,7 +36,7 @@ uv pip install -U "ksadk[all]"
 
 ```bash
 cd 02-use-cases/long-task-resume/langgraph
-cp ../../../.env.example .env
+cp .env.example .env
 uv pip install -r requirements.txt
 uv run python demo.py
 uv run python smoke.py
@@ -55,10 +55,10 @@ uv run agentengine web .
 推荐提问：
 
 ```text
-帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。
+调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议
 ```
 
-Web UI 中应该能看到 checkpoint 列表、ResumeRun、tool receipt、CancelRun 和降级说明。
+LangGraph 版本会启动一个后台长任务，阶段完成后在 Web UI 的“会话恢复区”展示真实 LangGraph checkpoint。你可以在运行中继续普通对话，也可以点击取消，让后台任务停在最近 checkpoint 后再 ResumeRun。其他框架版本主要用于对比组织方式，恢复语义以各自 README 为准。
 
 ## 部署
 
@@ -72,9 +72,9 @@ uv run agentengine deploy .
 
 ## 示例问题
 
-- `帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。`
+- `调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。`
 - `如果用户取消了任务，ResumeRun 还应该继续跑吗？`
-- `tool receipt 怎么避免重复调用外部工单系统？`
+- `tool receipt 怎么避免重复调用 web_search、web_fetch 或 Workspace？`
 
 ## 配置边界
 
@@ -108,4 +108,4 @@ Long Task Resume 是一个能力场景，不是四个独立业务场景。放在
 
 **tool receipt 是什么？**
 
-它是恢复执行时的幂等凭证，用来判断某个外部工具调用是否已经完成，避免 ResumeRun 后重复扣费、重复写文件或重复提交工单。
+它是恢复执行时的幂等凭证，用来判断某个外部工具调用是否已经完成，避免 ResumeRun 后重复扣费、重复写文件或重复写入工作区。

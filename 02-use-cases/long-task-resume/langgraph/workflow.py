@@ -30,7 +30,7 @@ class ResumeState(TypedDict, total=False):
 def prepare_state(payload: dict, session_context: dict) -> ResumeState:
     """把 AgentEngine payload 转成 LangGraph 初始状态。"""
 
-    query = str(payload.get("input") or "").strip() or "演示一个可恢复的长任务。"
+    query = str(payload.get("input") or "").strip() or "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"
     run_id = str(payload.get("run_id") or make_run_id(query))
     return {
         "query": query,
@@ -53,7 +53,13 @@ def build_agent_graph():
 
     def load_checkpoints(state: ResumeState) -> dict[str, Any]:
         checkpoints = build_checkpoints(state["run_id"])
-        active_checkpoint_ref = state.get("active_checkpoint_ref") or checkpoints[-1]["checkpoint_id"]
+        active_checkpoint_ref = state.get("active_checkpoint_ref")
+        if not active_checkpoint_ref:
+            resumable = next(
+                (item for item in checkpoints if item.get("status") == "ready_to_resume"),
+                checkpoints[-1],
+            )
+            active_checkpoint_ref = resumable["checkpoint_id"]
         return {"checkpoints": checkpoints, "active_checkpoint_ref": active_checkpoint_ref}
 
     def resume_from_checkpoint(state: ResumeState) -> dict[str, Any]:

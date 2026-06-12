@@ -1,3 +1,12 @@
-ksadk[all]>=0.6.2
+ksadk[all]>=0.6.5
 langgraph>=0.2.0
+langgraph-checkpoint-postgres>=1.0.0
 psycopg[binary]>=3.2
+fastapi>=0.100.0,<1.0.0
+uvicorn>=0.23.0
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+pyyaml>=6.0.0
+httpx>=0.24.0
+sse-starlette>=2.1.0
+python-multipart>=0.0.9,<1.0.0

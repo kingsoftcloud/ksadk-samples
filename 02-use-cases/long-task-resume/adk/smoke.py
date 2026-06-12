@@ -4,7 +4,7 @@ from tools import build_resume_payload, render_demo_answer
 def main() -> int:
     """最小烟测：验证恢复字段和去重字段都能出现在最终输出里。"""
 
-    query = "恢复昨天中断的报表生成任务。"
+    query = "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"
     payload = build_resume_payload(query)
     answer = render_demo_answer(query)
 

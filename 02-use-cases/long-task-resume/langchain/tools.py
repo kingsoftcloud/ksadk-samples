@@ -13,30 +13,74 @@ class TaskStep:
     title: str
     tool_name: str
     receipt_key: str
+    status: str
     summary: str
+    progress: str
 
 
 TASK_STEPS = (
     TaskStep(
-        step_id="collect_requirements",
-        title="收集需求",
-        tool_name="workspace.search",
-        receipt_key="workspace:requirements:v1",
-        summary="读取任务说明、历史反馈和验收口径，形成执行边界。",
+        step_id="plan_research",
+        title="规划研究问题",
+        tool_name="llm.plan",
+        receipt_key="deepresearch:plan:v1",
+        status="completed",
+        summary="把用户问题拆成研究目标、关键子问题、检索关键词和输出结构。",
+        progress="研究计划已经固化，恢复后不需要重新澄清需求。",
     ),
     TaskStep(
-        step_id="run_analysis",
-        title="运行分析",
-        tool_name="sandbox.run",
-        receipt_key="sandbox:analysis:v1",
-        summary="在隔离环境执行耗时分析，记录命令、输出摘要和 exit code。",
+        step_id="search_web",
+        title="检索公开网页",
+        tool_name="web.search",
+        receipt_key="deepresearch:web_search:v1",
+        status="completed",
+        summary="用通用 web_search 检索公开互联网，得到候选来源和摘要。",
+        progress="候选来源已经记录，恢复后不会重复发起同一批搜索请求。",
+    ),
+    TaskStep(
+        step_id="fetch_sources",
+        title="抓取来源正文",
+        tool_name="web.fetch",
+        receipt_key="deepresearch:web_fetch:v1",
+        status="completed",
+        summary="抓取候选来源正文，清洗标题、链接、正文片段和发布时间。",
+        progress="来源正文已经落入工作集，恢复后从证据筛选继续。",
+    ),
+    TaskStep(
+        step_id="screen_evidence",
+        title="筛选证据并去重",
+        tool_name="evidence.screen",
+        receipt_key="deepresearch:evidence_screen:v1",
+        status="ready_to_resume",
+        summary="按相关性、可信度和重复度筛选证据，保留可引用材料。",
+        progress="可引用证据清单已经确定，恢复后直接进入交叉分析。",
+    ),
+    TaskStep(
+        step_id="analyze_findings",
+        title="交叉分析发现",
+        tool_name="llm.analyze",
+        receipt_key="deepresearch:analysis:v1",
+        status="pending",
+        summary="调用 LLM 对证据做主题归纳、冲突识别、趋势判断和缺口分析。",
+        progress="首次执行默认在这里模拟一次外部工具失败，恢复后从 checkpoint 继续。",
+    ),
+    TaskStep(
+        step_id="critic_review",
+        title="批判性质检",
+        tool_name="llm.critic",
+        receipt_key="deepresearch:critic:v1",
+        status="pending",
+        summary="独立 reviewer 检查引用覆盖、推理跳跃、反例和置信度。",
+        progress="质检通过后进入最终报告写入。",
     ),
     TaskStep(
         step_id="write_report",
-        title="生成交付物",
+        title="生成研究报告",
         tool_name="workspace.write",
-        receipt_key="workspace:report:v1",
-        summary="把分析结论写回 Workspace，并附带可复核的证据列表。",
+        receipt_key="deepresearch:report:v1",
+        status="pending",
+        summary="写入摘要、证据表、主要发现、风险提示、参考链接和可复用模板。",
+        progress="最终报告 deepresearch-report.md 写入工作区。",
     ),
 )
 
@@ -49,9 +93,10 @@ def make_run_id(query: str) -> str:
 
 
 def build_checkpoints(run_id: str) -> list[dict[str, Any]]:
-    """构造 checkpoint 列表。
+    """构造 checkpoint 索引列表。
 
-    真实接入时这里应该读取 KSADK session store 或 AgentEngine 的 run state。
+    真实接入时 checkpoint 本体由 LangGraph checkpointer 保存；这里的列表只模拟
+    session event 中的 run_checkpoint 索引和业务摘要。
     """
 
     checkpoints: list[dict[str, Any]] = []
@@ -61,8 +106,9 @@ def build_checkpoints(run_id: str) -> list[dict[str, Any]]:
                 "checkpoint_id": f"{run_id}-cp-{index}",
                 "step_id": step.step_id,
                 "title": step.title,
-                "status": "completed" if index < len(TASK_STEPS) else "ready_to_resume",
+                "status": step.status,
                 "summary": step.summary,
+                "progress": step.progress,
             }
         )
     return checkpoints
@@ -71,38 +117,34 @@ def build_checkpoints(run_id: str) -> list[dict[str, Any]]:
 def simulate_tool_receipts(run_id: str, resume_attempt_id: str) -> list[dict[str, Any]]:
     """模拟 tool receipt 去重。
 
-    长任务恢复时最容易出现的问题是重复执行外部工具。receipt_key 应该在业务侧稳定生成，
-    恢复后先查 receipt，再决定是否跳过已经成功的工具调用。
+    长任务恢复时最容易出现的问题是重复执行外部搜索、网页抓取、LLM 分析或写报告。
+    receipt_key 应该在业务侧稳定生成，恢复后先查 receipt，再决定是否跳过已经成功的工具调用。
     """
 
     receipts: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for step in TASK_STEPS:
-        duplicate = step.receipt_key in seen
+    for step in TASK_STEPS[:4]:
         receipts.append(
             {
                 "receipt_key": step.receipt_key,
                 "tool_name": step.tool_name,
                 "run_id": run_id,
                 "resume_attempt_id": resume_attempt_id,
-                "status": "skipped_duplicate" if duplicate else "recorded",
-                "summary": step.summary,
+                "status": "skipped_duplicate",
+                "summary": f"恢复时发现「{step.title}」已经完成，本次跳过，避免重复执行。",
             }
         )
-        seen.add(step.receipt_key)
 
-    # 故意再放一次分析工具的 receipt，展示恢复后如何发现重复调用。
-    repeated = TASK_STEPS[1]
-    receipts.append(
-        {
-            "receipt_key": repeated.receipt_key,
-            "tool_name": repeated.tool_name,
-            "run_id": run_id,
-            "resume_attempt_id": resume_attempt_id,
-            "status": "skipped_duplicate",
-            "summary": "恢复时发现分析命令已成功执行，本次跳过，避免重复扣费或重复写入。",
-        }
-    )
+    for step in TASK_STEPS[4:]:
+        receipts.append(
+            {
+                "receipt_key": step.receipt_key,
+                "tool_name": step.tool_name,
+                "run_id": run_id,
+                "resume_attempt_id": resume_attempt_id,
+                "status": "recorded",
+                "summary": step.progress,
+            }
+        )
     return receipts
 
 
@@ -113,10 +155,7 @@ def duplicate_tool_count(receipts: list[dict[str, Any]]) -> int:
 
 
 def simulate_cancel_status(query: str) -> str:
-    """模拟 CancelRun 状态。
-
-    用户问题里出现取消意图时返回 cancelled，否则返回 not_requested。
-    """
+    """模拟 CancelRun 状态。"""
 
     lowered = query.lower()
     if "cancel" in lowered or "取消" in query or "停止" in query:
@@ -125,16 +164,12 @@ def simulate_cancel_status(query: str) -> str:
 
 
 def build_resume_payload(query: str) -> dict[str, Any]:
-    """构造一次本地恢复演示所需的全部状态。
+    """构造一次本地恢复演示所需的全部状态。"""
 
-    这个函数是多框架版本共用的稳定入口：ADK、LangChain 和 DeepAgents
-    可以把它作为工具调用，LangGraph 可以在节点里拆开执行同样的步骤。
-    """
-
-    normalized_query = query.strip() or "演示一个可恢复的长任务。"
+    normalized_query = query.strip() or "调研一个技术产品的市场格局、竞品和落地风险。"
     run_id = make_run_id(normalized_query)
     checkpoints = build_checkpoints(run_id)
-    checkpoint_id = checkpoints[-1]["checkpoint_id"]
+    checkpoint_id = checkpoints[3]["checkpoint_id"]
     resume_attempt_id = f"{run_id}-resume-1"
     receipts = simulate_tool_receipts(run_id, resume_attempt_id)
     cancel_status = simulate_cancel_status(normalized_query)
@@ -169,8 +204,10 @@ def render_answer(
         for item in receipts
     )
     duplicate_count = duplicate_tool_count(receipts)
+    skipped_steps = "、".join(item["title"] for item in checkpoints[:4])
+    continued_steps = "、".join(item["title"] for item in checkpoints[4:])
 
-    return f"""# 长任务恢复演示
+    return f"""# 通用 DeepResearch 长任务恢复演示
 
 **用户问题**：{query}
 
@@ -181,6 +218,7 @@ def render_answer(
 - `resume_attempt_id`：`{resume_attempt_id}`
 - `cancel_status`：`{cancel_status}`
 - `duplicate_tool_count`：{duplicate_count}
+- 交付物：`deepresearch-report.md`
 
 ## checkpoint 列表
 
@@ -190,7 +228,11 @@ def render_answer(
 
 ## ResumeRun
 
-本次从 `{checkpoint_id}` 恢复。恢复逻辑先读取 checkpoint，再检查 tool receipt，最后只执行缺失阶段。真实平台接入时，`run_id`、`checkpoint_id` 和 `resume_attempt_id` 应来自 AgentEngine run/session 事件，而不是本地生成。
+本次从 `{checkpoint_id}` 恢复。恢复逻辑先读取 LangGraph checkpoint，再检查 tool receipt：
+
+- 跳过已完成阶段：{skipped_steps}。
+- 继续执行阶段：{continued_steps}。
+- 恢复后不会重复 web_search / web_fetch，也不会重复 LLM 分析或覆盖已生成证据表。
 
 ## tool receipt
 
@@ -200,21 +242,19 @@ def render_answer(
 
 ## CancelRun
 
-当前取消状态为 `{cancel_status}`。如果用户在 Web UI 或 API 中触发取消，业务侧应把长任务标记为可停止状态，并在下一次工具边界检查时退出。
+当前取消状态为 `{cancel_status}`。如果用户在 Web UI 或 API 中触发取消，业务侧只记录取消意图；长任务在工具边界退出，并保留最近 checkpoint，下一次 ResumeRun 从交叉分析或后续阶段继续。
 
 ## 降级说明
 
-- 未配置 `KSADK_SESSION_BACKEND` 或数据库时，本 demo 使用本地 fixture 模拟 checkpoint。
-- 未接入真实 Workspace / Sandbox 时，tool receipt 只展示去重思路，不执行外部命令。
+- 未配置 `KSADK_SESSION_BACKEND` 或数据库时，本 demo 使用本地 fixture 模拟 checkpoint 索引。
+- 未配置真实 web_search / web_fetch / LLM 时，工具会降级为可运行的示例输出。
 - 生产环境建议把 checkpoint、receipt 和 cancel 状态写入同一个 session namespace，避免恢复时跨租户串读。
+- 这个样例是通用 DeepResearch 模板；替换研究计划、工具实现和报告模板即可改成自己的业务 Agent。
 """.strip()
 
 
 def render_demo_answer(query: str) -> str:
-    """生成离线长任务恢复报告。
-
-    公开样例默认走本地 fixture，不访问真实数据库、Workspace 或 Sandbox。
-    """
+    """生成离线长任务恢复报告。"""
 
     payload = build_resume_payload(query)
     return render_answer(

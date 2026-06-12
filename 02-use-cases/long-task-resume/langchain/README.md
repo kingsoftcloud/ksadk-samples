@@ -4,9 +4,9 @@
 
 ## 适用场景
 
-- Agent 需要执行研究、报表生成、代码修复、数据分析等耗时任务。
+- Agent 需要执行研究、Deep Research 报告生成、代码修复、数据分析等耗时任务。
 - 任务中途可能因为进程重启、网络抖动、用户关闭 Web UI 或主动取消而中断。
-- 恢复后必须避免重复调用外部工具，例如重复扣费、重复写文件、重复提交工单。
+- 恢复后必须避免重复调用外部工具，例如重复扣费、重复写文件、重复写入工作区。
 - 你希望对比 LangGraph / ADK / LangChain / DeepAgents 在长任务恢复场景下的工程写法。
 
 ## 工程结构
@@ -92,7 +92,7 @@ uv run agentengine web .
 Web UI 中可以提问：
 
 ```text
-帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。
+调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。
 ```
 
 你应该能看到 `checkpoint 列表`、`ResumeRun`、`tool receipt`、`CancelRun` 和 `降级说明` 五个关键部分。
@@ -112,16 +112,16 @@ uv run agentengine deploy .
 
 ## 示例问题
 
-- `帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。`
-- `用户取消了昨天的研究任务，现在状态应该怎么判断？`
-- `如果分析工具已经跑完，ResumeRun 后怎么避免重复执行？`
+- `调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。`
+- `用户取消了刚才的 DeepResearch 任务，现在状态应该怎么判断？`
+- `如果 web_search 和 web_fetch 已经完成，ResumeRun 后怎么避免重复执行？`
 
 ## checkpoint 列表
 
 本 demo 的 checkpoint 由 `tools.py` 的 `build_checkpoints` 生成。真实接入时，建议把 checkpoint 设计为可审计事件：
 
 - `checkpoint_id`：恢复点 ID。
-- `step_id`：业务阶段，例如收集需求、运行分析、生成交付物。
+- `step_id`：业务阶段，例如规划研究问题、检索公开网页、抓取来源正文、筛选证据并去重、交叉分析发现、批判性质检、生成研究报告。
 - `status`：阶段状态，例如 completed、running、ready_to_resume、cancelled。
 - `summary`：给用户和运维看的阶段摘要。
 
@@ -138,8 +138,8 @@ ResumeRun 的核心不是“重新跑一遍”，而是：
 
 tool receipt 用来证明某个外部工具调用已经完成。典型字段包括：
 
-- `receipt_key`：幂等键，例如 `workspace:report:v1`。
-- `tool_name`：工具名，例如 `sandbox.run`。
+- `receipt_key`：幂等键，例如 `deepresearch:report:v1`。
+- `tool_name`：工具名，例如 `web.search`、`web.fetch`、`workspace.write`。
 - `run_id`：所属长任务。
 - `resume_attempt_id`：本次恢复尝试。
 - `status`：recorded、skipped_duplicate、failed。
@@ -155,8 +155,8 @@ CancelRun 建议做成协作式取消：
 ## 降级说明
 
 - 未配置 `KSADK_SESSION_BACKEND` 时，本 demo 使用 fixture，仍然可以观察恢复流程。
-- 未配置真实 Sandbox 时，不会执行外部命令，只展示 receipt 去重。
-- 未配置 Workspace 时，不会写入真实文件，只展示交付物写回阶段。
+- 未配置真实 web_search / web_fetch / LLM / Workspace 时，不会执行外部命令，只展示 receipt 去重。
+- 未配置 Workspace 时，不会写入真实报告，只展示研究报告写回阶段。
 - 未配置模型 key 时，`demo.py` 和 `smoke.py` 仍可运行；`agentengine run/web` 是否需要模型取决于你的 Agent 逻辑。
 
 ## 常见问题

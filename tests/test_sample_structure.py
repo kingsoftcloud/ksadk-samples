@@ -223,6 +223,8 @@ def test_langgraph_agentengine_toolsets_sample_exists_and_is_public_ready():
 
     for required in (
         "环境准备",
+        "开发者学习路径",
+        "改造成你的业务 Agent",
         "本地运行",
         "Web UI 调试",
         "部署",
@@ -321,6 +323,8 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "tools.py",
         "demo.py",
         "smoke.py",
+        "e2e_http.py",
+        "tests/test_agent_behavior.py",
         "pg_smoke.py",
         "agentengine.yaml",
         "requirements.txt",
@@ -344,6 +348,7 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "降级说明",
         "常见问题",
         "可选真实 PG smoke",
+        "HTTP E2E 验收",
     ):
         assert required in readme
 
@@ -351,10 +356,29 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
     for required in (
         "KSADK_SESSION_BACKEND=postgres",
         "KSADK_SESSION_DSN=postgresql://<user>:<password>@<postgres-host>:5432/<database>",
+        "KSADK_LANGGRAPH_CHECKPOINT_DSN=postgresql://<user>:<password>@<postgres-host>:5432/<database>",
         "KSADK_SESSION_NAMESPACE=long_task_resume_demo",
         "LONG_TASK_RESUME_DEMO_MODE=fixture",
+        "LONG_TASK_STAGE_DELAY_SECONDS=6",
+        "DEEPRESEARCH_WEB_SEARCH_URL=",
     ):
         assert required in env_example
+
+    source = (sample / "agent.py").read_text(encoding="utf-8")
+    for required in (
+        "class LongTaskE2ERunner",
+        "REPORT_STAGES",
+        "_build_web_search_subgraph",
+        "_build_analysis_subgraph",
+        "graph.astream(",
+        "graph.astream(\n                None,",
+        "stream_mode=\"updates\"",
+        "StateSnapshot",
+        "checkpoint_resume",
+        "run_checkpoint",
+        "不要在普通聊天里声称已经创建 checkpoint",
+    ):
+        assert required in source
 
     pg_smoke = (sample / "pg_smoke.py").read_text(encoding="utf-8")
     for required in (
@@ -396,6 +420,10 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "resume_attempt_id",
         "cancel_status",
         "duplicate_tool_count",
+        "通用 DeepResearch",
+        "检索公开网页",
+        "交叉分析发现",
+        "deepresearch-report.md",
     ):
         assert required in smoke_output
 
@@ -457,9 +485,24 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
             spec.loader.exec_module(module)
             assert hasattr(module, "root_agent")
             tools = importlib.import_module("tools")
-            answer = tools.render_demo_answer("帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。")
+            if framework == "langgraph":
+                workflow = importlib.import_module("workflow")
+                state = workflow.prepare_state(
+                    {"input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"},
+                    {},
+                )
+                answer = workflow.build_agent_graph().invoke(state)["answer"]
+            else:
+                answer = tools.render_demo_answer("调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。")
             for section in required_sections:
                 assert section in answer
+            for business_signal in (
+                "通用 DeepResearch",
+                "检索公开网页",
+                "交叉分析发现",
+                "deepresearch-report.md",
+            ):
+                assert business_signal in answer
         finally:
             for value in (str(sample_dir), str(ROOT)):
                 try:

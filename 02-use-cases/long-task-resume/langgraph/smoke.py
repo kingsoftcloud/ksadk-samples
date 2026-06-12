@@ -1,17 +1,17 @@
-from agent import ksadk_prepare_state, root_agent
+from workflow import build_agent_graph, prepare_state
 
 
 def main() -> int:
     """最小烟测：验证恢复字段和去重字段都能出现在最终输出里。"""
 
     payload = {
-        "input": "恢复昨天中断的报表生成任务。",
+        "input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。",
         "run_id": "demo-run-smoke",
-        "checkpoint_id": "demo-run-smoke-cp-2",
+        "checkpoint_id": "demo-run-smoke-cp-4",
         "resume_attempt_id": "demo-run-smoke-resume-2",
     }
-    state = ksadk_prepare_state(payload, {})
-    result = root_agent.invoke(state)
+    state = prepare_state(payload, {})
+    result = build_agent_graph().invoke(state)
     answer = result["answer"]
     cancel_status = result.get("cancel_status")
     duplicate_tool_count = answer.count("skipped_duplicate")

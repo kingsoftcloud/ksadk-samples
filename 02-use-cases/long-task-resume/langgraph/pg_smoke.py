@@ -45,7 +45,7 @@ def main() -> int:
 
     run_id = "sample-pg-smoke-" + sha1(f"{namespace}:{datetime.now(UTC).isoformat()}".encode("utf-8")).hexdigest()[:12]
     checkpoint_id = f"{run_id}-cp-1"
-    receipt_key = f"{run_id}:workspace:report:v1"
+    receipt_key = f"{run_id}:deepresearch:report:v1"
 
     with psycopg.connect(dsn, autocommit=True) as conn:
         with conn.cursor() as cur:

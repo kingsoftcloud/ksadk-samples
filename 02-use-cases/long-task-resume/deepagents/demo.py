@@ -1,7 +1,7 @@
 from tools import render_demo_answer
 
 
-DEMO_QUESTION = "帮我恢复一个中断的长任务，并说明哪些工具调用不应该重复执行。"
+DEMO_QUESTION = "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"
 
 
 if __name__ == "__main__":
