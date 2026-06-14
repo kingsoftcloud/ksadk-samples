@@ -221,7 +221,7 @@ async def _call_chat_model(messages: list[dict[str, str]], *, temperature: float
     return ""
 
 
-async def _llm_or_fallback(prompt: str, fallback: str, *, system: str = "你是严谨的 DeepResearch 研究员。") -> str:
+async def _llm_or_fallback(prompt: str, fallback: str, *, system: str = "你是严谨的 Deep Research 研究员。") -> str:
     try:
         content = await _call_chat_model(
             [
@@ -653,7 +653,7 @@ def _run_stage(state: ReportState, stage: ReportStage) -> ReportState:
             state,
             stage,
             artifact_content=_json_dumps(plan),
-            extra={"research_plan": plan, "task_title": f"DeepResearch: {query[:60]}"},
+            extra={"research_plan": plan, "task_title": f"Deep Research: {query[:60]}"},
         )
     if stage.key == "screen_evidence":
         return _run_screen_evidence_stage(state, stage)
@@ -882,7 +882,7 @@ def _run_write_report_stage(state: ReportState, stage: ReportStage) -> ReportSta
     evidence = list(state.get("evidence_table") or [])
     analysis = state.get("analysis_markdown") or ""
     critic = state.get("critic_markdown") or ""
-    report = f"""# DeepResearch Report
+    report = f"""# Deep Research Report
 
 ## 研究问题
 
@@ -890,7 +890,7 @@ def _run_write_report_stage(state: ReportState, stage: ReportStage) -> ReportSta
 
 ## 摘要
 
-本报告由通用 DeepResearch 长任务 Agent 生成。Agent 使用 web_search/web_fetch 获取公开来源，使用多 reviewer LLM 子图做交叉分析，并在每个业务安全点写入 LangGraph checkpoint。
+本报告由 Deep Research 长任务 Agent 生成。Agent 使用 web_search/web_fetch 获取公开来源，使用多 reviewer LLM 子图做交叉分析，并在每个业务安全点写入 LangGraph checkpoint。
 
 ## 主要发现
 
@@ -945,7 +945,7 @@ def _render_final_answer(state: ReportState) -> str:
         for item in list(state.get("subgraph_traces") or [])
     ) or "| 无 | 无 | 无 | 无 |"
 
-    return f"""# 通用 DeepResearch 报告已恢复完成
+    return f"""# Deep Research 报告已恢复完成
 
 ## ResumeRun 结果
 
@@ -1031,7 +1031,7 @@ def _initial_state(payload: dict[str, Any]) -> ReportState:
     actual_query = query or default_query
     return {
         "input": actual_query,
-        "task_title": f"DeepResearch: {actual_query[:60]}",
+        "task_title": f"Deep Research: {actual_query[:60]}",
         "completed_stage_keys": [],
         "stage_summaries": [],
         "tool_receipts": [],
@@ -1051,6 +1051,7 @@ def _demo_mode() -> str:
 
 def _checkpoint_metadata_for_ref(*, stage: ReportStage, run_id: str, framework_ref: dict[str, Any]) -> dict[str, Any]:
     artifact_path = _artifact_path(stage)
+    # framework_ref.langgraph stores the LangGraph StateSnapshot config used by ResumeRun.
     return {
         "agentengine": {
             "run_id": run_id,
@@ -1084,9 +1085,38 @@ def _next_action_for_stage(stage: ReportStage) -> str:
     return "继续执行后续业务阶段"
 
 
+def _user_facing_stage_update(stage: ReportStage, artifact_path: Path) -> str:
+    updates = {
+        "plan_research": "我已经把问题拆成研究目标、关键子问题、检索关键词和报告结构。",
+        "search_web": "我已经完成第一轮公开资料检索，并保留了候选来源，下一步会阅读原文。",
+        "fetch_sources": "我已经阅读并清洗了候选来源正文，接下来会筛选真正可引用的证据。",
+        "screen_evidence": "我已经完成证据筛选和去重，接下来进入交叉分析。",
+        "analyze_findings": "我已经完成多角度分析，正在把事实、趋势、风险和不确定项分开。",
+        "critic_review": "我已经完成反向质检，检查了引用覆盖、反例和推理跳跃。",
+        "write_report": "研究报告已经生成，包含摘要、证据表、主要发现、风险提示和后续建议。",
+    }
+    next_action = _next_action_for_stage(stage)
+    return f"{updates.get(stage.key, stage.checkpoint_note)}\n产物：`{artifact_path}`\n下一步：{next_action}。"
+
+
 def _stage_index_from_snapshot_values(values: dict[str, Any]) -> int:
     completed = list(values.get("completed_stage_keys") or [])
     return min(len(completed), len(REPORT_STAGES))
+
+
+def _research_launch_message(question: str) -> str:
+    topic = (question or "这个问题").strip() or "这个问题"
+    return (
+        "我开始做一份 Deep Research。\n\n"
+        f"研究主题：`{topic[:100]}`\n\n"
+        "我会先按成熟深度研究 Agent 的方式推进：\n"
+        "1. 先拆出研究目标、关键问题和判断标准。\n"
+        "2. 并行检索公开资料，阅读原文，保留可追溯来源。\n"
+        "3. 把证据归类为事实、趋势、分歧和风险，而不是直接堆摘要。\n"
+        "4. 做一次反向质检，检查遗漏、反例和低置信结论。\n"
+        "5. 最后整理成一份带来源、风险提示和后续建议的报告。\n\n"
+        "你可以继续问问题，也可以随时问“什么进度了”。如果页面关闭或任务暂停，后面会从已完成的研究进度继续。"
+    )
 
 
 class LongTaskE2ERunner(LangGraphRunner):
@@ -1119,6 +1149,11 @@ class LongTaskE2ERunner(LangGraphRunner):
     async def invoke(self, input_data: dict[str, Any]) -> dict[str, Any]:
         if _demo_mode() != "postgres":
             payload = dict(input_data)
+            if not payload.get("checkpoint_resume") and _is_long_task_intent(str(payload.get("input") or "")):
+                session_id = str(payload.get("session_id") or "local-session")
+                invocation_id = str(payload.get("invocation_id") or uuid.uuid4().hex)
+                output = self._start_background_long_task(payload, invocation_id, session_id)
+                return {"output": output, "raw": {"started": True}}
             if payload.get("checkpoint_resume"):
                 completed = [stage.key for stage in REPORT_STAGES]
             else:
@@ -1385,21 +1420,13 @@ class LongTaskE2ERunner(LangGraphRunner):
         )
         self._background_tasks[job_invocation_id] = task
         task.add_done_callback(lambda _task: self._background_tasks.pop(job_invocation_id, None))
-        return (
-            f"我会在后台做一份通用 DeepResearch，并持续把关键状态写入 LangGraph checkpoint。\n\n"
-            f"- run_id: `{run_id}`\n"
-            f"- 后台 invocation_id: `{job_invocation_id}`\n"
-            f"- 你现在可以继续对话；任务会在每个业务阶段完成后写入 LangGraph StateSnapshot checkpoint。\n"
-            f"- 研究图包含主图、web_search 子图、web_fetch 工具、LLM 多 reviewer 分析子图和条件质检路由。\n"
-            f"- 默认会在“交叉分析发现”阶段模拟一次外部工具失败，展示失败后从最近 LangGraph checkpoint 恢复。\n"
-            f"- 点击右上角/输入框的取消也会触发 CancelRun，任务会停在最近 LangGraph checkpoint。\n"
-            f"- 会话恢复区只展示这个 run 的最新状态快照索引，点击恢复后不会重复已完成工具调用。"
-        )
+        question = str(payload.get("input") or "这个问题").strip() or "这个问题"
+        return _research_launch_message(question)
 
     async def _render_status_answer(self, session_id: str) -> str:
         run_id = self._background_runs_by_session.get(session_id)
         if not run_id:
-            return "当前会话没有我启动的后台长任务。"
+            return "当前会话里还没有正在进行的研究任务。你可以直接发一个研究问题，我会开始检索和整理资料。"
         service = resolve_session_service()
         events = await service.get_events(session_id)
         checkpoints = [
@@ -1410,12 +1437,15 @@ class LongTaskE2ERunner(LangGraphRunner):
         ]
         latest = checkpoints[-1] if checkpoints else None
         if latest is None:
-            return f"后台任务 `{run_id}` 已启动，尚未到达第一个业务安全点。"
+            return "研究刚开始，我正在拆解问题并准备第一批检索关键词。"
         metadata = latest.metadata or {}
+        stage = metadata.get("stage") or metadata.get("phase") or "研究中"
+        summary = str(metadata.get("summary") or "").replace("恢复后", "接下来")
+        next_action = str(metadata.get("next_action") or "继续后续研究")
         return (
-            f"后台任务 `{run_id}` 最近 LangGraph 状态快照：{metadata.get('stage') or metadata.get('phase') or '未命名阶段'}。\n"
-            f"{metadata.get('summary') or ''}\n"
-            f"下一步：{metadata.get('next_action') or '继续执行'}。"
+            f"当前进度：{stage}。\n"
+            f"{summary}\n"
+            f"下一步：{next_action}。"
         ).strip()
 
     async def _stream_checkpoint_resume(
@@ -1449,8 +1479,8 @@ class LongTaskE2ERunner(LangGraphRunner):
         yield {
             "type": "text",
             "delta": (
-                f"正在从 checkpoint `{checkpoint_id or 'latest'}` 恢复 `{run_id}`。\n"
-                "恢复会沿用同一个 run_id，并按 LangGraph StateSnapshot 跳过 checkpoint 之前的业务阶段。\n\n"
+                "我会从上次已经完成的研究进度继续。\n"
+                "已完成的检索、阅读和证据整理不会重复执行，接下来只补后续分析和报告。\n\n"
             ),
         }
 
@@ -1515,10 +1545,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                     "type": "text",
                     "delta": (
                         f"**{stage.title}已完成**\n"
-                        f"{stage.stream_line}\n"
-                        f"{stage.checkpoint_note}\n"
-                        f"产物已写入：`{artifact_path}`\n"
-                        f"新的 LangGraph checkpoint：`{next_checkpoint_id}`\n\n"
+                        f"{_user_facing_stage_update(stage, artifact_path)}\n\n"
                     ),
                 }
                 await asyncio.sleep(_stage_delay_seconds())
@@ -1575,7 +1602,7 @@ class LongTaskE2ERunner(LangGraphRunner):
             session_id=session_id,
             author=author,
             role="model",
-            text=f"后台长任务 `{run_id}` 已接管执行；后续阶段会持续写入会话事件。",
+            text="研究任务已开始，我会持续推进检索、阅读、分析和报告生成。",
             invocation_id=invocation_id,
             event_type="assistant_message",
             metadata={"run_id": run_id, "background": True},
@@ -1615,8 +1642,8 @@ class LongTaskE2ERunner(LangGraphRunner):
                         author=author,
                         role="model",
                         text=(
-                            f"{stage.title}失败：外部 LLM / web 工具服务返回 503。"
-                            "已保留最近 LangGraph checkpoint，可从会话恢复区继续。"
+                            f"{stage.title}暂时中断：外部资料或模型服务短暂不可用。"
+                            "我已经保留了前面的研究进度，稍后可以从这里继续。"
                         ),
                         invocation_id=invocation_id,
                         event_type="assistant_message",
@@ -1699,10 +1726,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                     session_id=session_id,
                     author=author,
                     role="model",
-                    text=(
-                        f"{stage.title}已完成。\n{stage.stream_line}\n"
-                        f"{stage.checkpoint_note}\n产物：`{artifact_path}`"
-                    ),
+                    text=f"{stage.title}已完成。\n{_user_facing_stage_update(stage, artifact_path)}",
                     invocation_id=invocation_id,
                     event_type="assistant_message",
                     metadata={
@@ -1742,7 +1766,7 @@ class LongTaskE2ERunner(LangGraphRunner):
             session_id=session_id,
             author=author,
             role="model",
-            text=f"CancelRun 已生效，后台任务 `{run_id}` 已停在最近 LangGraph checkpoint。",
+            text="已暂停这次研究，并保留当前进度。后面可以从已完成的阶段继续。",
             invocation_id=invocation_id,
             event_type="assistant_message",
             metadata={"run_id": run_id, "background": True, "cancelled": True},

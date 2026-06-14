@@ -141,7 +141,11 @@ def main() -> None:
         {"model": MODEL, "conversation": SESSION_ID, "input": QUESTION, "stream": True},
         timeout=90,
     )
-    if not _contains_text(launch_events, launch_raw_text, "通用 DeepResearch"):
+    if not _contains_text(launch_events, launch_raw_text, "Deep Research") or not _contains_text(
+        launch_events,
+        launch_raw_text,
+        "研究主题",
+    ):
         raise AssertionError(
             "launch response did not describe the DeepResearch background run: "
             + _debug_excerpt(launch_events, launch_raw_text)

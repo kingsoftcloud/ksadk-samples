@@ -13,6 +13,11 @@ from scripts import validate_samples
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def _clear_sample_module_cache() -> None:
+    for transient in ("workflow", "tools", "data", "prompts"):
+        sys.modules.pop(transient, None)
+
+
 def _version_tuple(version: str) -> tuple[int, int, int]:
     parts = version.split(".")
     numeric = []
@@ -420,7 +425,7 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         "resume_attempt_id",
         "cancel_status",
         "duplicate_tool_count",
-        "通用 DeepResearch",
+        "Deep Research",
         "检索公开网页",
         "交叉分析发现",
         "deepresearch-report.md",
@@ -477,6 +482,7 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
         sys.path.insert(0, str(ROOT))
         sys.path.insert(0, str(sample_dir))
         try:
+            _clear_sample_module_cache()
             spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
             assert spec is not None
             assert spec.loader is not None
@@ -497,7 +503,7 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
             for section in required_sections:
                 assert section in answer
             for business_signal in (
-                "通用 DeepResearch",
+                "Deep Research",
                 "检索公开网页",
                 "交叉分析发现",
                 "deepresearch-report.md",
@@ -510,8 +516,7 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
                 except ValueError:
                     pass
             sys.modules.pop(module_name, None)
-            for transient in ("workflow", "tools", "data", "prompts"):
-                sys.modules.pop(transient, None)
+            _clear_sample_module_cache()
 
 
 def test_new_scenario_agents_invoke_with_demo_questions():
@@ -530,6 +535,7 @@ def test_new_scenario_agents_invoke_with_demo_questions():
         sys.path.insert(0, str(ROOT))
         sys.path.insert(0, str(sample_dir))
         try:
+            _clear_sample_module_cache()
             spec = importlib.util.spec_from_file_location(module_name, sample_dir / "agent.py")
             assert spec is not None
             assert spec.loader is not None
@@ -550,8 +556,7 @@ def test_new_scenario_agents_invoke_with_demo_questions():
                 except ValueError:
                     pass
             sys.modules.pop(module_name, None)
-            for transient in ("workflow", "tools", "data", "prompts"):
-                sys.modules.pop(transient, None)
+            _clear_sample_module_cache()
 
 
 def test_deep_research_and_coding_agents_show_mature_agent_workflows():

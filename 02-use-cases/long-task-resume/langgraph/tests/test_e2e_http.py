@@ -82,7 +82,8 @@ def test_skip_create_session_allows_runtime_owned_response_session(monkeypatch: 
         del payload, timeout
         calls.append((path, {}))
         if path == "/v1/responses":
-            return [{"text": "通用 DeepResearch"}], "通用 DeepResearch"
+            launch_text = "我开始做一份 Deep Research。\n\n研究主题：`测试问题`"
+            return [{"text": launch_text}], launch_text
         if path == "/agentengine/api/v1/ResumeRun":
             return [{"text": "已完成阶段直接跳过 deepresearch-report.md"}], "已完成阶段直接跳过 deepresearch-report.md"
         raise AssertionError(f"unexpected SSE {path}")

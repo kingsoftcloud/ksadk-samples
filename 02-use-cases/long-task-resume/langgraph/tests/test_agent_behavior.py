@@ -117,9 +117,72 @@ def test_research_question_emits_only_launch_message(monkeypatch: Any, tmp_path:
     )
 
     assert [event["type"] for event in events] == ["text", "final"]
-    assert "后台做一份通用 DeepResearch" in events[-1]["output"]
-    assert "web_search 子图" in events[-1]["output"]
+    assert "Deep Research" in events[-1]["output"]
+    assert "研究主题" in events[-1]["output"]
+    assert "成熟深度研究 Agent" in events[-1]["output"]
+    assert "公开资料" in events[-1]["output"]
+    assert "web_search 子图" not in events[-1]["output"]
+    assert "run_id" not in events[-1]["output"]
+    assert "invocation_id" not in events[-1]["output"]
+    assert "checkpoint" not in events[-1]["output"]
+    assert "LangGraph" not in events[-1]["output"]
+    assert "模拟一次外部工具失败" not in events[-1]["output"]
     assert not any(event["type"] == "checkpoint" for event in events)
+
+
+def test_non_streaming_research_question_starts_research_without_internal_report(monkeypatch: Any, tmp_path: Path):
+    agent_module = load_agent(monkeypatch, tmp_path)
+    runner = make_runner(agent_module)
+
+    result = asyncio.run(
+        runner.invoke(
+            {
+                "session_id": "sess-nonstream",
+                "invocation_id": "invoke-1",
+                "input": "帮我研究一下 LLM 领域最新进展",
+            }
+        )
+    )
+
+    output = result["output"]
+    assert "Deep Research" in output
+    assert "研究主题" in output
+    assert "ResumeRun 结果" not in output
+    assert "tool receipt" not in output
+    assert "checkpoint" not in output
+    assert "LangGraph" not in output
+
+
+def test_status_answer_reads_like_progress_not_internal_state(monkeypatch: Any, tmp_path: Path):
+    agent_module = load_agent(monkeypatch, tmp_path)
+    runner = make_runner(agent_module)
+    runner._background_runs_by_session["sess-progress"] = "run-progress"
+
+    class FakeService:
+        async def get_events(self, session_id: str):
+            del session_id
+            return [
+                SimpleNamespace(
+                    event_type="run_checkpoint",
+                    metadata={
+                        "run_id": "run-progress",
+                        "stage": "筛选证据并去重",
+                        "summary": "可引用证据清单已经确定，恢复后直接进入交叉分析。",
+                        "next_action": "继续交叉分析发现",
+                    },
+                )
+            ]
+
+    monkeypatch.setattr(agent_module, "resolve_session_service", lambda: FakeService())
+
+    output = asyncio.run(runner._render_status_answer("sess-progress"))
+
+    assert "当前进度" in output
+    assert "筛选证据并去重" in output
+    assert "交叉分析" in output
+    assert "run-progress" not in output
+    assert "LangGraph" not in output
+    assert "checkpoint" not in output
 
 
 def test_builtin_search_parser_extracts_real_result_shape(monkeypatch: Any, tmp_path: Path):
@@ -405,4 +468,5 @@ def test_non_streaming_resume_does_not_emit_display_checkpoint_metadata(monkeypa
     )
 
     assert "metadata" not in result
-    assert "DeepResearch" in result["output"]
+    assert "Deep Research" in result["output"]
+    assert "通用 DeepResearch" not in result["output"]

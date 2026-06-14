@@ -207,7 +207,7 @@ def render_answer(
     skipped_steps = "、".join(item["title"] for item in checkpoints[:4])
     continued_steps = "、".join(item["title"] for item in checkpoints[4:])
 
-    return f"""# 通用 DeepResearch 长任务恢复演示
+    return f"""# Deep Research 长任务恢复演示
 
 **用户问题**：{query}
 
@@ -249,7 +249,7 @@ def render_answer(
 - 未配置 `KSADK_SESSION_BACKEND` 或数据库时，本 demo 使用本地 fixture 模拟 checkpoint 索引。
 - 未配置真实 web_search / web_fetch / LLM 时，工具会降级为可运行的示例输出。
 - 生产环境建议把 checkpoint、receipt 和 cancel 状态写入同一个 session namespace，避免恢复时跨租户串读。
-- 这个样例是通用 DeepResearch 模板；替换研究计划、工具实现和报告模板即可改成自己的业务 Agent。
+- 这个样例是 Deep Research 模板；替换研究计划、工具实现和报告模板即可改成自己的业务 Agent。
 """.strip()
 
 
