@@ -30,7 +30,7 @@ class ResumeState(TypedDict, total=False):
 def prepare_state(payload: dict, session_context: dict) -> ResumeState:
     """把 AgentEngine payload 转成 LangGraph 初始状态。"""
 
-    query = str(payload.get("input") or "").strip() or "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"
+    query = str(payload.get("input") or "").strip() or "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性。"
     run_id = str(payload.get("run_id") or make_run_id(query))
     return {
         "query": query,

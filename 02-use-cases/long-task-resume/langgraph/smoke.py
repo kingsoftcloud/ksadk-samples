@@ -5,7 +5,7 @@ def main() -> int:
     """最小烟测：验证恢复字段和去重字段都能出现在最终输出里。"""
 
     payload = {
-        "input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。",
+        "input": "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性。",
         "run_id": "demo-run-smoke",
         "checkpoint_id": "demo-run-smoke-cp-4",
         "resume_attempt_id": "demo-run-smoke-resume-2",

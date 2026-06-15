@@ -107,7 +107,7 @@ REPORT_STAGES = (
     ReportStage(
         key="write_report",
         title="生成研究报告",
-        phase="通用 deep research 报告已生成并完成引用核查",
+        phase="deep research 报告已生成并完成引用核查",
         receipt_key="deepresearch:report:v1",
         tool_name="workspace.write",
         stream_line="7/7 生成研究报告：写入摘要、证据表、主要发现、风险提示、参考链接和可复用模板。",
@@ -1027,7 +1027,7 @@ def _compile_graph(checkpointer: Any) -> Any:
 
 def _initial_state(payload: dict[str, Any]) -> ReportState:
     query = str(payload.get("input") or "").strip()
-    default_query = "调研一个技术产品的市场格局、竞品、落地风险和下一步建议。"
+    default_query = "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性。"
     actual_query = query or default_query
     return {
         "input": actual_query,

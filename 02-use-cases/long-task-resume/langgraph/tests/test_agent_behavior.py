@@ -55,7 +55,7 @@ def make_langgraph_checkpoint(agent_module: Any, runner: Any, session_id: str, r
     async def _run() -> tuple[str, dict[str, Any]]:
         graph = runner._get_fixture_graph()
         config = runner._get_config(f"{session_id}:{run_id}")
-        graph_input = agent_module._initial_state({"input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议"})
+        graph_input = agent_module._initial_state({"input": "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性"})
         checkpoint_id = ""
         framework_ref: dict[str, Any] = {}
         for stage in agent_module.REPORT_STAGES[:stage_count]:
@@ -112,7 +112,7 @@ def test_research_question_emits_only_launch_message(monkeypatch: Any, tmp_path:
         {
             "session_id": "sess-long",
             "invocation_id": "launch-1",
-            "input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议",
+            "input": "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性",
         },
     )
 
@@ -190,20 +190,20 @@ def test_builtin_search_parser_extracts_real_result_shape(monkeypatch: Any, tmp_
     html = """
     <html><body>
       <li class="b_algo">
-        <h2><a href="https://example.org/report">国产 AI Agent Runtime 报告</a></h2>
+        <h2><a href="https://example.org/report">GLP-1 药物经济学报告</a></h2>
         <p>来自公开网页的摘要内容。</p>
       </li>
     </body></html>
     """
 
-    results = agent_module._parse_search_html(html, query="国产 AI Agent Runtime", source="bing", max_results=3)
+    results = agent_module._parse_search_html(html, query="GLP-1 药物经济学", source="bing", max_results=3)
 
     assert results == [
         {
-            "title": "国产 AI Agent Runtime 报告",
+            "title": "GLP-1 药物经济学报告",
             "url": "https://example.org/report",
             "snippet": "来自公开网页的摘要内容。",
-            "query": "国产 AI Agent Runtime",
+            "query": "GLP-1 药物经济学",
             "source": "bing",
         }
     ]

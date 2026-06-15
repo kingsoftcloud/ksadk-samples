@@ -1,7 +1,7 @@
 from workflow import build_agent_graph, prepare_state
 
 
-DEMO_QUESTION = "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"
+DEMO_QUESTION = "调研 GLP-1 受体激动剂在肥胖和 2 型糖尿病治疗中的临床证据、药物经济学、支付准入和真实世界安全性。"
 
 
 if __name__ == "__main__":
