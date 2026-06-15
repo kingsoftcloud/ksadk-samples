@@ -15,7 +15,6 @@ from typing import Annotated, Any, TypedDict
 
 import httpx
 from langgraph.checkpoint.memory import InMemorySaver
-from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
 
@@ -995,6 +994,15 @@ async def _build_graph() -> tuple[Any, Any]:
     dsn = os.environ.get("KSADK_LANGGRAPH_CHECKPOINT_DSN") or os.environ.get("KSADK_SESSION_DSN")
     if not dsn:
         raise RuntimeError("KSADK_LANGGRAPH_CHECKPOINT_DSN or KSADK_SESSION_DSN is required")
+
+    try:
+        from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+    except ModuleNotFoundError as exc:
+        raise RuntimeError(
+            "Postgres mode requires langgraph-checkpoint-postgres and psycopg. "
+            "Install this sample's requirements.txt, or set LONG_TASK_RESUME_DEMO_MODE=fixture "
+            "for local InMemorySaver demos."
+        ) from exc
 
     saver_cm = AsyncPostgresSaver.from_conn_string(dsn)
     saver = await saver_cm.__aenter__()
