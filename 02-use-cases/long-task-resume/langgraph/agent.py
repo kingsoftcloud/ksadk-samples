@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import html
+import json
 import operator
 import os
 import re
@@ -11,7 +12,7 @@ from hashlib import sha1
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import parse_qs, quote_plus, unquote, urlparse
-from typing import Annotated, Any, TypedDict
+from typing import Annotated, Any, AsyncIterator, TypedDict
 
 import httpx
 from langgraph.checkpoint.memory import InMemorySaver
@@ -21,6 +22,7 @@ from langgraph.types import Send
 import ksadk.conversations as conversation
 from ksadk.runners.langgraph_runner import LangGraphRunner
 from ksadk.sessions import resolve_session_service
+from ksadk.toolsets.workspace import write_workspace_file, write_workspace_files
 
 
 @dataclass(frozen=True)
@@ -177,7 +179,9 @@ class ReportState(TypedDict, total=False):
     resumed_completed_stage_keys: list[str]
     stage_summaries: list[dict[str, str]]
     tool_receipts: list[dict[str, str]]
+    stage_events: list[dict[str, Any]]
     subgraph_traces: list[dict[str, str]]
+    workspace_artifacts: list[str]
     requires_critic_review: bool
     answer: str
 
@@ -220,17 +224,62 @@ async def _call_chat_model(messages: list[dict[str, str]], *, temperature: float
     return ""
 
 
-async def _llm_or_fallback(prompt: str, fallback: str, *, system: str = "你是严谨的 Deep Research 研究员。") -> str:
-    try:
-        content = await _call_chat_model(
-            [
-                {"role": "system", "content": system},
-                {"role": "user", "content": prompt},
-            ]
+async def _stream_chat_model(
+    messages: list[dict[str, str]],
+    *,
+    temperature: float = 0.2,
+) -> AsyncIterator[str]:
+    if not _model_configured():
+        raise RuntimeError(
+            "模型未配置：真实 Deep Research demo 需要 OPENAI_API_KEY、OPENAI_BASE_URL、OPENAI_MODEL_NAME。"
         )
-        return content.strip() or fallback
-    except Exception as exc:
-        return f"{fallback}\n\n> LLM 降级说明：{type(exc).__name__}: {exc}"
+    base_url = os.environ["OPENAI_BASE_URL"].rstrip("/")
+    api_key = os.environ["OPENAI_API_KEY"]
+    model = os.environ["OPENAI_MODEL_NAME"]
+    async with httpx.AsyncClient(timeout=90) as client:
+        async with client.stream(
+            "POST",
+            f"{base_url}/chat/completions",
+            headers={"Authorization": f"Bearer {api_key}"},
+            json={"model": model, "messages": messages, "stream": True, "temperature": temperature},
+        ) as response:
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if not line.startswith("data:"):
+                    continue
+                payload = line.removeprefix("data:").strip()
+                if not payload or payload == "[DONE]":
+                    continue
+                try:
+                    data = json.loads(payload)
+                except json.JSONDecodeError:
+                    continue
+                choices = data.get("choices") if isinstance(data, dict) else None
+                if not isinstance(choices, list) or not choices:
+                    continue
+                choice = choices[0] if isinstance(choices[0], dict) else {}
+                delta = choice.get("delta") if isinstance(choice, dict) else {}
+                content = delta.get("content") if isinstance(delta, dict) else None
+                if content:
+                    yield str(content)
+
+
+async def _call_required_llm(
+    prompt: str,
+    *,
+    system: str = "你是严谨的 Deep Research 研究员。必须基于输入资料生成内容，不要编造来源。",
+    temperature: float = 0.2,
+) -> str:
+    content = await _call_chat_model(
+        [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=temperature,
+    )
+    if not content.strip():
+        raise RuntimeError("LLM 没有返回可用内容")
+    return content.strip()
 
 
 async def _web_search(query: str, *, max_results: int = 5) -> list[dict[str, Any]]:
@@ -545,6 +594,83 @@ def _write_text_artifact(stage: ReportStage, content: str) -> Path:
     return path
 
 
+def _workspace_artifact_dir(state: ReportState) -> str:
+    return f"research/{_slugify_query(str(state.get('input') or 'deepresearch'))}"
+
+
+def _workspace_artifact_path(state: ReportState, stage: ReportStage) -> str:
+    return f"{_workspace_artifact_dir(state)}/{stage.artifact_name}"
+
+
+def _write_workspace_artifact(state: ReportState, stage: ReportStage, content: str) -> tuple[str, dict[str, Any]]:
+    relative_path = _workspace_artifact_path(state, stage)
+    result = write_workspace_file(relative_path, content or "", overwrite=True)
+    if not isinstance(result, dict) or not result.get("ok"):
+        raise RuntimeError(f"write_workspace_file failed for {relative_path}: {result}")
+    return str(result.get("path") or relative_path), result
+
+
+def _write_workspace_report_files(state: ReportState, report_markdown: str, report_html: str) -> tuple[list[str], dict[str, Any]]:
+    base_dir = _workspace_artifact_dir(state)
+    files = [
+        {"path": f"{base_dir}/deepresearch-report.md", "content": report_markdown},
+        {"path": f"{base_dir}/deepresearch-report.html", "content": report_html},
+    ]
+    result = write_workspace_files(files, overwrite=True)
+    if not isinstance(result, dict) or not result.get("ok"):
+        raise RuntimeError(f"write_workspace_files failed for {base_dir}: {result}")
+    written = [
+        str(item.get("path") or "")
+        for item in list(result.get("written") or [])
+        if isinstance(item, dict) and item.get("path")
+    ]
+    return written, result
+
+
+def _workspace_write_events(
+    *,
+    stage: ReportStage,
+    tool_name: str,
+    paths: list[str],
+    result: dict[str, Any],
+) -> list[dict[str, Any]]:
+    return _runtime_event_pair(
+        stage=stage,
+        tool_name=tool_name,
+        tool_args={"paths": paths},
+        tool_output={key: value for key, value in result.items() if key != "absolute_path"},
+        summary=f"Workspace 已写入 {len(paths)} 个文件：{', '.join(paths)}。",
+    )
+
+
+def _ensure_html_document(html_text: str, report_markdown: str) -> str:
+    candidate = str(html_text or "").strip()
+    if "<html" in candidate.lower() and "</html>" in candidate.lower():
+        return candidate
+    escaped = html.escape(report_markdown)
+    body = escaped.replace("\n", "<br />\n")
+    return f"""<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Deep Research Report</title>
+  <style>
+    body {{ margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #172033; background: #f7f8fb; }}
+    main {{ max-width: 980px; margin: 0 auto; padding: 48px 28px; background: #fff; min-height: 100vh; box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08); }}
+    h1 {{ font-size: 32px; line-height: 1.2; margin: 0 0 24px; }}
+    .report {{ font-size: 15px; line-height: 1.75; white-space: normal; }}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Deep Research Report</h1>
+    <div class="report">{body}</div>
+  </main>
+</body>
+</html>"""
+
+
 def _stage_delay_seconds() -> float:
     raw = os.environ.get("LONG_TASK_STAGE_DELAY_SECONDS", "4")
     try:
@@ -603,6 +729,139 @@ def _stage_by_key(stage_key: str) -> ReportStage:
     return REPORT_STAGES[0]
 
 
+def _runtime_event_pair(
+    *,
+    stage: ReportStage,
+    tool_name: str,
+    tool_args: dict[str, Any] | None = None,
+    tool_output: dict[str, Any] | None = None,
+    summary: str = "",
+) -> list[dict[str, Any]]:
+    args = {"stage": stage.key, **dict(tool_args or {})}
+    output = {"ok": True, **dict(tool_output or {})}
+    text = summary or str(output.get("summary") or tool_name)
+    return [
+        {
+            "type": "tool_call",
+            "tool_name": tool_name,
+            "tool_args": args,
+            "stage": stage.key,
+            "text": tool_name,
+        },
+        {
+            "type": "tool_result",
+            "tool_name": tool_name,
+            "tool_args": args,
+            "tool_output": output,
+            "stage": stage.key,
+            "text": text,
+        },
+    ]
+
+
+def _runtime_events_from_packets(stage: ReportStage, packets: list[dict[str, Any]], *, round_name: str) -> list[dict[str, Any]]:
+    events: list[dict[str, Any]] = []
+    for index, packet in enumerate(packets, start=1):
+        results = list(packet.get("results") or [])
+        query = str(packet.get("query") or "")
+        events.extend(
+            _runtime_event_pair(
+                stage=stage,
+                tool_name="deepresearch_query_agent",
+                tool_args={"round": round_name, "query": query, "rank": index, "max_results": 3},
+                tool_output={
+                    "result_count": len(results),
+                    "top_titles": [str(item.get("title") or "")[:100] for item in results[:3]],
+                    "sources": sorted({str(item.get("source") or "unknown") for item in results}),
+                },
+                summary=f"{round_name} query `{query}` 返回 {len(results)} 条候选来源。",
+            )
+        )
+    return events
+
+
+def _dedupe_search_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    deduped: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in results:
+        key = str(item.get("url") or item.get("title") or "")
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item)
+    return deduped
+
+
+def _fallback_expanded_queries(query: str, existing_queries: list[str]) -> list[str]:
+    candidates = [
+        f"{query} systematic review meta analysis",
+        f"{query} real world evidence safety pharmacovigilance",
+        f"{query} cost effectiveness payer access reimbursement",
+        f"{query} clinical trial cardiovascular outcome adverse events",
+    ]
+    seen = {item.strip().lower() for item in existing_queries}
+    return [candidate for candidate in candidates if candidate.lower() not in seen][:3]
+
+
+async def _expand_queries_for_gap(
+    state: ReportState,
+    *,
+    existing_queries: list[str],
+    search_results: list[dict[str, Any]],
+) -> tuple[list[str], str]:
+    prompt = f"""
+用户研究问题：
+{state.get("input", "")}
+
+已有检索 query：
+{_json_dumps(existing_queries)}
+
+第一轮候选来源摘要：
+{_json_dumps(search_results[:8])}
+
+请判断还缺哪些检索角度，并补充 2-3 个更具体的查询。请只输出 JSON，字段为 reason、queries。
+"""
+    try:
+        text = await _call_required_llm(
+            prompt,
+            system="你是 Deep Research 的检索策略 Agent。你要根据证据缺口扩展 query，不要生成结论。",
+            temperature=0.2,
+        )
+        data = json.loads(_extract_json_object(text))
+        queries = [str(item).strip() for item in list(data.get("queries") or []) if str(item).strip()]
+        reason = str(data.get("reason") or "第一轮来源覆盖不足，需要补充更具体的检索角度。")
+    except Exception as exc:
+        queries = _fallback_expanded_queries(str(state.get("input") or ""), existing_queries)
+        reason = f"LLM query expansion unavailable, using deterministic fallback: {type(exc).__name__}"
+    deduped = []
+    seen = {item.strip().lower() for item in existing_queries}
+    for query in queries:
+        key = query.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(query)
+    return deduped[:3], reason
+
+
+def _search_gap_summary(results: list[dict[str, Any]], queries: list[str]) -> dict[str, Any]:
+    sources = sorted({str(item.get("source") or "unknown") for item in results})
+    unique_urls = {str(item.get("url") or "") for item in results if item.get("url")}
+    needs_more = len(unique_urls) < 6 or len(sources) < 2 or len(results) < max(6, len(queries) * 2)
+    return {
+        "needs_more": needs_more,
+        "result_count": len(results),
+        "unique_url_count": len(unique_urls),
+        "source_count": len(sources),
+        "sources": sources,
+        "reason": (
+            "候选来源数量或来源类型不足，继续补检索。"
+            if needs_more
+            else "候选来源覆盖已足够进入正文抓取。"
+        ),
+    }
+
+
 def _record_stage(
     state: ReportState,
     stage: ReportStage,
@@ -617,9 +876,14 @@ def _record_stage(
     update: ReportState = dict(extra or {})
 
     if stage.key not in completed:
-        artifact_path = _write_text_artifact(stage, artifact_content)
+        local_artifact_path = _write_text_artifact(stage, artifact_content)
+        workspace_path, _workspace_result = _write_workspace_artifact(state, stage, artifact_content)
+        workspace_artifacts = list(state.get("workspace_artifacts") or [])
+        if workspace_path not in workspace_artifacts:
+            workspace_artifacts.append(workspace_path)
         completed.append(stage.key)
-        stage_summary = summary or f"{stage.checkpoint_note} 产物：{artifact_path}"
+        stage_summary = summary or f"{stage.checkpoint_note} Workspace 产物：{workspace_path}"
+        stage_summary = stage_summary.replace(str(local_artifact_path), workspace_path)
         summaries.append({"stage": stage.title, "phase": stage.phase, "summary": stage_summary})
         receipts.append(
             {
@@ -630,37 +894,83 @@ def _record_stage(
                 "summary": stage_summary,
             }
         )
+        update["workspace_artifacts"] = workspace_artifacts
+    if "stage_events" not in update:
+        update["stage_events"] = []
     update.update({"completed_stage_keys": completed, "stage_summaries": summaries, "tool_receipts": receipts})
     return update
 
 
 def _run_stage(state: ReportState, stage: ReportStage) -> ReportState:
+    raise RuntimeError(f"Stage {stage.key} must be implemented as an async LLM/tool node")
+
+
+async def _run_plan_research_stage(state: ReportState, stage: ReportStage) -> ReportState:
     if stage.key == "plan_research":
         query = state.get("input", "")
-        plan = {
-            "topic": query,
-            "sub_questions": [
-                "现状和关键事实是什么？",
-                "主要参与方、产品或方案有哪些？",
-                "证据之间是否有冲突？",
-                "风险、机会和下一步验证动作是什么？",
-            ],
-            "search_queries": [query, f"{query} 最新进展", f"{query} 竞品 风险"],
-            "report_outline": ["摘要", "证据表", "主要发现", "风险提示", "后续动作"],
-        }
+        prompt = f"""
+用户要做一项医药领域 Deep Research：
+{query}
+
+请生成一个可执行研究计划，必须包含：
+- 研究目标
+- 6-8 个关键研究问题
+- 6 个中文或英文检索 query
+- 证据分级和排除标准
+- 最终报告大纲
+
+请只输出 JSON，字段为 topic、objectives、sub_questions、search_queries、evidence_criteria、report_outline。
+"""
+        plan_text = await _call_required_llm(prompt, temperature=0.1)
+        try:
+            plan = json.loads(_extract_json_object(plan_text))
+        except Exception:
+            plan = {
+                "topic": query,
+                "objectives": [plan_text[:400]],
+                "sub_questions": [],
+                "search_queries": [query, f"{query} clinical evidence", f"{query} real world safety"],
+                "evidence_criteria": [],
+                "report_outline": [],
+            }
+        if not isinstance(plan.get("search_queries"), list) or not plan["search_queries"]:
+            plan["search_queries"] = [query, f"{query} clinical evidence", f"{query} real world safety"]
+        stage_events = _runtime_event_pair(
+            stage=stage,
+            tool_name="deepresearch_planner",
+            tool_args={"query": query},
+            tool_output={
+                "topic": str(plan.get("topic") or query),
+                "query_count": len(plan.get("search_queries") or []),
+                "sub_question_count": len(plan.get("sub_questions") or []),
+                "outline_sections": list(plan.get("report_outline") or [])[:6],
+            },
+            summary=f"Planner 已生成 {len(plan.get('search_queries') or [])} 个检索 query。",
+        )
         return _record_stage(
             state,
             stage,
             artifact_content=_json_dumps(plan),
-            extra={"research_plan": plan, "task_title": f"Deep Research: {query[:60]}"},
+            summary=f"LLM 已生成研究计划，包含 {len(plan.get('search_queries') or [])} 个检索 query。产物：{_artifact_path(stage)}",
+            extra={
+                "research_plan": plan,
+                "task_title": str(plan.get("topic") or f"Deep Research: {query[:60]}"),
+                "stage_events": stage_events,
+            },
         )
-    if stage.key == "screen_evidence":
-        return _run_screen_evidence_stage(state, stage)
-    if stage.key == "critic_review":
-        return _run_critic_stage_sync(state, stage)
-    if stage.key == "write_report":
-        return _run_write_report_stage(state, stage)
-    return _record_stage(state, stage, artifact_content=f"# {stage.title}\n\n{stage.checkpoint_note}\n")
+    raise RuntimeError(f"Unexpected stage for plan node: {stage.key}")
+
+
+def _extract_json_object(text: str) -> str:
+    value = str(text or "").strip()
+    if value.startswith("```"):
+        value = re.sub(r"^```(?:json)?", "", value, flags=re.IGNORECASE).strip()
+        value = re.sub(r"```$", "", value).strip()
+    start = value.find("{")
+    end = value.rfind("}")
+    if start >= 0 and end > start:
+        return value[start : end + 1]
+    return value
 
 
 def _json_dumps(value: Any) -> str:
@@ -671,13 +981,21 @@ def _json_dumps(value: Any) -> str:
 
 def _stage_node(stage: ReportStage):
     async def run_stage(state: ReportState) -> ReportState:
+        if stage.key == "plan_research":
+            return await _run_plan_research_stage(state, stage)
         if stage.key == "search_web":
             return await _run_web_search_stage(state, stage)
         if stage.key == "fetch_sources":
             return await _run_fetch_sources_stage(state, stage)
+        if stage.key == "screen_evidence":
+            return await _run_screen_evidence_stage(state, stage)
         if stage.key == "analyze_findings":
             return await _run_analysis_stage(state, stage)
-        return _run_stage(state, stage)
+        if stage.key == "critic_review":
+            return await _run_critic_stage(state, stage)
+        if stage.key == "write_report":
+            return await _run_write_report_stage(state, stage)
+        raise RuntimeError(f"Unsupported stage: {stage.key}")
 
     run_stage.__name__ = stage.key
     return run_stage
@@ -715,9 +1033,55 @@ async def _run_web_search_stage(state: ReportState, stage: ReportStage) -> Repor
     subgraph = _build_web_search_subgraph()
     result = await subgraph.ainvoke({"query": state.get("input", ""), "queries": queries})
     packets = list(result.get("search_packets") or [])
+    stage_events = _runtime_events_from_packets(stage, packets, round_name="primary")
     search_results: list[dict[str, Any]] = []
     for packet in packets:
         search_results.extend(list(packet.get("results") or []))
+    search_results = _dedupe_search_results(search_results)
+    gap = _search_gap_summary(search_results, queries)
+    stage_events.extend(
+        _runtime_event_pair(
+            stage=stage,
+            tool_name="deepresearch_gap_checker",
+            tool_args={"round": "primary", "queries": queries},
+            tool_output=gap,
+            summary=str(gap["reason"]),
+        )
+    )
+
+    rounds = [{"round": "primary", "queries": queries, "result_count": len(search_results), "gap": gap}]
+    if gap["needs_more"]:
+        expanded_queries, reason = await _expand_queries_for_gap(
+            state,
+            existing_queries=queries,
+            search_results=search_results,
+        )
+        stage_events.extend(
+            _runtime_event_pair(
+                stage=stage,
+                tool_name="deepresearch_query_expander",
+                tool_args={"round": "gap_fill", "existing_queries": queries},
+                tool_output={"queries": expanded_queries, "reason": reason},
+                summary=f"Query expander 补充 {len(expanded_queries)} 个 gap-fill query。",
+            )
+        )
+        if expanded_queries:
+            gap_result = await subgraph.ainvoke({"query": state.get("input", ""), "queries": expanded_queries})
+            gap_packets = list(gap_result.get("search_packets") or [])
+            stage_events.extend(_runtime_events_from_packets(stage, gap_packets, round_name="gap_fill"))
+            for packet in gap_packets:
+                search_results.extend(list(packet.get("results") or []))
+            search_results = _dedupe_search_results(search_results)
+            gap = _search_gap_summary(search_results, queries + expanded_queries)
+            rounds.append(
+                {
+                    "round": "gap_fill",
+                    "queries": expanded_queries,
+                    "result_count": len(search_results),
+                    "gap": gap,
+                    "reason": reason,
+                }
+            )
     source_counts: dict[str, int] = {}
     for item in search_results:
         source = str(item.get("source") or "unknown")
@@ -737,10 +1101,14 @@ async def _run_web_search_stage(state: ReportState, stage: ReportStage) -> Repor
         stage,
         artifact_content=_json_dumps(search_results),
         summary=(
-            f"检索 {len(queries)} 个 query，得到 {len(search_results)} 条候选来源"
+            f"执行 {len(rounds)} 轮检索、{sum(len(item['queries']) for item in rounds)} 个 query，得到 {len(search_results)} 条候选来源"
             f"（来源：{source_summary}）。产物：{_artifact_path(stage)}"
         ),
-        extra={"search_results": search_results, "subgraph_traces": traces},
+        extra={
+            "search_results": search_results,
+            "subgraph_traces": traces,
+            "stage_events": stage_events,
+        },
     )
 
 
@@ -755,40 +1123,100 @@ async def _fetch_all_sources(search_results: list[dict[str, Any]], *, limit: int
 
 async def _run_fetch_sources_stage(state: ReportState, stage: ReportStage) -> ReportState:
     fetched = await _fetch_all_sources(list(state.get("search_results") or []))
-    return _record_stage(
-        state,
-        stage,
-        artifact_content=_json_dumps(fetched),
-        summary=f"抓取并清洗 {len(fetched)} 个来源正文。产物：{_artifact_path(stage)}",
-        extra={"fetched_sources": fetched},
-    )
-
-
-def _run_screen_evidence_stage(state: ReportState, stage: ReportStage) -> ReportState:
-    sources = list(state.get("fetched_sources") or [])
-    evidence = []
-    seen: set[str] = set()
-    for item in sources:
-        url = str(item.get("url") or "")
-        if url in seen:
-            continue
-        seen.add(url)
-        evidence.append(
-            {
-                "title": item.get("title") or item.get("url") or "未命名来源",
-                "url": url,
-                "relevance": "high" if len(str(item.get("content") or "")) > 120 else "medium",
-                "snippet": (item.get("snippet") or str(item.get("content") or ""))[:240],
-                "status": item.get("status") or "unknown",
-            }
+    stage_events: list[dict[str, Any]] = []
+    for index, source in enumerate(fetched, start=1):
+        stage_events.extend(
+            _runtime_event_pair(
+                stage=stage,
+                tool_name="deepresearch_fetch_agent",
+                tool_args={"rank": index, "url": source.get("url"), "title": source.get("title")},
+                tool_output={
+                    "status": source.get("status"),
+                    "content_chars": len(str(source.get("content") or "")),
+                    "title": source.get("title"),
+                },
+                summary=f"Fetch agent 读取 `{source.get('title') or source.get('url')}`，状态：{source.get('status')}",
+            )
         )
     return _record_stage(
         state,
         stage,
-        artifact_content=_json_dumps(evidence),
-        summary=f"筛选 {len(evidence)} 条可引用证据，去除重复来源 {max(0, len(sources) - len(evidence))} 条。产物：{_artifact_path(stage)}",
-        extra={"evidence_table": evidence},
+        artifact_content=_json_dumps(fetched),
+        summary=f"真实抓取并清洗 {len(fetched)} 个来源正文。产物：{_artifact_path(stage)}",
+        extra={"fetched_sources": fetched, "stage_events": stage_events},
     )
+
+
+async def _run_screen_evidence_stage(state: ReportState, stage: ReportStage) -> ReportState:
+    sources = list(state.get("fetched_sources") or [])
+    prompt = f"""
+用户研究问题：
+{state.get("input", "")}
+
+下面是真实 web_fetch 得到的候选来源。请筛选出可引用证据，去重并按临床证据、药物经济学、准入支付、真实世界安全性、研究空白分类。
+请输出 JSON 数组，每项包含 title、url、category、relevance、evidence_level、key_finding、limitations。
+
+候选来源：
+{_json_dumps(sources[:8])}
+"""
+    evidence_text = await _call_required_llm(prompt, temperature=0.1)
+    try:
+        evidence = json.loads(_extract_json_array(evidence_text))
+    except Exception:
+        evidence = [{"category": "llm_screening_notes", "key_finding": evidence_text, "url": ""}]
+    if not isinstance(evidence, list):
+        evidence = [{"category": "llm_screening_notes", "key_finding": str(evidence), "url": ""}]
+    categories = sorted({str(item.get("category") or "未分类") for item in evidence if isinstance(item, dict)})
+    stage_events = _runtime_event_pair(
+        stage=stage,
+        tool_name="deepresearch_evidence_screener",
+        tool_args={"source_count": len(sources), "criteria": list((state.get("research_plan") or {}).get("evidence_criteria") or [])[:5]},
+        tool_output={
+            "evidence_count": len(evidence),
+            "categories": categories,
+            "high_relevance_count": sum(
+                1 for item in evidence if isinstance(item, dict) and str(item.get("relevance") or "").lower() == "high"
+            ),
+        },
+        summary=f"Evidence screener 从 {len(sources)} 个正文来源中筛出 {len(evidence)} 条证据。",
+    )
+    missing_categories = [
+        category
+        for category in ("临床证据", "药物经济学", "准入支付", "真实世界安全性")
+        if category not in categories
+    ]
+    stage_events.extend(
+        _runtime_event_pair(
+            stage=stage,
+            tool_name="deepresearch_evidence_gap_checker",
+            tool_args={"expected_categories": ["临床证据", "药物经济学", "准入支付", "真实世界安全性"]},
+            tool_output={"missing_categories": missing_categories, "needs_critic_review": True},
+            summary=(
+                f"Evidence gap checker 发现缺口：{', '.join(missing_categories)}。"
+                if missing_categories
+                else "Evidence gap checker 未发现关键分类缺口。"
+            ),
+        )
+    )
+    return _record_stage(
+        state,
+        stage,
+        artifact_content=_json_dumps(evidence),
+        summary=f"LLM 基于抓取正文筛选 {len(evidence)} 条可引用证据。产物：{_artifact_path(stage)}",
+        extra={"evidence_table": evidence, "stage_events": stage_events, "requires_critic_review": True},
+    )
+
+
+def _extract_json_array(text: str) -> str:
+    value = str(text or "").strip()
+    if value.startswith("```"):
+        value = re.sub(r"^```(?:json)?", "", value, flags=re.IGNORECASE).strip()
+        value = re.sub(r"```$", "", value).strip()
+    start = value.find("[")
+    end = value.rfind("]")
+    if start >= 0 and end > start:
+        return value[start : end + 1]
+    return value
 
 
 def _build_analysis_subgraph():
@@ -811,13 +1239,12 @@ def _build_analysis_subgraph():
     async def analysis_reviewer(state: AnalysisState) -> AnalysisState:
         reviewer = (state.get("reviewers") or ["reviewer"])[0]
         evidence = state.get("evidence_table") or []
-        fallback = f"{reviewer} 基于 {len(evidence)} 条证据给出结构化观察：现状、差异点、风险和待验证问题。"
         prompt = (
             f"用户研究问题：{state.get('query', '')}\n"
-            f"你是 {reviewer}。请基于以下证据表给出 3-5 条发现，标注不确定性：\n"
+            f"你是 {reviewer}。请基于以下证据表给出 3-5 条发现，必须标注证据来源、置信度和不确定性：\n"
             f"{_json_dumps(evidence[:6])}"
         )
-        summary = await _llm_or_fallback(prompt, fallback)
+        summary = await _call_required_llm(prompt)
         return {"analysis_packets": [{"agent": reviewer, "summary": summary[:1200]}]}
 
     def reduce_analysis(state: AnalysisState) -> AnalysisState:
@@ -853,67 +1280,132 @@ async def _run_analysis_stage(state: ReportState, stage: ReportStage) -> ReportS
             "summary": "并行 reviewer 已完成主题归纳、技术判断和风险识别。",
         }
     )
+    stage_events: list[dict[str, Any]] = []
+    for packet in list(result.get("analysis_packets") or []):
+        reviewer = str(packet.get("agent") or "reviewer")
+        stage_events.extend(
+            _runtime_event_pair(
+                stage=stage,
+                tool_name=f"deepresearch_{reviewer}",
+                tool_args={"reviewer": reviewer, "evidence_count": len(list(state.get("evidence_table") or []))},
+                tool_output={"summary_chars": len(str(packet.get("summary") or "")), "summary": str(packet.get("summary") or "")[:300]},
+                summary=f"{reviewer} 已完成一轮证据交叉分析。",
+            )
+        )
     return _record_stage(
         state,
         stage,
         artifact_content=analysis,
         summary=f"完成 {len(result.get('analysis_packets') or [])} 个 reviewer 的交叉分析。产物：{_artifact_path(stage)}",
-        extra={"analysis_markdown": analysis, "subgraph_traces": traces},
+        extra={"analysis_markdown": analysis, "subgraph_traces": traces, "stage_events": stage_events},
     )
 
 
-def _run_critic_stage_sync(state: ReportState, stage: ReportStage) -> ReportState:
+async def _run_critic_stage(state: ReportState, stage: ReportStage) -> ReportState:
     evidence = list(state.get("evidence_table") or [])
     analysis = state.get("analysis_markdown") or ""
-    critic = (
-        "## 批判性质检\n\n"
-        f"- 引用覆盖：当前使用 {len(evidence)} 条候选证据，需在生产环境替换为真实来源可信度评分。\n"
-        "- 推理检查：结论必须回指来源，缺少证据时标注为假设。\n"
-        "- 反例检查：保留与主结论冲突的材料，不在最终报告中隐去。\n"
-        "- 置信度：搜索和抓取降级时整体置信度应下调。\n\n"
-        f"### 待质检分析片段\n{analysis[:1200]}\n"
+    critic = await _call_required_llm(
+        f"""
+请作为独立医学研究审稿人，对下面 Deep Research 分析做批判性质检。
+要求检查：引用覆盖、证据等级、样本外推风险、真实世界安全性遗漏、支付准入假设、反例、低置信结论。
+输出 Markdown，不要使用固定模板套话。
+
+研究问题：
+{state.get("input", "")}
+
+证据表：
+{_json_dumps(evidence[:10])}
+
+待质检分析：
+{analysis[:4000]}
+""",
+        system="你是谨慎的医学证据审稿人，必须指出不确定性和证据缺口。",
     )
-    return _record_stage(state, stage, artifact_content=critic, extra={"critic_markdown": critic})
+    stage_events = _runtime_event_pair(
+        stage=stage,
+        tool_name="deepresearch_critic_reviewer",
+        tool_args={"evidence_count": len(evidence), "analysis_chars": len(analysis)},
+        tool_output={"critic_chars": len(critic), "summary": critic[:300]},
+        summary="Critic reviewer 已检查引用覆盖、反例、证据等级和低置信结论。",
+    )
+    return _record_stage(state, stage, artifact_content=critic, extra={"critic_markdown": critic, "stage_events": stage_events})
 
 
-def _run_write_report_stage(state: ReportState, stage: ReportStage) -> ReportState:
+async def _run_write_report_stage(state: ReportState, stage: ReportStage) -> ReportState:
     query = state.get("input", "")
     evidence = list(state.get("evidence_table") or [])
     analysis = state.get("analysis_markdown") or ""
     critic = state.get("critic_markdown") or ""
-    report = f"""# Deep Research Report
+    report = await _call_required_llm(
+        f"""
+请写一份面向医药业务和技术团队的 Deep Research 报告。
+要求：
+- 用自然研究报告口吻，不要说“这是模拟”。
+- 必须基于给定证据表、分析和质检意见。
+- 结论要标明置信度和证据缺口。
+- 引用来源时使用 Markdown 链接。
 
-## 研究问题
-
+研究问题：
 {query}
 
-## 摘要
+证据表：
+{_json_dumps(evidence[:12])}
 
-本报告由 Deep Research 长任务 Agent 生成。Agent 使用 web_search/web_fetch 获取公开来源，使用多 reviewer LLM 子图做交叉分析，并在每个业务安全点写入 LangGraph checkpoint。
+多 reviewer 分析：
+{analysis[:5000]}
 
-## 主要发现
+独立质检意见：
+{critic[:3000]}
+""",
+        system="你是资深医药 Deep Research 分析师。报告必须真实、谨慎、可追溯。",
+        temperature=0.2,
+    )
+    report_html = await _call_required_llm(
+        f"""
+请基于下面 Markdown Deep Research 报告生成一份可直接在浏览器打开的自包含 HTML 展示页。
+要求：
+- 返回完整 HTML 文档，包含 <!doctype html>、html、head、body。
+- 内联 CSS，视觉风格专业、清晰，适合医药研究汇报。
+- 保留报告中的来源链接、置信度、证据缺口和风险提示。
+- 不要加入与报告无关的营销文案。
 
-{analysis or '- 当前未配置 LLM，使用降级分析。'}
-
-## 证据表
-
-"""
-    for index, item in enumerate(evidence, start=1):
-        report += f"{index}. [{item.get('title')}]({item.get('url')}) - {item.get('snippet')}\n"
-    report += f"""
-
-## 批判性质检
-
-{critic}
-
-## 复用说明
-
-- 修改 `REPORT_STAGES` 可调整业务安全点。
-- 替换 `_web_search` / `_web_fetch` 可接入企业搜索或浏览器抓取服务。
-- 替换 `_run_analysis_stage` 和 `_run_write_report_stage` 可改成自己的行业分析逻辑。
-- 保留 receipt key 和 checkpoint 写入顺序，可继续获得 ResumeRun 去重能力。
-"""
-    return _record_stage(state, stage, artifact_content=report, extra={"report_markdown": report})
+Markdown 报告：
+{report[:12000]}
+""",
+        system="你是资深研究报告信息设计师。只输出完整 HTML 文档。",
+        temperature=0.15,
+    )
+    report_html = _ensure_html_document(report_html, report)
+    workspace_paths, workspace_result = _write_workspace_report_files(state, report, report_html)
+    stage_events = _runtime_event_pair(
+        stage=stage,
+        tool_name="deepresearch_report_writer",
+        tool_args={"evidence_count": len(evidence), "analysis_chars": len(analysis), "critic_chars": len(critic)},
+        tool_output={"report_chars": len(report), "html_chars": len(report_html), "workspace_paths": workspace_paths},
+        summary=f"Report writer 已生成 {len(report)} 字符的研究报告。",
+    )
+    stage_events.extend(
+        _workspace_write_events(
+            stage=stage,
+            tool_name="write_workspace_files",
+            paths=workspace_paths,
+            result=workspace_result,
+        )
+    )
+    existing_workspace_artifacts = list(state.get("workspace_artifacts") or [])
+    for path in workspace_paths:
+        if path not in existing_workspace_artifacts:
+            existing_workspace_artifacts.append(path)
+    return _record_stage(
+        {**state, "workspace_artifacts": existing_workspace_artifacts},
+        stage,
+        artifact_content=report,
+        extra={
+            "report_markdown": report,
+            "report_html": report_html,
+            "stage_events": stage_events,
+        },
+    )
 
 
 def _render_final_answer(state: ReportState) -> str:
@@ -929,7 +1421,7 @@ def _render_final_answer(state: ReportState) -> str:
         continued_keys = [stage_key for stage_key in completed if stage_key not in skipped_keys]
     skipped = [stage.title for stage in REPORT_STAGES if stage.key in skipped_keys]
     continued = [stage.title for stage in REPORT_STAGES if stage.key in continued_keys]
-    artifacts = _existing_artifacts(completed)
+    artifacts = list(state.get("workspace_artifacts") or []) or _existing_artifacts(completed)
     reused_receipts = [stage.receipt_key for stage in REPORT_STAGES if stage.key in skipped_keys]
     reused_receipt_text = "、".join(f"`{receipt_key}`" for receipt_key in reused_receipts) if reused_receipts else "无"
 
@@ -950,9 +1442,9 @@ def _render_final_answer(state: ReportState) -> str:
 
 - 恢复后没有从头重跑，已完成阶段直接跳过：{"、".join(skipped) or "无"}。
 - 本次继续执行阶段：{"、".join(continued) or "无"}。
-- 最终交付物：`deepresearch-report.md`。
+- 最终交付物：`deepresearch-report.md` 和 `deepresearch-report.html`。
 - 已复用 tool receipt：{reused_receipt_text}，没有重复执行 checkpoint 前的副作用工具。
-- 本地产物目录：`{WORKSPACE_DIR}`。
+- Workspace 目录：`research/...`。
 
 ## checkpoint 列表
 
@@ -966,7 +1458,7 @@ def _render_final_answer(state: ReportState) -> str:
 | --- | --- | --- | --- | --- |
 {receipt_lines}
 
-## 本地产物
+## Workspace 产物
 
 {artifact_lines}
 
@@ -1043,6 +1535,7 @@ def _initial_state(payload: dict[str, Any]) -> ReportState:
         "completed_stage_keys": [],
         "stage_summaries": [],
         "tool_receipts": [],
+        "stage_events": [],
         "subgraph_traces": [],
         "requires_critic_review": True,
     }
@@ -1057,20 +1550,35 @@ def _demo_mode() -> str:
     return os.environ.get("LONG_TASK_RESUME_DEMO_MODE", "fixture").strip().lower() or "fixture"
 
 
-def _checkpoint_metadata_for_ref(*, stage: ReportStage, run_id: str, framework_ref: dict[str, Any]) -> dict[str, Any]:
-    artifact_path = _artifact_path(stage)
+def _artifact_path_for_state(state: ReportState, stage: ReportStage) -> str:
+    suffix = f"/{stage.artifact_name}"
+    for path in list(state.get("workspace_artifacts") or []):
+        value = str(path)
+        if value.endswith(suffix) or value == stage.artifact_name:
+            return value
+    return str(_artifact_path(stage))
+
+
+def _checkpoint_metadata_for_ref(
+    *,
+    stage: ReportStage,
+    run_id: str,
+    framework_ref: dict[str, Any],
+    artifact_path: str | None = None,
+) -> dict[str, Any]:
+    display_artifact_path = artifact_path or str(_artifact_path(stage))
     # framework_ref.langgraph stores the LangGraph StateSnapshot config used by ResumeRun.
     return {
         "agentengine": {
             "run_id": run_id,
             "phase": stage.phase,
             "stage": stage.title,
-            "summary": f"{stage.checkpoint_note} 产物：{artifact_path}",
+            "summary": f"{stage.checkpoint_note} 产物：{display_artifact_path}",
             "next_action": _next_action_for_stage(stage),
             "status": "completed",
             "tool_name": stage.tool_name,
             "receipt_key": stage.receipt_key,
-            "artifact_path": str(artifact_path),
+            "artifact_path": display_artifact_path,
             "framework": "langgraph",
             "framework_ref": framework_ref,
         }
@@ -1113,18 +1621,7 @@ def _stage_index_from_snapshot_values(values: dict[str, Any]) -> int:
 
 
 def _research_launch_message(question: str) -> str:
-    topic = (question or "这个问题").strip() or "这个问题"
-    return (
-        "我开始做一份 Deep Research。\n\n"
-        f"研究主题：`{topic[:100]}`\n\n"
-        "我会先按成熟深度研究 Agent 的方式推进：\n"
-        "1. 先拆出研究目标、关键问题和判断标准。\n"
-        "2. 并行检索公开资料，阅读原文，保留可追溯来源。\n"
-        "3. 把证据归类为事实、趋势、分歧和风险，而不是直接堆摘要。\n"
-        "4. 做一次反向质检，检查遗漏、反例和低置信结论。\n"
-        "5. 最后整理成一份带来源、风险提示和后续建议的报告。\n\n"
-        "你可以继续问问题，也可以随时问“什么进度了”。如果页面关闭或任务暂停，后面会从已完成的研究进度继续。"
-    )
+    raise RuntimeError("Launch messages must be generated by the configured LLM")
 
 
 class LongTaskE2ERunner(LangGraphRunner):
@@ -1132,6 +1629,7 @@ class LongTaskE2ERunner(LangGraphRunner):
         super().__init__(detection_result, project_dir)
         self._module = None
         self._cancel_events: dict[str, asyncio.Event] = {}
+        self._cancel_aliases: dict[str, str] = {}
         self._background_tasks: dict[str, asyncio.Task[Any]] = {}
         self._background_runs_by_session: dict[str, str] = {}
         self._fixture_graph = None
@@ -1160,7 +1658,12 @@ class LongTaskE2ERunner(LangGraphRunner):
             if not payload.get("checkpoint_resume") and _is_long_task_intent(str(payload.get("input") or "")):
                 session_id = str(payload.get("session_id") or "local-session")
                 invocation_id = str(payload.get("invocation_id") or uuid.uuid4().hex)
-                output = self._start_background_long_task(payload, invocation_id, session_id)
+                self._start_background_long_task(payload, invocation_id, session_id)
+                output = await _call_required_llm(
+                    f"用户研究问题：{payload.get('input') or ''}\n请简短说明你已经开始真实 Deep Research，会继续检索、阅读和分析。不要提实现细节。",
+                    system="你是医药 Deep Research 智能体。输出自然的启动确认。",
+                    temperature=0.3,
+                )
                 return {"output": output, "raw": {"started": True}}
             if payload.get("checkpoint_resume"):
                 completed = [stage.key for stage in REPORT_STAGES]
@@ -1349,8 +1852,18 @@ class LongTaskE2ERunner(LangGraphRunner):
             return
 
         if _is_long_task_intent(user_input):
-            output = self._start_background_long_task(payload, invocation_id, session_id)
-            yield {"type": "text", "delta": output}
+            self._start_background_long_task(payload, invocation_id, session_id)
+            chunks: list[str] = []
+            try:
+                async for chunk in self._stream_research_launch_message(user_input):
+                    chunks.append(chunk)
+                    yield {"type": "text", "delta": chunk}
+            except Exception as exc:
+                output = f"真实 LLM 启动回复失败：{type(exc).__name__}: {exc}"
+                yield {"type": "text", "delta": output}
+                yield {"type": "final", "output": output}
+                return
+            output = "".join(chunks).strip()
             yield {"type": "final", "output": output}
             return
 
@@ -1415,6 +1928,9 @@ class LongTaskE2ERunner(LangGraphRunner):
         self._background_runs_by_session[session_id] = run_id
         cancel_event = asyncio.Event()
         self._cancel_events[job_invocation_id] = cancel_event
+        for alias in {job_invocation_id, invocation_id, run_id}:
+            if alias:
+                self._cancel_aliases[str(alias)] = job_invocation_id
         task = asyncio.create_task(
             self._run_background_job(
                 payload=payload,
@@ -1428,8 +1944,50 @@ class LongTaskE2ERunner(LangGraphRunner):
         )
         self._background_tasks[job_invocation_id] = task
         task.add_done_callback(lambda _task: self._background_tasks.pop(job_invocation_id, None))
-        question = str(payload.get("input") or "这个问题").strip() or "这个问题"
-        return _research_launch_message(question)
+        return job_invocation_id
+
+    async def _stream_research_launch_message(self, question: str) -> AsyncIterator[str]:
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "你是一个真实执行 Deep Research 的医药研究智能体。"
+                    "用户发起长任务后，你需要自然确认理解、简述研究切入点和接下来会启动的真实检索、阅读、分析流程。"
+                    "不要说你已经完成任何还没完成的步骤；不要使用固定模板；不要提 checkpoint、run_id、LangGraph。"
+                ),
+            },
+            {"role": "user", "content": question},
+        ]
+        async for chunk in _stream_chat_model(messages, temperature=0.3):
+            yield chunk
+
+    async def _generate_background_start_note(self, question: str) -> str:
+        return await _call_required_llm(
+            f"用户研究问题：{question}\n请用一句自然的话说明研究任务已经进入后台执行，会继续检索、阅读和分析。不要提实现细节。",
+            system="你是医药 Deep Research 智能体。输出给普通用户看的简短进度说明。",
+            temperature=0.3,
+        )
+
+    async def _generate_stage_update(self, state: ReportState, stage: ReportStage, artifact_path: Path) -> str:
+        return await _call_required_llm(
+            f"""
+用户研究问题：
+{state.get("input", "")}
+
+刚完成的研究阶段：{stage.title}
+阶段产物路径：{artifact_path}
+阶段状态摘要：{state.get("stage_summaries", [])[-1] if state.get("stage_summaries") else ""}
+下一步：{_next_action_for_stage(stage)}
+
+请写一段自然的阶段进度更新。要求：
+- 像真实研究助理汇报进度，不要使用固定模板。
+- 可以提到已经保存了产物路径。
+- 不要提 checkpoint、LangGraph、run_id。
+- 不要夸大已经完成的内容。
+""",
+            system="你是医药 Deep Research 智能体。输出用户可读的进度更新。",
+            temperature=0.25,
+        )
 
     async def _render_status_answer(self, session_id: str) -> str:
         run_id = self._background_runs_by_session.get(session_id)
@@ -1455,6 +2013,60 @@ class LongTaskE2ERunner(LangGraphRunner):
             f"{summary}\n"
             f"下一步：{next_action}。"
         ).strip()
+
+    @staticmethod
+    def _stage_runtime_events(values: ReportState, *, stage: ReportStage, run_id: str) -> list[dict[str, Any]]:
+        normalized: list[dict[str, Any]] = []
+        for raw_event in list(values.get("stage_events") or []):
+            if not isinstance(raw_event, dict):
+                continue
+            event_type = str(raw_event.get("type") or "").strip()
+            if event_type not in {"tool_call", "tool_result"}:
+                continue
+            tool_name = str(raw_event.get("tool_name") or stage.tool_name)
+            tool_args = {"stage": stage.key, **dict(raw_event.get("tool_args") or {})}
+            event = {
+                "type": event_type,
+                "tool_name": tool_name,
+                "tool_args": tool_args,
+                "run_id": run_id,
+                "text": str(raw_event.get("text") or tool_name),
+            }
+            if event_type == "tool_result":
+                event["tool_output"] = dict(raw_event.get("tool_output") or {"ok": True})
+            normalized.append(event)
+        return normalized
+
+    async def _append_runtime_stage_events(
+        self,
+        *,
+        values: ReportState,
+        stage: ReportStage,
+        session_id: str,
+        author: str,
+        invocation_id: str,
+        run_id: str,
+    ) -> None:
+        for event in self._stage_runtime_events(values, stage=stage, run_id=run_id):
+            metadata: dict[str, Any] = {
+                "tool_name": event["tool_name"],
+                "tool_args": event["tool_args"],
+                "run_id": run_id,
+                "stage": stage.key,
+                "background": True,
+            }
+            if event["type"] == "tool_result":
+                metadata["tool_output"] = event.get("tool_output") or {"ok": True}
+            await conversation.append_conversation_event(
+                session_id=session_id,
+                author=author,
+                role="model" if event["type"] == "tool_call" else "user",
+                text=str(event.get("text") or event["tool_name"]),
+                invocation_id=invocation_id,
+                event_type=event["type"],
+                metadata=metadata,
+                session_service_provider=resolve_session_service,
+            )
 
     async def _stream_checkpoint_resume(
         self,
@@ -1528,7 +2140,9 @@ class LongTaskE2ERunner(LangGraphRunner):
                     **values,
                     "resumed_completed_stage_keys": list(completed_before),
                 }
-                artifact_path = _artifact_path(stage)
+                artifact_path = _artifact_path_for_state(values, stage)
+                for runtime_event in self._stage_runtime_events(state, stage=stage, run_id=run_id):
+                    yield runtime_event
                 yield {
                     "type": "tool_result",
                     "tool_name": stage.tool_name,
@@ -1536,7 +2150,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                     "tool_output": {
                         "ok": True,
                         "receipt_key": stage.receipt_key,
-                        "artifact_path": str(artifact_path),
+                        "artifact_path": artifact_path,
                         "resumed_from": checkpoint_id,
                     },
                     "run_id": run_id,
@@ -1547,13 +2161,14 @@ class LongTaskE2ERunner(LangGraphRunner):
                         stage=stage,
                         run_id=run_id,
                         framework_ref=framework_ref,
+                        artifact_path=artifact_path,
                     ),
                 }
                 yield {
                     "type": "text",
                     "delta": (
                         f"**{stage.title}已完成**\n"
-                        f"{_user_facing_stage_update(stage, artifact_path)}\n\n"
+                        f"{_user_facing_stage_update(stage, Path(artifact_path))}\n\n"
                     ),
                 }
                 await asyncio.sleep(_stage_delay_seconds())
@@ -1610,7 +2225,7 @@ class LongTaskE2ERunner(LangGraphRunner):
             session_id=session_id,
             author=author,
             role="model",
-            text="研究任务已开始，我会持续推进检索、阅读、分析和报告生成。",
+            text=await self._generate_background_start_note(str(payload.get("input") or "")),
             invocation_id=invocation_id,
             event_type="assistant_message",
             metadata={"run_id": run_id, "background": True},
@@ -1680,9 +2295,16 @@ class LongTaskE2ERunner(LangGraphRunner):
                     stage=stage,
                     payload=payload,
                 )
-                del values
                 graph_input = None
-                artifact_path = _artifact_path(stage)
+                artifact_path = _artifact_path_for_state(values, stage)
+                await self._append_runtime_stage_events(
+                    values=values,
+                    stage=stage,
+                    session_id=session_id,
+                    author=author,
+                    invocation_id=invocation_id,
+                    run_id=run_id,
+                )
                 await conversation.append_conversation_event(
                     session_id=session_id,
                     author=author,
@@ -1696,7 +2318,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                         "tool_output": {
                             "ok": True,
                             "receipt_key": stage.receipt_key,
-                            "artifact_path": str(artifact_path),
+                            "artifact_path": artifact_path,
                             "langgraph_checkpoint_id": checkpoint_id,
                         },
                         "run_id": run_id,
@@ -1726,7 +2348,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                         "status": "completed",
                         "tool_name": stage.tool_name,
                         "receipt_key": stage.receipt_key,
-                        "artifact_path": str(artifact_path),
+                        "artifact_path": artifact_path,
                     },
                     session_service_provider=resolve_session_service,
                 )
@@ -1734,7 +2356,7 @@ class LongTaskE2ERunner(LangGraphRunner):
                     session_id=session_id,
                     author=author,
                     role="model",
-                    text=f"{stage.title}已完成。\n{_user_facing_stage_update(stage, artifact_path)}",
+                    text=await self._generate_stage_update(dict(values), stage, Path(artifact_path)),
                     invocation_id=invocation_id,
                     event_type="assistant_message",
                     metadata={
@@ -1768,6 +2390,9 @@ class LongTaskE2ERunner(LangGraphRunner):
         finally:
             await self._cleanup_graph_context(saver_cm)
             self._cancel_events.pop(invocation_id, None)
+            aliases_to_delete = [alias for alias, target in self._cancel_aliases.items() if target == invocation_id]
+            for alias in aliases_to_delete:
+                self._cancel_aliases.pop(alias, None)
 
     async def _append_cancelled(self, session_id: str, author: str, invocation_id: str, run_id: str) -> None:
         await conversation.append_conversation_event(
@@ -1814,7 +2439,9 @@ class LongTaskE2ERunner(LangGraphRunner):
         }
 
     def request_cancel(self, invocation_id: str) -> str:
-        event = self._cancel_events.get(str(invocation_id))
+        requested = str(invocation_id)
+        canonical_invocation_id = self._cancel_aliases.get(requested, requested)
+        event = self._cancel_events.get(canonical_invocation_id)
         if event is None:
             return "not_found"
         event.set()
