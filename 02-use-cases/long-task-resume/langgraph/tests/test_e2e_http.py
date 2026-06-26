@@ -67,7 +67,7 @@ def test_skip_create_session_allows_runtime_owned_response_session(monkeypatch: 
             }
         if path == "/agentengine/api/v1/CancelRun":
             return {"Data": {"Cancelled": True}}
-        if path == "/agentengine/api/v1/PreviewCheckpointResume":
+        if path == "/agentengine/api/v1/GetCheckpointResumePreview":
             return {
                 "Data": {
                     "Preview": {
@@ -100,7 +100,7 @@ def test_skip_create_session_allows_runtime_owned_response_session(monkeypatch: 
         in {
             "/agentengine/api/v1/ListSessionCheckpoints",
             "/agentengine/api/v1/CancelRun",
-            "/agentengine/api/v1/PreviewCheckpointResume",
+            "/agentengine/api/v1/GetCheckpointResumePreview",
         }
     ]
     assert action_payloads

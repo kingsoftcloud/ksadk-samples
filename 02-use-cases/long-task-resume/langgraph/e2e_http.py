@@ -177,7 +177,7 @@ def main() -> None:
 
     selected = _session_checkpoints(run_id)[-1]
     preview = _post(
-        "/agentengine/api/v1/PreviewCheckpointResume",
+        "/agentengine/api/v1/GetCheckpointResumePreview",
         {
             "AgentId": AGENT_ID,
             "SessionId": SESSION_ID,
@@ -186,7 +186,7 @@ def main() -> None:
         },
     )["Data"]["Preview"]
     if preview["Summary"]["RunId"] != run_id:
-        raise AssertionError("PreviewCheckpointResume returned a different run_id")
+        raise AssertionError("GetCheckpointResumePreview returned a different run_id")
 
     resume_events, resume_raw_text = _sse_post(
         "/agentengine/api/v1/ResumeRun",
