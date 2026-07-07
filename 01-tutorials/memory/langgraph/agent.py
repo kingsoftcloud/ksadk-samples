@@ -7,7 +7,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 
 from common.memory_store import load_user_memory, save_user_memory
 from common.model_config import make_langchain_chat_model
@@ -49,7 +49,7 @@ def answer(state: AgentState) -> dict:
 
 workflow = StateGraph(AgentState)
 workflow.add_node("answer", answer)
-workflow.set_entry_point("answer")
+workflow.add_edge(START, "answer")
 workflow.add_edge("answer", END)
 root_agent = workflow.compile()
 

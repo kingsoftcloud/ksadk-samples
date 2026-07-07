@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, TypedDict
 
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 
 
 class ScenarioState(TypedDict, total=False):
@@ -90,7 +90,7 @@ def build_scenario_graph(config: ScenarioConfig):
     workflow.add_node('collect_context', collect_context)
     workflow.add_node('plan_next_steps', plan_next_steps)
     workflow.add_node('finalize_answer', finalize_answer)
-    workflow.set_entry_point('classify_intent')
+    workflow.add_edge(START, 'classify_intent')
     workflow.add_edge('classify_intent', 'collect_context')
     workflow.add_edge('collect_context', 'plan_next_steps')
     workflow.add_edge('plan_next_steps', 'finalize_answer')

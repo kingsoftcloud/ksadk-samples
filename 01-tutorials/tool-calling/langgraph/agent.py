@@ -7,7 +7,7 @@ if str(ROOT) not in sys.path:
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import tool
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 from typing import Annotated, TypedDict
@@ -62,7 +62,7 @@ def should_continue(state: AgentState) -> str:
 workflow = StateGraph(AgentState)
 workflow.add_node("agent", call_model)
 workflow.add_node("tools", ToolNode(tools))
-workflow.set_entry_point("agent")
+workflow.add_edge(START, "agent")
 workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
 workflow.add_edge("tools", "agent")
 root_agent = workflow.compile()
