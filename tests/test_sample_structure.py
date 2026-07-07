@@ -2161,7 +2161,7 @@ def test_langgraph_toolsets_route_workspace_to_dispatcher_instead_of_skill_space
         route = module._route_for_text("请用 dispatcher 看看 Workspace 还有哪些可调用工具。")
 
         assert route["scenario"] == "ksadk_toolsets"
-        assert route["suggested_tools"] == ["agentengine_tool_dispatcher"]
+        assert route["suggested_tools"] == ["tool_dispatcher"]
     finally:
         try:
             sys.path.remove(str(sample_dir))

@@ -15,7 +15,7 @@
 
 - 如何用 `get_agentengine_tools(include=[...])` 绑定 KSADK 内置工具。
 - 如何用 `describe_agentengine_tools()` 在运行时解释当前工具、风险等级和启用状态。
-- 如何用 `agentengine_tool_dispatcher` 渐进式发现、描述和调用低频工具。
+- 如何用 `tool_dispatcher` 渐进式发现、描述和调用低频工具。
 - 如何把业务自定义 tool 与 KSADK 内置 tool 放在同一个 ReAct 子图里。
 - 如何在外层 `StateGraph` 中增加路由节点、自定义上下文节点和最终整理节点。
 - 如何在未配置 Skill Runtime、Workspace、Sandbox、知识库或长期记忆时给出清楚边界，而不是伪造执行结果。
@@ -32,7 +32,7 @@
 
 `agent.py` 中有三类内容：
 
-- KSADK 内置 toolsets：`get_agentengine_tools(include=["focused", "agentengine_tool_dispatcher"])`
+- KSADK 内置 toolsets：`get_agentengine_tools(include=["focused", "tool_dispatcher"])`
 - 业务自定义 tools：`graph_status`、`component_status`、`release_risk_matrix`
 - LangGraph 编排：`route_turn -> prepare_custom_context -> run_specialist -> finalize_answer`
 
@@ -183,7 +183,7 @@ uv run agentengine deploy .
 请用 dispatcher 看看 Workspace 还有哪些可调用工具。
 ```
 
-预期路径：调用 `agentengine_tool_dispatcher` 的 `list` 或 `describe`。如果你继续要求写文件、删文件或执行命令，高风险工具可能由 KSADK Tool Gateway 返回 `approval_required`。
+预期路径：调用 `tool_dispatcher` 的 `list` 或 `describe`。如果你继续要求写文件、删文件或执行命令，高风险工具可能由 KSADK Tool Gateway 返回 `approval_required`。
 
 ## 可选配置
 
@@ -261,7 +261,7 @@ Skill Service 连接变量：
 验证方式：
 
 ```text
-请用 agentengine_tool_dispatcher 列出 skill 相关工具，再搜索我当前 Skill Space 里有哪些 Skill。
+请用 tool_dispatcher 列出 skill 相关工具，再搜索我当前 Skill Space 里有哪些 Skill。
 ```
 
 如果配置正确，模型会通过 dispatcher 找到 `list_skills`、`search_skills` 或 `load_skill`。如果缺少凭证或 Space ID，返回里会出现明确的错误原因。
@@ -425,7 +425,7 @@ KSADK_KB_RERANKING_ENABLE=false
 验证方式：
 
 ```text
-请用 agentengine_tool_dispatcher 查找知识库工具，然后检索“你的测试问题”。
+请用 tool_dispatcher 查找知识库工具，然后检索“你的测试问题”。
 ```
 
 如果 `KSADK_KB_DATASET_ID` 为空，本示例仍可运行，但不会伪造知识库答案。
@@ -514,7 +514,7 @@ rg -n "AK|SK|SECRET|TOKEN|KEY|PASSWORD|http://|https://|[0-9]{1,3}(\\.[0-9]{1,3}
 
 ### 为什么不直接绑定全部 KSADK 工具？
 
-全部绑定会增加模型上下文体积，也会让用户更难理解工具边界。本示例默认绑定 `focused` 和 `agentengine_tool_dispatcher`：常用低风险能力直接可见，低频或高风险能力通过 dispatcher 按需发现。
+全部绑定会增加模型上下文体积，也会让用户更难理解工具边界。本示例默认绑定 `focused` 和 `agentengine_tool_dispatcher`：常用低风险能力直接可见，低频或高风险能力通过 dispatcher 按需发现。（KSADK 0.6.8+ canonical 名为 tool_dispatcher，旧名 agentengine_tool_dispatcher 仍兼容）
 
 ### 为什么示例里重写了 `component_status`？
 

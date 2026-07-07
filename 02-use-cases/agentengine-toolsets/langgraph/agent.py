@@ -31,16 +31,17 @@ SYSTEM_PROMPT = """你是 AgentEngine Toolsets 示例助手，用中文回答。
 - 用户问 Space 下有哪些 skill、技能列表、Skill Space、可用工具时，必须优先使用 list_skills。
 - 用户带有搜索意图时，优先使用 search_skills。
 - 用户指定加载某个 Skill 时，使用 load_skill。
-- 用户问知识库、RAG、长期记忆、历史偏好、保存记忆时，必须通过 agentengine_tool_dispatcher，include=platform，按需调用 search_knowledge_base、load_memory、save_memory。
+- 用户问知识库、RAG、长期记忆、历史偏好、保存记忆时，必须通过 tool_dispatcher，include=platform，按需调用 search_knowledge_base、load_memory、save_memory。
 - 用户问当前绑定了哪些能力、运行环境或配置边界时，调用 component_status。
 - 用户问 LangGraph 图结构、节点、边或自定义扩展方式时，调用 graph_status。
 - 用户要生成发布风险清单或评审发布改动时，调用 release_risk_matrix。
-- 用户问 Skill、Workspace、Sandbox 等低频能力时，先用 agentengine_tool_dispatcher list 或 describe 查看，再按需 call。
-- 使用 agentengine_tool_dispatcher 时，include 只能填合法工具组或工具名，例如 skill、workspace、platform、sandbox、focused，不能填 file；读取或写入文件请使用 workspace 组里的工具。
+- 用户问 Skill、Workspace、Sandbox 等低频能力时，先用 tool_dispatcher list 或 describe 查看，再按需 call。
+- 使用 tool_dispatcher 时，include 只能填合法工具组或工具名，例如 skill、workspace、platform、sandbox、focused，不能填 file；读取或写入文件请使用 workspace 组里的工具。
 - 用户只做普通咨询时可以直接回答。
 """
 
-FOCUSED_TOOLSETS = ["focused", "agentengine_tool_dispatcher"]
+FOCUSED_TOOLSETS = ["focused", "tool_dispatcher"]
+# KSADK 0.6.8+ canonical 名为 tool_dispatcher，旧名 agentengine_tool_dispatcher 仍兼容。
 AGENTENGINE_TOOL_DESCRIPTIONS = describe_agentengine_tools(include=FOCUSED_TOOLSETS)
 
 
@@ -230,7 +231,7 @@ def graph_status() -> dict[str, Any]:
         "ksadk_toolsets": {
             "include": FOCUSED_TOOLSETS,
             "bound_tools": _group_tool_names(AGENTENGINE_TOOL_DESCRIPTIONS),
-            "dispatcher": "agentengine_tool_dispatcher 可按需 list/describe/call 低频或高风险工具。",
+            "dispatcher": "tool_dispatcher 可按需 list/describe/call 低频或高风险工具。",
         },
         "custom_extensions": {
             "tools": ["graph_status", "component_status", "release_risk_matrix"],
@@ -315,7 +316,7 @@ def component_status() -> dict[str, Any]:
             "name": "agentengine-toolsets-langgraph",
             "framework": "langgraph",
             "ksadk_version_target": "0.6.2+ public API",
-            "binding_pattern": "get_agentengine_tools(include=['focused', 'agentengine_tool_dispatcher'])",
+            "binding_pattern": "get_agentengine_tools(include=['focused', 'tool_dispatcher'])",
         },
         "bound_ksadk_tools": grouped,
         "custom_tools": ["graph_status", "component_status", "release_risk_matrix"],
@@ -340,7 +341,7 @@ def component_status() -> dict[str, Any]:
         "platform": {
             "knowledge_base_configured": bool(_env("KSADK_KB_DATASET_ID")),
             "long_term_memory_configured": bool(_env("KSADK_LTM_BACKEND") or _env("KSADK_LTM_NAMESPACE")),
-            "routing": "知识库和长期记忆通过 agentengine_tool_dispatcher include=platform 调用 search_knowledge_base/load_memory/save_memory。",
+            "routing": "知识库和长期记忆通过 tool_dispatcher include=platform 调用 search_knowledge_base/load_memory/save_memory。",
         },
         "boundaries": {
             "skill": "list/search/load 可直接用于 Skill 指令发现；execute_skills 需要额外配置 Skill Runtime。",
@@ -381,7 +382,7 @@ def _route_for_text(user_text: str) -> dict[str, Any]:
     if any(word in lowered for word in ("workspace", "sandbox", "tool")) or any(
         word in user_text for word in ("工具", "工作区", "沙箱")
     ):
-        return {"scenario": "ksadk_toolsets", "suggested_tools": ["agentengine_tool_dispatcher"]}
+        return {"scenario": "ksadk_toolsets", "suggested_tools": ["tool_dispatcher"]}
     skill_space_intent = (
         bool(re.search(r"\bskill(?:\s+space)?\b", lowered))
         or bool(re.search(r"\bspace\b", lowered))
@@ -391,12 +392,12 @@ def _route_for_text(user_text: str) -> dict[str, Any]:
         if any(word in user_text for word in ("搜索", "查找", "找一下")) or "search" in lowered:
             return {
                 "scenario": "skill_space_search",
-                "suggested_tools": ["search_skills", "list_skills", "load_skill", "agentengine_tool_dispatcher"],
+                "suggested_tools": ["search_skills", "list_skills", "load_skill", "tool_dispatcher"],
                 "response_guidance": "让 ReAct 子图优先调用 search_skills；不要由外层 LangGraph 代替工具调用。",
             }
         return {
             "scenario": "skill_space_list",
-            "suggested_tools": ["list_skills", "search_skills", "load_skill", "agentengine_tool_dispatcher"],
+            "suggested_tools": ["list_skills", "search_skills", "load_skill", "tool_dispatcher"],
             "response_guidance": "让 ReAct 子图优先调用 list_skills，并基于真实工具结果总结。",
         }
     if any(word in user_text for word in ("组件", "绑定", "配置", "状态", "能力", "边界")):
@@ -406,7 +407,7 @@ def _route_for_text(user_text: str) -> dict[str, Any]:
     if any(word in user_text for word in ("发布", "风险", "检查清单", "评审")):
         return {"scenario": "release_review", "suggested_tools": ["release_risk_matrix"]}
     if any(word in lowered for word in ("skill", "workspace", "sandbox", "tool")):
-        return {"scenario": "ksadk_toolsets", "suggested_tools": ["agentengine_tool_dispatcher"]}
+        return {"scenario": "ksadk_toolsets", "suggested_tools": ["tool_dispatcher"]}
     return {"scenario": "general", "suggested_tools": []}
 
 
