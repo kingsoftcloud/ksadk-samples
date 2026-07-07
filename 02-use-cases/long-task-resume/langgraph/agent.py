@@ -23,6 +23,8 @@ import ksadk.conversations as conversation
 from ksadk.conversations.run_kinds import RUN_MODE_BACKGROUND, RUN_TRIGGER_NEW_RUN
 from ksadk.runners.langgraph_runner import LangGraphRunner
 from ksadk.sessions import resolve_session_service
+from ksadk.toolsets.web import web_fetch as _ksadk_web_fetch
+from ksadk.toolsets.web import web_search as _ksadk_web_search
 from ksadk.toolsets.workspace import write_workspace_file, write_workspace_files
 
 
@@ -283,7 +285,58 @@ async def _call_required_llm(
     return content.strip()
 
 
+_KSADK_SEARCH_CACHE: dict[str, list[dict[str, Any]]] = {}
+
+
+def _ksadk_web_search_configured() -> bool:
+    """ksadk 内置 web_search 是否启用（KSADK_WEB_SEARCH_PROVIDER=ksyun）。"""
+    return os.environ.get("KSADK_WEB_SEARCH_PROVIDER", "").strip().lower() == "ksyun"
+
+
+async def _search_with_ksadk_web_search(query: str, *, max_results: int = 5) -> list[dict[str, Any]]:
+    """优先走 ksadk 内置 web_search（ksyun provider，复用 KSADK_MCP_KEY）。未配置或失败返回 [] 触发降级。"""
+    cache_key = f"ksyun::{query}::{max_results}"
+    cached = _KSADK_SEARCH_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+    if not _ksadk_web_search_configured():
+        return []
+    try:
+        result = await asyncio.to_thread(_ksadk_web_search, query, max_results)
+    except Exception:
+        return []
+    if not isinstance(result, dict) or not result.get("ok"):
+        return []
+    normalized: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in result.get("results") or []:
+        if not isinstance(item, dict):
+            continue
+        url = str(item.get("url") or item.get("link") or "")
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        normalized.append(
+            {
+                "title": str(item.get("title") or "未命名来源"),
+                "url": url,
+                "snippet": str(item.get("snippet") or item.get("summary") or ""),
+                "query": query,
+                "source": "ksyun:web_search",
+                "published_at": str(item.get("date") or ""),
+            }
+        )
+        if len(normalized) >= max_results:
+            break
+    if normalized:
+        _KSADK_SEARCH_CACHE[cache_key] = normalized
+    return normalized
+
+
 async def _web_search(query: str, *, max_results: int = 5) -> list[dict[str, Any]]:
+    ksadk_results = await _search_with_ksadk_web_search(query, max_results=max_results)
+    if ksadk_results:
+        return ksadk_results
     endpoint = os.environ.get("DEEPRESEARCH_WEB_SEARCH_URL", "").strip()
     if endpoint:
         try:
@@ -545,9 +598,34 @@ def _fallback_search_results(query: str, *, max_results: int = 5) -> list[dict[s
     ]
 
 
+async def _fetch_with_ksadk_web_fetch(url: str) -> dict[str, Any] | None:
+    """用 ksadk 内置 web_fetch（含 SSRF 防护 + HTML 清洗 + 结果预算）。失败返回 None 触发降级。"""
+    if not url:
+        return None
+    try:
+        result = await asyncio.to_thread(_ksadk_web_fetch, url, 4000)
+    except Exception:
+        return None
+    if not isinstance(result, dict) or not result.get("ok"):
+        return None
+    text = str(result.get("text") or "")
+    if not text:
+        return None
+    return {
+        "url": url,
+        "title": url,
+        "content": text[:4000],
+        "status": "fetched",
+        "source": "ksadk:web_fetch",
+    }
+
+
 async def _web_fetch(url: str) -> dict[str, Any]:
     if not url:
         return {"url": url, "title": "空 URL", "content": "未提供 URL。", "status": "missing_url"}
+    ksadk_result = await _fetch_with_ksadk_web_fetch(url)
+    if ksadk_result is not None:
+        return ksadk_result
     try:
         async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
             response = await client.get(url, headers={"User-Agent": "KSADK-DeepResearch-Sample/1.0"})

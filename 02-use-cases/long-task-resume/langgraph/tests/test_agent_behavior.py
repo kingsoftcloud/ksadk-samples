@@ -300,6 +300,10 @@ def test_web_fetch_cleans_html_content(monkeypatch: Any, tmp_path: Path):
             return FakeResponse()
 
     monkeypatch.setattr(agent_module.httpx, "AsyncClient", FakeClient)
+    # ksadk 内置 web_fetch 未配置时返回 None，走 fallback httpx 路径验证 HTML 清洗
+    async def _fake_ksadk_fetch(url):
+        return None
+    monkeypatch.setattr(agent_module, "_fetch_with_ksadk_web_fetch", _fake_ksadk_fetch)
 
     fetched = asyncio.run(agent_module._web_fetch("https://example.org/report"))
 
