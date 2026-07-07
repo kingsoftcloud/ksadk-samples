@@ -32,6 +32,7 @@ SYSTEM_PROMPT = """你是 AgentEngine Toolsets 示例助手，用中文回答。
 - 用户带有搜索意图时，优先使用 search_skills。
 - 用户指定加载某个 Skill 时，使用 load_skill。
 - 用户问知识库、RAG、长期记忆、历史偏好、保存记忆时，必须通过 tool_dispatcher，include=platform，按需调用 search_knowledge_base、load_memory、save_memory。
+- 用户问有哪些工具、可用工具、工具能力或要求按语义搜索工具时，优先用 tool_search(query=...)；它返回 results 和 deferred_tool_names，再用 tool_dispatcher describe/call 加载具体工具。tool_search 不执行工具，只做发现。
 - 用户问当前绑定了哪些能力、运行环境或配置边界时，调用 component_status。
 - 用户问 LangGraph 图结构、节点、边或自定义扩展方式时，调用 graph_status。
 - 用户要生成发布风险清单或评审发布改动时，调用 release_risk_matrix。
@@ -379,6 +380,17 @@ def _last_user_text(messages: list[BaseMessage]) -> str:
 
 def _route_for_text(user_text: str) -> dict[str, Any]:
     lowered = user_text.lower()
+    # tool_search 优先：用户问"有哪些工具/能做什么"时，先用 tool_search 发现工具
+    tool_search_intent = any(
+        word in user_text
+        for word in ("有哪些工具", "可用工具", "工具列表", "能做什么", "能力清单", "工具能力", "搜索工具")
+    ) or "tool_search" in lowered
+    if tool_search_intent:
+        return {
+            "scenario": "tool_search",
+            "suggested_tools": ["tool_search", "tool_dispatcher"],
+            "response_guidance": "让 ReAct 子图先调 tool_search(query=...) 按语义搜索工具，再据 deferred_tool_names 用 tool_dispatcher describe/call 加载。",
+        }
     if any(word in lowered for word in ("workspace", "sandbox", "tool")) or any(
         word in user_text for word in ("工具", "工作区", "沙箱")
     ):

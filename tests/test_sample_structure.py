@@ -2168,3 +2168,58 @@ def test_langgraph_toolsets_route_workspace_to_dispatcher_instead_of_skill_space
         except ValueError:
             pass
         sys.modules.pop(module_name, None)
+
+
+def test_langgraph_toolsets_route_tool_search_intent():
+    os.environ.setdefault("OPENAI_API_KEY", "test-key")
+    os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
+
+    sample_dir = ROOT / "02-use-cases" / "agentengine-toolsets" / "langgraph"
+    agent_path = sample_dir / "agent.py"
+    module_name = "sample_langgraph_toolsets_tool_search_test"
+    sys.path.insert(0, str(sample_dir))
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, agent_path)
+        assert spec is not None
+        assert spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+
+        route = module._route_for_text("帮我看看有哪些可用工具，能搜索到什么")
+
+        assert route["scenario"] == "tool_search"
+        assert "tool_search" in route["suggested_tools"]
+    finally:
+        try:
+            sys.path.remove(str(sample_dir))
+        except ValueError:
+            pass
+        sys.modules.pop(module_name, None)
+
+
+def test_langgraph_toolsets_route_skill_search_not_hijacked_by_tool_search():
+    os.environ.setdefault("OPENAI_API_KEY", "test-key")
+    os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")
+
+    sample_dir = ROOT / "02-use-cases" / "agentengine-toolsets" / "langgraph"
+    agent_path = sample_dir / "agent.py"
+    module_name = "sample_langgraph_toolsets_skill_search_not_hijacked_test"
+    sys.path.insert(0, str(sample_dir))
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, agent_path)
+        assert spec is not None
+        assert spec.loader is not None
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+
+        route = module._route_for_text("搜索一下 Skill Space 里的技能")
+
+        assert route["scenario"] == "skill_space_search"
+    finally:
+        try:
+            sys.path.remove(str(sample_dir))
+        except ValueError:
+            pass
+        sys.modules.pop(module_name, None)

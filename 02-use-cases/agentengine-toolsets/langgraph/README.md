@@ -185,6 +185,14 @@ uv run agentengine deploy .
 
 预期路径：调用 `tool_dispatcher` 的 `list` 或 `describe`。如果你继续要求写文件、删文件或执行命令，高风险工具可能由 KSADK Tool Gateway 返回 `approval_required`。
 
+### 语义工具搜索
+
+```text
+有哪些可用工具？能搜索到什么工具？
+```
+
+预期路径：调用 `tool_search(query=...)` 按语义搜索工具描述，返回 `results` 和 `deferred_tool_names`，再用 `tool_dispatcher` 的 `describe` 或 `call` 加载具体工具。`tool_search` 是 KSADK 0.6.8+ 内置 focused 工具，只做发现不执行工具。
+
 ## 可选配置
 
 本示例不强制配置 Skill Runtime、Workspace、Sandbox、知识库或长期记忆。只配置模型时，示例可以正常回答普通问题，也可以用 `component_status` 解释哪些平台能力尚未启用。
