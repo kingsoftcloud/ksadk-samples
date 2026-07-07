@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, TypedDict
 
-from langgraph.graph import END, StateGraph
+from langgraph.graph import END, START, StateGraph
 
 from tools import (
     build_checkpoints,
@@ -87,7 +87,7 @@ def build_agent_graph():
     graph.add_node("resume_from_checkpoint", resume_from_checkpoint)
     graph.add_node("check_cancel_status", check_cancel_status)
     graph.add_node("finalize_answer", finalize_answer)
-    graph.set_entry_point("load_checkpoints")
+    graph.add_edge(START, "load_checkpoints")
     graph.add_edge("load_checkpoints", "resume_from_checkpoint")
     graph.add_edge("resume_from_checkpoint", "check_cancel_status")
     graph.add_edge("check_cancel_status", "finalize_answer")

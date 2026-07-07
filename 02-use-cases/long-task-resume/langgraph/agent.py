@@ -20,6 +20,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import Send
 
 import ksadk.conversations as conversation
+from ksadk.conversations.run_kinds import RUN_MODE_BACKGROUND, RUN_TRIGGER_NEW_RUN
 from ksadk.runners.langgraph_runner import LangGraphRunner
 from ksadk.sessions import resolve_session_service
 from ksadk.toolsets.workspace import write_workspace_file, write_workspace_files
@@ -520,7 +521,7 @@ def _is_noise_url(url: str) -> bool:
     return any(token in host for token in ("bing.com", "sogou.com", "baidu.com")) and (
         "/search" in parsed.path or "cache" in parsed.path
     )
-    return _fallback_search_results(query, max_results=max_results)
+
 
 
 def _fallback_search_results(query: str, *, max_results: int = 5) -> list[dict[str, Any]]:
@@ -2220,6 +2221,8 @@ class LongTaskE2ERunner(LangGraphRunner):
             invocation_id=invocation_id,
             detail=f"{source}:background_long_task_started:{run_id}",
             session_service_provider=resolve_session_service,
+            run_mode=RUN_MODE_BACKGROUND,
+            run_trigger=RUN_TRIGGER_NEW_RUN,
         )
         await conversation.append_conversation_event(
             session_id=session_id,
@@ -2285,6 +2288,8 @@ class LongTaskE2ERunner(LangGraphRunner):
                         invocation_id=invocation_id,
                         detail=f"simulated_tool_failure:{stage.key}",
                         session_service_provider=resolve_session_service,
+                        run_mode=RUN_MODE_BACKGROUND,
+                        run_trigger=RUN_TRIGGER_NEW_RUN,
                     )
                     return
 
@@ -2374,6 +2379,8 @@ class LongTaskE2ERunner(LangGraphRunner):
                 invocation_id=invocation_id,
                 detail=f"background_long_task_completed:{run_id}",
                 session_service_provider=resolve_session_service,
+                run_mode=RUN_MODE_BACKGROUND,
+                run_trigger=RUN_TRIGGER_NEW_RUN,
             )
         except asyncio.CancelledError:
             await self._append_cancelled(session_id, author, invocation_id, run_id)
@@ -2386,6 +2393,8 @@ class LongTaskE2ERunner(LangGraphRunner):
                 invocation_id=invocation_id,
                 detail=str(exc),
                 session_service_provider=resolve_session_service,
+                run_mode=RUN_MODE_BACKGROUND,
+                run_trigger=RUN_TRIGGER_NEW_RUN,
             )
         finally:
             await self._cleanup_graph_context(saver_cm)
@@ -2412,6 +2421,8 @@ class LongTaskE2ERunner(LangGraphRunner):
             invocation_id=invocation_id,
             detail="cancel_requested",
             session_service_provider=resolve_session_service,
+            run_mode=RUN_MODE_BACKGROUND,
+            run_trigger=RUN_TRIGGER_NEW_RUN,
         )
 
     def _tool_receipt_metadata_for_stage(
