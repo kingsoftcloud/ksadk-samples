@@ -81,3 +81,21 @@ async def _stream_chat_model(
                 content = delta.get("content") if isinstance(delta, dict) else None
                 if content:
                     yield str(content)
+
+
+async def _call_required_llm(
+    prompt: str,
+    *,
+    system: str = "你是严谨的 Deep Research 研究员。必须基于输入资料生成内容，不要编造来源。",
+    temperature: float = 0.2,
+) -> str:
+    content = await _call_chat_model(
+        [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        temperature=temperature,
+    )
+    if not content.strip():
+        raise RuntimeError("LLM 没有返回可用内容")
+    return content.strip()

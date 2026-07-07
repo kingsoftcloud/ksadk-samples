@@ -123,6 +123,11 @@ def patch_llm(monkeypatch: Any, agent_module: Any):
 
     monkeypatch.setattr(agent_module, "_call_chat_model", fake_call_chat_model)
     monkeypatch.setattr(agent_module, "_stream_chat_model", fake_stream_chat_model)
+    # _call_required_llm 已搬到 llm_client.py，其内部 _call_chat_model 走 llm_client 命名空间，
+    # 需双 patch llm_client 模块（节点在 workflow.py 经 _call_required_llm 调用）
+    llm_mod = agent_module._llm_client_module
+    monkeypatch.setattr(llm_mod, "_call_chat_model", fake_call_chat_model)
+    monkeypatch.setattr(llm_mod, "_stream_chat_model", fake_stream_chat_model)
 
 
 async def run_stage(agent_module: Any, state: dict[str, Any], stage: Any) -> dict[str, Any]:

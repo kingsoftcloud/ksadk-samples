@@ -325,7 +325,11 @@ def test_long_task_resume_sample_exists_and_is_public_ready():
         ".env.example",
         "agent.py",
         "workflow.py",
-        "tools.py",
+        "offline_workflow.py",
+        "offline_tools.py",
+        "stages.py",
+        "llm_client.py",
+        "search.py",
         "demo.py",
         "smoke.py",
         "e2e_http.py",
@@ -466,7 +470,10 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
 
     for relative_dir, (framework, has_workflow) in samples.items():
         sample_dir = ROOT / relative_dir
-        required_files = ["README.md", ".env.example", "agent.py", "tools.py", "demo.py", "smoke.py", "agentengine.yaml", "requirements.txt"]
+        required_files = ["README.md", ".env.example", "agent.py", "demo.py", "smoke.py", "agentengine.yaml", "requirements.txt"]
+        # tools.py 在 langgraph 变体已重命名为 offline_tools.py（fixture）
+        has_tools = (sample_dir / "tools.py").is_file() or (sample_dir / "offline_tools.py").is_file()
+        assert has_tools, f"{relative_dir} missing tools.py/offline_tools.py"
         if has_workflow:
             required_files.append("workflow.py")
         for filename in required_files:
@@ -490,14 +497,14 @@ def test_long_task_resume_multi_framework_variants_exist_and_render_resume_secti
             sys.modules[module_name] = module
             spec.loader.exec_module(module)
             assert hasattr(module, "root_agent")
-            tools = importlib.import_module("tools")
+            tools = importlib.import_module("offline_tools" if framework == "langgraph" else "tools")
             if framework == "langgraph":
-                workflow = importlib.import_module("workflow")
-                state = workflow.prepare_state(
+                offline_workflow = importlib.import_module("offline_workflow")
+                state = offline_workflow.prepare_state(
                     {"input": "调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。"},
                     {},
                 )
-                answer = workflow.build_agent_graph().invoke(state)["answer"]
+                answer = offline_workflow.build_agent_graph().invoke(state)["answer"]
             else:
                 answer = tools.render_demo_answer("调研国产 AI Agent Runtime 的市场格局、竞品、落地风险和下一步建议。")
             for section in required_sections:

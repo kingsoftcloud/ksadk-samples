@@ -107,6 +107,10 @@ REPORT_STAGES = (
 
 
 WORKSPACE_DIR = Path(os.environ.get("LONG_TASK_RESUME_WORKSPACE_DIR", ".agentengine/long-task-workspace"))
+
+
+def _artifact_path(stage: "ReportStage") -> Path:
+    return WORKSPACE_DIR / stage.artifact_name
 RESEARCH_ACTION_KEYWORDS = (
     "调研",
     "研究",

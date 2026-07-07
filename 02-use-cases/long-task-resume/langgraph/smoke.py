@@ -1,4 +1,4 @@
-from workflow import build_agent_graph, prepare_state
+from offline_workflow import build_agent_graph, prepare_state
 
 
 def main() -> int:
