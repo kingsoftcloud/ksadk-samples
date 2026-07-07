@@ -21,3 +21,11 @@ make public-preflight
 ```
 
 `public-preflight` 覆盖公开敏感信息扫描、样例结构校验和测试。当前 sample 仓库以轻量门禁为主；只有当仓库开始长期混放内部样例和公开样例时，才需要引入类似 `ksadk-python` 的独立公开工作树流程。
+
+## 模块化与测试契约
+
+`long-task-resume/langgraph` 采用渐进式模块化：`agent.py` 作入口 + `stages.py`（阶段数据）+ `llm_client.py`（LLM 调用）+ `search.py`（web 检索/抓取）。
+
+**跨模块 monkeypatch（双 patch）**：函数抽到子模块后，`test_agent_behavior.py` patch `agent_module.xxx` 不拦截子模块内部调用，需同时 patch 定义模块。`load_agent` 已预加载 `_search_module`/`_llm_client_module` 到 agent_module 上，测试直接用 `agent_module._search_module` 做双 patch，无需局部 import。
+
+继续抽 `workflow.py`（节点层）前需把节点的 `_call_required_llm`/`_web_search` 等依赖改为依赖注入（通过 Runner 实例属性），否则节点跨模块调用会引入 14+ 处双 patch。当前 ksadk `LangGraphRunner` 已支持 checkpointer/`aget_state`/`astream(None)`/interrupt，但节点编排仍需用户手写 `_build_execution_graph`；待 ksadk runner 演进到声明式托管节点后，samples 可直接用框架能力瘦身。

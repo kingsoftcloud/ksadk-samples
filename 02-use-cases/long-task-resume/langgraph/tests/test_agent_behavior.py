@@ -26,6 +26,13 @@ def load_agent(monkeypatch: Any, tmp_path: Path):
         module = importlib.util.module_from_spec(spec)
         sys.modules[module_name] = module
         spec.loader.exec_module(module)
+        # 预加载内部模块，供跨模块 monkeypatch（双 patch）使用。
+        # 抽 search.py/llm_client.py 后，节点调用的函数在这些模块内，
+        # patch agent_module 命名空间不拦截，需同时 patch 定义模块。
+        import search as _search_mod
+        import llm_client as _llm_mod
+        module._search_module = _search_mod
+        module._llm_client_module = _llm_mod
         return module
     finally:
         try:
@@ -301,7 +308,7 @@ def test_web_fetch_cleans_html_content(monkeypatch: Any, tmp_path: Path):
 
     monkeypatch.setattr(agent_module.httpx, "AsyncClient", FakeClient)
     # _web_fetch 已抽到 search.py，需同时 patch search 模块的 httpx（双 patch）
-    import search as search_module
+    search_module = agent_module._search_module
     monkeypatch.setattr(search_module.httpx, "AsyncClient", FakeClient)
     # ksadk 内置 web_fetch 未配置时返回 None，走 fallback httpx 路径验证 HTML 清洗
     async def _fake_ksadk_fetch(url):
