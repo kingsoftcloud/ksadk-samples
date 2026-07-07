@@ -36,7 +36,8 @@ uv pip install -U "ksadk[all]"
 
 ```bash
 cd 02-use-cases/long-task-resume/langgraph
-cp .env.example .env
+# 复制本目录的 .env.example 到 .env 并填写
+install -m 644 .env.example .env
 uv pip install -r requirements.txt
 uv run python demo.py
 uv run python smoke.py

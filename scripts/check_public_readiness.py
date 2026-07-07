@@ -34,6 +34,13 @@ FORBIDDEN_PATTERNS = (
     re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b"),
     re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.IGNORECASE),
     re.compile(r"-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----"),
+    # 明确内部环境语境（"预发"单独是公开技术词不拦，只拦"预发环境/集群/算力/pod"等内部语境）
+    re.compile(r"预发环境|预发集群|预发算力|预发[\W_]*pod|预发部署|预发配置"),
+    # 内部工作区路径（从 agentengine-test 迁出时易带入）
+    re.compile(r"(?i)/Users/[^/]+/(?:kingsoft|agentengine[\W_]*test)/"),
+    re.compile(r"(?i)/home/[^/]+/agentengine[\W_]*test/"),
+    re.compile(r"(?i)\bagentengine[\W_]*test\b"),
+    re.compile(r"(?i)\bksadk[\W_]*python/ksadk/"),
 )
 SECRET_ASSIGNMENT_PATTERN = re.compile(
     r"^\s*(?:export\s+)?[A-Z0-9_]*(?:ACCESS_KEY|SECRET_KEY|API_KEY|PASSWORD|TOKEN)\s*=\s*['\"]?([^'\"\s`#]+)"
@@ -50,6 +57,9 @@ def iter_public_text_files() -> list[Path]:
         if any(part in EXCLUDED_PARTS for part in relative.parts):
             continue
         if path.name == ".DS_Store" or path.suffix == ".pyc":
+            continue
+        # 豁免门禁脚本自身（含 FORBIDDEN_PATTERNS 正则定义字符串会被自己匹配）
+        if path.name == "check_public_readiness.py" and "scripts" in relative.parts:
             continue
         if path.suffix in TEXT_SUFFIXES or path.name in {"Makefile", ".gitignore"}:
             files.append(path)

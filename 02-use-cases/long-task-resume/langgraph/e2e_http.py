@@ -10,7 +10,7 @@ from typing import Any
 
 BASE_URL = os.environ.get("LONG_TASK_E2E_BASE_URL", "http://localhost:9876").rstrip("/")
 AGENT_ID = os.environ.get("LONG_TASK_E2E_AGENT_ID", "long-task-resume")
-MODEL = os.environ.get("OPENAI_MODEL_NAME", "glm-5.1")
+MODEL = os.environ.get("OPENAI_MODEL_NAME", "gpt-4o-mini")
 SKIP_CREATE_SESSION = os.environ.get("LONG_TASK_E2E_SKIP_CREATE_SESSION", "").lower() in {"1", "true", "yes"}
 SESSION_ID = os.environ.get(
     "LONG_TASK_E2E_SESSION_ID",

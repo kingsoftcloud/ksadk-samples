@@ -1,2 +1,2 @@
-ksadk[all]>=0.6.2
+ksadk[all]>=0.6.9
 google-adk>=1.0.0

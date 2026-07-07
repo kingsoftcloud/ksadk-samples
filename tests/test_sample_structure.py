@@ -29,10 +29,10 @@ def _version_tuple(version: str) -> tuple[int, int, int]:
     return tuple(numeric)
 
 
-def test_ksadk_runtime_is_at_least_0_6_2():
+def test_ksadk_runtime_is_at_least_0_6_9():
     import ksadk
 
-    assert _version_tuple(ksadk.__version__) >= (0, 6, 2)
+    assert _version_tuple(ksadk.__version__) >= (0, 6, 9)
 
 
 def test_root_readme_lists_public_project_resources():
@@ -2111,7 +2111,7 @@ def test_agentengine_yaml_contracts_are_valid():
         assert (config_path.parent / config["entry_point"]).is_file()
 
 
-def test_all_samples_import_with_ksadk_0_6_2_runtime():
+def test_all_samples_import_with_ksadk_0_6_9_runtime():
     os.environ.setdefault("OPENAI_API_KEY", "test-key")
     os.environ.setdefault("OPENAI_BASE_URL", "https://api.openai.com/v1")
     os.environ.setdefault("OPENAI_MODEL_NAME", "gpt-4o-mini")

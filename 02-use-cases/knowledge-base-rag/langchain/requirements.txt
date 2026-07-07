@@ -1,2 +1,2 @@
-ksadk[langchain,kb]
+ksadk[langchain,kb]>=0.6.9
 

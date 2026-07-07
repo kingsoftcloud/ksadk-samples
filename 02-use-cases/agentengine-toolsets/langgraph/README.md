@@ -36,6 +36,14 @@
 - 业务自定义 tools：`graph_status`、`component_status`、`release_risk_matrix`
 - LangGraph 编排：`route_turn -> prepare_custom_context -> run_specialist -> finalize_answer`
 
+## 开发者学习路径
+
+建议按以下顺序阅读：先看 [目录结构](#目录结构) 和 [你会学到什么](#你会学到什么)，再按 [环境准备](#环境准备) 跑通基础问答，然后逐步打开 [可选配置](#可选配置) 里的平台能力（Skill Space / 知识库 / 长期记忆 / Workspace / Sandbox / Skill Runtime），最后参考 [改造成你的业务 Agent](#改造成你的业务-agent) 做生产化改造。
+
+## 改造成你的业务 Agent
+
+把这个示例改造成你的业务 Agent 时：保留 `component_status` 这类状态工具用于定位配置问题；按业务域替换 `run_specialist` 的 prompt 和工具集；为生产环境补充鉴权、观测、错误分类、回归测试、审批策略和部署环境隔离。建议先保留 [配置速查表](#配置速查表) 的边界说明，避免误用未启用的平台能力。
+
 ## 环境准备
 
 在 `ksadk-samples` 仓库根目录准备虚拟环境：

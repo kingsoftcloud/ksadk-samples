@@ -1,2 +1,2 @@
-ksadk[adk,kb]
+ksadk[adk,kb]>=0.6.9
 
