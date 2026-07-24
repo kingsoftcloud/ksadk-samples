@@ -28,7 +28,14 @@ jobs:
             | xargs cat \
             | sed '/^$/d' \
             | sort -u > /tmp/ksadk-sample-requirements.txt
-          uv pip install -r /tmp/ksadk-sample-requirements.txt
+          # TODO(临时,待 ksadk 发新版后移除):pypi ksadk[adk]/[all] extras 把
+          # google-adk 上界 pin 在 <2.0.0,而 google-adk 1.x 依赖被 yanked 的
+          # opentelemetry-resourcedetector-gcp,干净环境(uv)解析失败。ksadk 源码
+          # 已把 google-adk 上界放宽到 <3.0.0(允许 2.x,samples 也用 ADK 2.5 写法),
+          # 发版前先用 override 强制 google-adk>=2.0.0 解开。
+          printf 'google-adk>=2.0.0\n' > /tmp/ksadk-sample-overrides.txt
+          uv pip install -r /tmp/ksadk-sample-requirements.txt \
+            --overrides /tmp/ksadk-sample-overrides.txt
 
       - name: Run public preflight
         run: make public-preflight
