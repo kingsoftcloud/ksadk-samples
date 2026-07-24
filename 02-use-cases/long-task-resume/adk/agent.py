@@ -5,7 +5,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from google.adk.agents import Agent
+from google.adk import Agent
 
 from common.model_config import make_adk_litellm_model
 from tools import build_resume_payload, render_demo_answer

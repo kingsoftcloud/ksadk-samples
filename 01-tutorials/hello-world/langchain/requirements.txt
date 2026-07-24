@@ -1,2 +1,2 @@
-ksadk[langchain]>=0.6.9
+ksadk[langchain]>=0.7.0
 

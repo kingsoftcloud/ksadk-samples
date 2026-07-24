@@ -29,7 +29,7 @@ def get_weather(city: str) -> dict:
     return {"city": city, "weather": data.get(city, "暂无示例天气数据")}
 
 
-def ksadk_prepare_input(payload: dict, session_context: dict) -> dict:
+def ksadk_prepare_state(payload: dict, session_context: dict) -> dict:
     return {"input": str(payload.get("input") or "")}
 
 

@@ -1,2 +1,2 @@
-ksadk[deepagents]>=0.6.9
+ksadk[deepagents]>=0.7.0
 

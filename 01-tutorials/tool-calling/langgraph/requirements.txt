@@ -1,2 +1,2 @@
-ksadk[langgraph]>=0.6.9
+ksadk[langgraph]>=0.7.0
 

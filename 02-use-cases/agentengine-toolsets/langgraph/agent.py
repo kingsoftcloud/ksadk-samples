@@ -12,7 +12,7 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, System
 from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 
 from common.model_config import make_langchain_chat_model
 from ksadk.skills.service_env import resolve_skill_service_url
@@ -215,7 +215,7 @@ def graph_status() -> dict[str, Any]:
             },
             {
                 "name": "run_specialist",
-                "purpose": "运行 create_react_agent，并绑定 KSADK built-in tools 与业务自定义 tools。",
+                "purpose": "运行 create_agent(langchain 1.x canonical),并绑定 KSADK built-in tools 与业务自定义 tools。",
             },
             {
                 "name": "finalize_answer",
@@ -455,11 +455,13 @@ def prepare_custom_context(state: AgentState) -> dict[str, Any]:
 
 def run_specialist(state: AgentState) -> dict[str, Any]:
     model = make_langchain_chat_model()
-    specialist = create_react_agent(
+    # LangGraph 1.x 起 create_react_agent 已 deprecated,canonical 为
+    # langchain.agents.create_agent(产物同为 LangGraph CompiledStateGraph,
+    # 可直接 invoke 嵌入外层 StateGraph)。version="v2" 是 create_react_agent 的旧参数,create_agent 不需要。
+    specialist = create_agent(
         model,
-        TOOLS,
-        prompt=SYSTEM_PROMPT,
-        version="v2",
+        tools=TOOLS,
+        system_prompt=SYSTEM_PROMPT,
         name="agentengine_toolsets_specialist",
     )
     route = state.get("route") or {}
