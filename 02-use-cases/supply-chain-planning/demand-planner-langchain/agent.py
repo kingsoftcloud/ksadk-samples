@@ -12,7 +12,7 @@ from prompts import SYSTEM_PROMPT
 from tools import load_demand_forecast, identify_inventory_risks, build_transfer_plan
 
 
-def ksadk_prepare_input(payload: dict, session_context: dict) -> dict:
+def ksadk_prepare_state(payload: dict, session_context: dict) -> dict:
     # LangChain agent 入口接收 input 字段；保留 session_context 方便后续接 workspace/memory。
     return {"input": str(payload.get("input") or "")}
 

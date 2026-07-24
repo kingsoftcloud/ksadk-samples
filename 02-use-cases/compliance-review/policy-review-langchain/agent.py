@@ -12,7 +12,7 @@ from prompts import SYSTEM_PROMPT
 from tools import load_review_materials, match_policy_rules, propose_remediations
 
 
-def ksadk_prepare_input(payload: dict, session_context: dict) -> dict:
+def ksadk_prepare_state(payload: dict, session_context: dict) -> dict:
     """把 AgentEngine 请求转换成 LangChain agent 输入。"""
 
     return {"input": str(payload.get("input") or "")}

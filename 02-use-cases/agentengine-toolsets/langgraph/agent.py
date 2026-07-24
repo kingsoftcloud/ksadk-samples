@@ -10,9 +10,9 @@ if str(ROOT) not in sys.path:
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.graph.message import add_messages
-from langchain.agents import create_agent
+from langgraph.prebuilt import ToolNode
 
 from common.model_config import make_langchain_chat_model
 from ksadk.skills.service_env import resolve_skill_service_url
@@ -215,7 +215,7 @@ def graph_status() -> dict[str, Any]:
             },
             {
                 "name": "run_specialist",
-                "purpose": "运行 create_agent(langchain 1.x canonical),并绑定 KSADK built-in tools 与业务自定义 tools。",
+                "purpose": "运行手搓 StateGraph ReAct 子图(LangGraph 1.x canonical),并绑定 KSADK built-in tools 与业务自定义 tools。",
             },
             {
                 "name": "finalize_answer",
@@ -454,19 +454,30 @@ def prepare_custom_context(state: AgentState) -> dict[str, Any]:
 
 
 def run_specialist(state: AgentState) -> dict[str, Any]:
-    model = make_langchain_chat_model()
-    # LangGraph 1.x 起 create_react_agent 已 deprecated,canonical 为
-    # langchain.agents.create_agent(产物同为 LangGraph CompiledStateGraph,
-    # 可直接 invoke 嵌入外层 StateGraph)。version="v2" 是 create_react_agent 的旧参数,create_agent 不需要。
-    specialist = create_agent(
-        model,
-        tools=TOOLS,
-        system_prompt=SYSTEM_PROMPT,
-        name="agentengine_toolsets_specialist",
-    )
+    model = make_langchain_chat_model().bind_tools(TOOLS)
+
+    def call_model(graph_state: MessagesState) -> dict[str, Any]:
+        return {"messages": [model.invoke(graph_state["messages"])]}
+
+    def should_continue(graph_state: MessagesState) -> str:
+        last = graph_state["messages"][-1]
+        return "tools" if getattr(last, "tool_calls", None) else END
+
+    # specialist 为手搓 ReAct 子图:LangGraph 1.x canonical 写法
+    # (create_react_agent 已 deprecated,官方迁移目标是 langchain.agents.create_agent;
+    #  本 sample 保持纯 LangGraph,用 StateGraph + ToolNode + conditional edges 表达同一循环)。
+    specialist_graph = StateGraph(MessagesState)
+    specialist_graph.add_node("agent", call_model)
+    specialist_graph.add_node("tools", ToolNode(TOOLS))
+    specialist_graph.add_edge(START, "agent")
+    specialist_graph.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
+    specialist_graph.add_edge("tools", "agent")
+    specialist = specialist_graph.compile()
+
     route = state.get("route") or {}
     custom_context = state.get("custom_context") or {}
     messages = [
+        SystemMessage(content=SYSTEM_PROMPT),
         SystemMessage(
             content=(
                 f"外层 LangGraph 路由: {route}. "
